@@ -7,6 +7,7 @@ import {
   Column,
   ManyToOne,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('events')
@@ -14,12 +15,13 @@ export class Event {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamptz' })
   createdAt: Date;
 
   @ManyToOne(() => User, (user) => user.events, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   user: User;
 
   @OneToOne(() => AppInstance, (appInstance) => appInstance.event, {

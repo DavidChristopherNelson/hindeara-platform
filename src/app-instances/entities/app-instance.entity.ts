@@ -1,6 +1,13 @@
 import { Event } from 'src/events/entities/event.entity';
 import { App } from 'src/apps/entities/app.entity';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
 
 enum AppStatus {
   USER_REQUEST = 'user_request',
@@ -19,10 +26,11 @@ export class AppInstance {
   })
   status: AppStatus;
 
-  @OneToOne(() => Event, (event) => event.app_instance)
+  @OneToOne(() => Event, (event) => event.appInstance)
   @JoinColumn()
   event: Event;
 
   @ManyToOne(() => App, (app) => app.appInstances)
+  @JoinColumn()
   app: App;
 }

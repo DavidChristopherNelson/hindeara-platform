@@ -6,7 +6,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamptz' })
   createdAt: Date;
 
   @OneToMany(() => Event, (event) => event.user)
