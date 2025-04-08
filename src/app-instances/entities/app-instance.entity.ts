@@ -1,4 +1,4 @@
-import { Event } from 'src/events/entities/event.entity';
+import { HindearaEvent } from 'src/hindeara-events/entities/hindeara-event.entity';
 import { App } from 'src/apps/entities/app.entity';
 import {
   Entity,
@@ -26,9 +26,9 @@ export class AppInstance {
   })
   status: AppStatus;
 
-  @OneToOne(() => Event, (event) => event.appInstance)
+  @OneToOne(() => HindearaEvent, (hindearaEvent) => hindearaEvent.appInstance)
   @JoinColumn()
-  event: Event;
+  hindearaEvent: HindearaEvent;
 
   @ManyToOne(() => App, (app) => app.appInstances)
   @JoinColumn()

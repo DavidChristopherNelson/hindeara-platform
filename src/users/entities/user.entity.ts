@@ -1,4 +1,4 @@
-import { Event } from 'src/events/entities/event.entity';
+import { HindearaEvent } from 'src/hindeara-events/entities/hindeara-event.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('users')
@@ -9,6 +9,6 @@ export class User {
   @Column({ type: 'timestamptz' })
   createdAt: Date;
 
-  @OneToMany(() => Event, (event) => event.user)
-  events?: Event[];
+  @OneToMany(() => HindearaEvent, (hindearaEvent) => hindearaEvent.user)
+  hindearaEvents?: HindearaEvent[];
 }
