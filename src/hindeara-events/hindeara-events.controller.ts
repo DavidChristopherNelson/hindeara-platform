@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { HindearaEventsService } from './hindeara-events.service';
 import { CreateHindearaEventDto } from './dto/create-hindeara-event.dto';
-import { UpdateHindearaEventDto } from './dto/update-hindeara-event.dto';
 
 @Controller('hindeara-events')
 export class HindearaEventsController {
@@ -20,15 +19,5 @@ export class HindearaEventsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.hindearaEventsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHindearaEventDto: UpdateHindearaEventDto) {
-    return this.hindearaEventsService.update(+id, updateHindearaEventDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.hindearaEventsService.remove(+id);
   }
 }

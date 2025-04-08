@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateHindearaEventDto } from './dto/create-hindeara-event.dto';
-import { UpdateHindearaEventDto } from './dto/update-hindeara-event.dto';
 
 @Injectable()
 export class HindearaEventsService {
@@ -14,13 +13,5 @@ export class HindearaEventsService {
 
   findOne(id: number) {
     return `This action returns a #${id} hindearaEvent`;
-  }
-
-  update(id: number, updateHindearaEventDto: UpdateHindearaEventDto) {
-    return `This action updates a #${id} hindearaEvent`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} hindearaEvent`;
   }
 }
