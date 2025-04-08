@@ -19,8 +19,4 @@ export class AppsService {
   update(id: number, updateAppDto: UpdateAppDto) {
     return `This action updates a #${id} app`;
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} app`;
-  }
 }
