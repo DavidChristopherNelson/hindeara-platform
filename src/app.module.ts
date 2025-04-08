@@ -6,9 +6,10 @@ import { EventsModule } from './events/events.module';
 import { AppInstancesModule } from './app-instances/app-instances.module';
 import { RecordingsModule } from './recordings/recordings.module';
 import { AppsModule } from './apps/apps.module';
+import { HindearaEventsModule } from './hindeara-events/hindeara-events.module';
 
 @Module({
-  imports: [UsersModule, EventsModule, AppInstancesModule, RecordingsModule, AppsModule],
+  imports: [UsersModule, EventsModule, AppInstancesModule, RecordingsModule, AppsModule, HindearaEventsModule],
   controllers: [AppController],
   providers: [AppService],
 })
