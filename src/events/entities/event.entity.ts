@@ -9,6 +9,8 @@ export class Event {
   @Column({ type: 'datetime' })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.events)
+  @ManyToOne(() => User, (user) => user.events, {
+    onDelete: 'CASCADE',
+  })
   user: User;
 }
