@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRecordingDto } from './dto/create-recording.dto';
-import { UpdateRecordingDto } from './dto/update-recording.dto';
 
 @Injectable()
 export class RecordingsService {
@@ -14,13 +13,5 @@ export class RecordingsService {
 
   findOne(id: number) {
     return `This action returns a #${id} recording`;
-  }
-
-  update(id: number, updateRecordingDto: UpdateRecordingDto) {
-    return `This action updates a #${id} recording`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} recording`;
   }
 }
