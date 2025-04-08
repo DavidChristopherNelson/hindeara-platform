@@ -15,6 +15,9 @@ export class Event {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: 'bytea' })
+  recording: Buffer;
+
   @Column({ type: 'timestamptz' })
   createdAt: Date;
 
@@ -28,9 +31,4 @@ export class Event {
     nullable: true,
   })
   appInstance?: AppInstance;
-
-  @OneToOne(() => Recording, (recording) => recording.event, {
-    nullable: true,
-  })
-  recording?: Recording;
 }
