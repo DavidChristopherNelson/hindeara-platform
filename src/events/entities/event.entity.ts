@@ -1,5 +1,13 @@
 import { User } from 'src/users/entities/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { AppInstance } from 'src/app-instances/entities/app-instance.entity';
+import { Recording } from 'src/recordings/entities/recording.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
 
 @Entity('events')
 export class Event {
@@ -13,4 +21,14 @@ export class Event {
     onDelete: 'CASCADE',
   })
   user: User;
+
+  @OneToOne(() => AppInstance, (appInstance) => appInstance.event, {
+    nullable: true,
+  })
+  appInstance?: AppInstance;
+
+  @OneToOne(() => Recording, (recording) => recording.event, {
+    nullable: true,
+  })
+  recording?: Recording;
 }
