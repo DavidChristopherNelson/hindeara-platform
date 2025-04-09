@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { AppsService } from './apps.service';
 import { CreateAppDto } from './dto/create-app.dto';
 import { UpdateAppDto } from './dto/update-app.dto';
+import { App } from './entities/app.entity';
 
 @Controller('apps')
 export class AppsController {
@@ -13,7 +22,7 @@ export class AppsController {
   }
 
   @Get()
-  async findAll(): Promise<Apps[]> {
+  async findAll(): Promise<App[]> {
     return this.appsService.findAll();
   }
 
