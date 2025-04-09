@@ -14,8 +14,8 @@ export class HindearaEvent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'bytea' })
-  recording: Buffer;
+  @Column()
+  recording: string;
 
   @Column({ type: 'timestamptz' })
   createdAt: Date;
