@@ -1,22 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAppDto } from './dto/create-app.dto';
 import { UpdateAppDto } from './dto/update-app.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { App } from './entities/app.entity';
 
 @Injectable()
 export class AppsService {
-  create(createAppDto: CreateAppDto) {
-    return 'This action adds a new app';
+  constructor(
+    @InjectRepository(App)
+    private readonly appRepository: Repository<App>,
+  ) {}
+
+  async create(createAppDto: CreateAppDto): Promise<App> {
+    const app = this.appRepository.create(createAppDto);
+    return this.appRepository.save(app);
   }
 
-  findAll() {
-    return `This action returns all apps`;
+  async findAll(): Promise<App[]> {
+    return this.appRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} app`;
+  async findOne(id: number): Promise<App | null> {
+    return this.appRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateAppDto: UpdateAppDto) {
-    return `This action updates a #${id} app`;
+  async update(id: number, updateAppDto: UpdateAppDto): Promise<App | null> {
+    const result = await this.appRepository.update(id, updateAppDto);
+    if (result.affected === 0) {
+      throw new NotFoundException(`App with ID ${id} not found`);
+    }
+
+    return this.findOne(id);
   }
 }
