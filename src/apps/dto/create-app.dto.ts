@@ -7,5 +7,5 @@ export class CreateAppDto {
 
   @IsNotEmpty()
   @IsBoolean()
-  is_active: boolean;
+  is_active?: boolean;
 }
