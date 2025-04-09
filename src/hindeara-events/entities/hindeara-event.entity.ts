@@ -17,7 +17,7 @@ export class HindearaEvent {
   @Column()
   recording: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
   @ManyToOne(() => User, (user) => user.hindearaEvents, {
