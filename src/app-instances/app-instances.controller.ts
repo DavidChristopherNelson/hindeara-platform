@@ -1,6 +1,14 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { AppInstancesService } from './app-instances.service';
 import { CreateAppInstanceDto } from './dto/create-app-instance.dto';
+import { AppInstance } from './entities/app-instance.entity';
 
 @Controller('app-instances')
 export class AppInstancesController {
@@ -19,7 +27,9 @@ export class AppInstancesController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<AppInstance | null> {
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<AppInstance | null> {
     return this.appInstancesService.findOne(+id);
   }
 }
