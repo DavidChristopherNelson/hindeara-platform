@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateHindearaEventDto } from './dto/create-hindeara-event.dto';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { HindearaEvent } from './entities/hindeara-event.entity';
 import { UsersService } from '../users/users.service';
-import { Repository } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class HindearaEventsService {
@@ -13,28 +13,23 @@ export class HindearaEventsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(
-    createHindearaEventDto: CreateHindearaEventDto,
-  ): Promise<HindearaEvent> {
+  async create(createHindearaEventDto: any) {
     const user = await this.usersService.findOne(createHindearaEventDto.userId);
     if (!user) {
-      throw new NotFoundException(
-        `User with id ${createHindearaEventDto.userId} not found`,
-      );
+      throw new NotFoundException('User not found');
     }
-
-    const hindearaEvent = this.hindearaEventRepository.create({
+    const event = this.hindearaEventRepository.create({
       ...createHindearaEventDto,
       user,
     });
-    return this.hindearaEventRepository.save(hindearaEvent);
+    return this.hindearaEventRepository.save(event);
   }
 
-  async findAll(): Promise<HindearaEvent[]> {
+  async findAll() {
     return this.hindearaEventRepository.find();
   }
 
-  async findOne(id: number): Promise<HindearaEvent | null> {
-    return this.hindearaEventRepository.findOne({ where: { id: id } });
+  async findOne(id: number) {
+    return this.hindearaEventRepository.findOne({ where: { id } });
   }
 }
