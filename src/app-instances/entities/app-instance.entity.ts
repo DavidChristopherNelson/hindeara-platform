@@ -9,7 +9,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 
-enum AppStatus {
+export enum AppStatus {
   USER_REQUEST = 'user_request',
   COMPLETE = 'complete',
   INCOMPLETE = 'incomplete',
