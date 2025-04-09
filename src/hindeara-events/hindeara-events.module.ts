@@ -3,9 +3,10 @@ import { HindearaEventsService } from './hindeara-events.service';
 import { HindearaEventsController } from './hindeara-events.controller';
 import { HindearaEvent } from './entities/hindeara-event.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([HindearaEvent])],
+  imports: [TypeOrmModule.forFeature([HindearaEvent]), UsersModule],
   controllers: [HindearaEventsController],
   providers: [HindearaEventsService],
 })
