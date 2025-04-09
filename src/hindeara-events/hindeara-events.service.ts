@@ -26,14 +26,14 @@ export class HindearaEventsService {
     const hindearaEvent = this.hindearaEventRepository.create(
       createHindearaEventDto,
     );
-    return await this.hindearaEventRepository.save(hindearaEvent);
+    return this.hindearaEventRepository.save(hindearaEvent);
   }
 
   async findAll(): Promise<HindearaEvent[]> {
-    return await this.hindearaEventRepository.find();
+    return this.hindearaEventRepository.find();
   }
 
   async findOne(id: number): Promise<HindearaEvent | null> {
-    return await this.hindearaEventRepository.findOne({ where: { id: id } });
+    return this.hindearaEventRepository.findOne({ where: { id: id } });
   }
 }
