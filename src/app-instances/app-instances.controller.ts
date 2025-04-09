@@ -7,17 +7,19 @@ export class AppInstancesController {
   constructor(private readonly appInstancesService: AppInstancesService) {}
 
   @Post()
-  create(@Body() createAppInstanceDto: CreateAppInstanceDto) {
+  async create(
+    @Body() createAppInstanceDto: CreateAppInstanceDto,
+  ): Promise<AppInstance> {
     return this.appInstancesService.create(createAppInstanceDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<AppInstance[]> {
     return this.appInstancesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<AppInstance | null> {
     return this.appInstancesService.findOne(+id);
   }
 }
