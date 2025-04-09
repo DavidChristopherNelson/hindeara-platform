@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
@@ -41,8 +42,8 @@ describe('UsersController', () => {
   describe('create', () => {
     it('should create and return a new user', async () => {
       const createUserDto = {} as CreateUserDto;
-      const result = (await controller.create(createUserDto)) as User;
-      expect(usersService.create.bind(usersService)).toHaveBeenCalledWith(
+      const result = await controller.create(createUserDto);
+      expect(usersService.create as jest.Mock).toHaveBeenCalledWith(
         createUserDto,
       );
       expect(result).toEqual(mockUser);
@@ -51,8 +52,8 @@ describe('UsersController', () => {
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const result = (await controller.findAll()) as User[];
-      expect(usersService.findAll.bind(usersService)).toHaveBeenCalled();
+      const result = await controller.findAll();
+      expect(usersService.findAll as jest.Mock).toHaveBeenCalled();
       expect(result).toEqual([mockUser]);
     });
   });
@@ -60,8 +61,8 @@ describe('UsersController', () => {
   describe('findOne', () => {
     it('should return a user by id', async () => {
       const id = 1;
-      const result = (await controller.findOne(id)) as User;
-      expect(usersService.findOne.bind(usersService)).toHaveBeenCalledWith(id);
+      const result = await controller.findOne(id);
+      expect(usersService.findOne as jest.Mock).toHaveBeenCalledWith(id);
       expect(result).toEqual(mockUser);
     });
   });
@@ -70,8 +71,8 @@ describe('UsersController', () => {
     it('should update and return the updated user', async () => {
       const updateUserDto = {} as UpdateUserDto;
       const id = 1;
-      const result = (await controller.update(id, updateUserDto)) as User;
-      expect(usersService.update.bind(usersService)).toHaveBeenCalledWith(
+      const result = await controller.update(id, updateUserDto);
+      expect(usersService.update as jest.Mock).toHaveBeenCalledWith(
         id,
         updateUserDto,
       );
@@ -83,7 +84,7 @@ describe('UsersController', () => {
     it('should remove the user and return void', async () => {
       const id = 1;
       await expect(controller.remove(id)).resolves.toBeUndefined();
-      expect(usersService.remove.bind(usersService)).toHaveBeenCalledWith(id);
+      expect(usersService.remove as jest.Mock).toHaveBeenCalledWith(id);
     });
   });
 });
