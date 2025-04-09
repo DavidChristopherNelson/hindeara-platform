@@ -2,10 +2,10 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateHindearaEventDto {
   @IsNotEmpty()
-  @isNumber()
+  @IsNumber()
   userId: number;
 
   @IsNotEmpty()
-  @isString()
+  @IsString()
   recording: string;
 }
