@@ -23,9 +23,10 @@ export class HindearaEventsService {
       );
     }
 
-    const hindearaEvent = this.hindearaEventRepository.create(
-      createHindearaEventDto,
-    );
+    const hindearaEvent = this.hindearaEventRepository.create({
+      ...createHindearaEventDto,
+      user,
+    });
     return this.hindearaEventRepository.save(hindearaEvent);
   }
 

@@ -37,7 +37,11 @@ export class AppInstancesService {
     }
 
     // Create the AppInstance
-    const appInstance = this.appInstanceRepository.create(createAppInstanceDto);
+    const appInstance = this.appInstanceRepository.create({
+      ...createAppInstanceDto,
+      hindearaEvent,
+      app,
+    });
     return this.appInstanceRepository.save(appInstance);
   }
 
