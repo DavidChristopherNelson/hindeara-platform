@@ -1,3 +1,4 @@
+import { AppEvent } from 'src/app-events/entities/app-event.entity';
 import { UserEvent } from 'src/user-events/entities/user-event.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
@@ -11,4 +12,7 @@ export class User {
 
   @OneToMany(() => UserEvent, (userEvent) => userEvent.user)
   userEvents?: UserEvent[];
+
+  @OneToMany(() => AppEvent, (appEvent) => appEvent.user)
+  appEvents?: AppEvent[];
 }

@@ -1,4 +1,4 @@
-import { AppInstance } from 'src/app-instances/entities/app-instance.entity';
+import { AppEvent } from 'src/app-events/entities/app-event.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('apps')
@@ -12,6 +12,6 @@ export class App {
   @Column()
   is_active: boolean;
 
-  @OneToMany(() => AppInstance, (appInstance) => appInstance.app)
-  appInstances: AppInstance[];
+  @OneToMany(() => AppEvent, (appEvent) => appEvent.app)
+  appEvents: AppEvent[];
 }
