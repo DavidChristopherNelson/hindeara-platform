@@ -1,34 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { AppEventsService } from './app-events.service';
 import { CreateAppEventDto } from './dto/create-app-event.dto';
-import { UpdateAppEventDto } from './dto/update-app-event.dto';
+import { AppEvent } from './entities/app-event.entity';
 
 @Controller('app-events')
 export class AppEventsController {
   constructor(private readonly appEventsService: AppEventsService) {}
 
   @Post()
-  create(@Body() createAppEventDto: CreateAppEventDto) {
+  async create(@Body() createAppEventDto: CreateAppEventDto): Promise<AppEvent> {
     return this.appEventsService.create(createAppEventDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<AppEvent> {
     return this.appEventsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<AppEvent> {
     return this.appEventsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAppEventDto: UpdateAppEventDto) {
-    return this.appEventsService.update(+id, updateAppEventDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.appEventsService.remove(+id);
   }
 }
