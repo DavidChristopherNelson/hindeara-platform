@@ -1,26 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserEventDto } from './dto/create-user-event.dto';
-import { UpdateUserEventDto } from './dto/update-user-event.dto';
+import { UserEvent } from './entities/user-event.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserEventsService {
-  create(createUserEventDto: CreateUserEventDto) {
-    return 'This action adds a new userEvent';
+  constructor(
+    @InjectRepository(UserEvent)
+    private readonly userEventRepository: Repository<UserEvent>,
+  ) {}
+
+  async create(createUserEventDto: CreateUserEventDto): Promise<UserEvent> {
+    const user = await this.usersService.findOne(createUserEventDto.userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const event = this.userEventRepository.create({
+      ...createUserEventDto,
+      user,
+    });
+    return this.userEventRepository.save(event);
   }
 
-  findAll() {
-    return `This action returns all userEvents`;
+  async findAll(): Promise<UserEvent[]> {
+    return this.userEventRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userEvent`;
-  }
-
-  update(id: number, updateUserEventDto: UpdateUserEventDto) {
-    return `This action updates a #${id} userEvent`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} userEvent`;
+  async findOne(id: number): Promise<UserEvent | null> {
+    return this.userEventRepository.findOne({ where: { id } });
   }
 }
