@@ -1,5 +1,5 @@
 import { User } from 'src/users/entities/user.entity';
-import { App } from 'supertest/types';
+import { App } from 'src/apps/entities/app.entity';
 import {
   Column,
   Entity,

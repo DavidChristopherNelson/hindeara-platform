@@ -3,12 +3,14 @@ import { CreateUserEventDto } from './dto/create-user-event.dto';
 import { UserEvent } from './entities/user-event.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class UserEventsService {
   constructor(
     @InjectRepository(UserEvent)
     private readonly userEventRepository: Repository<UserEvent>,
+    private readonly usersService: UsersService,
   ) {}
 
   async create(createUserEventDto: CreateUserEventDto): Promise<UserEvent> {

@@ -15,17 +15,21 @@ export class AppEventsController {
   constructor(private readonly appEventsService: AppEventsService) {}
 
   @Post()
-  async create(@Body() createAppEventDto: CreateAppEventDto): Promise<AppEvent> {
+  async create(
+    @Body() createAppEventDto: CreateAppEventDto,
+  ): Promise<AppEvent> {
     return this.appEventsService.create(createAppEventDto);
   }
 
   @Get()
-  async findAll(): Promise<AppEvent> {
+  async findAll(): Promise<AppEvent[]> {
     return this.appEventsService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<AppEvent> {
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<AppEvent | null> {
     return this.appEventsService.findOne(+id);
   }
 }
