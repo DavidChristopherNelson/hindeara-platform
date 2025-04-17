@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { App } from './entities/app.entity';
 import { AppEvent } from 'src/app-events/entities/app-event.entity';
 import { AppEventsService } from 'src/app-events/app-events.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AppsService {
@@ -60,7 +61,7 @@ export class AppsService {
     }
 
     console.warn(
-      'Warning: findCurrentApp() did not return from the loop. This should not have happened. Returning fallback new app.',
+      'Warning: findCurrentApp() did not return from the loop. This should not have happened. Returning a fallback app.',
     );
     return this.chooseNewApp();
   }
