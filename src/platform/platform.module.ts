@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { PlatformController } from './platform.controller';
 import { PlatformService } from './platform.service';
-import { UsersModule } from './users/users.module';
-import { AppsModule } from './apps/apps.module';
-import { UserEventsModule } from './user-events/user-events.module';
-import { AppEventsModule } from './app-events/app-events.module';
+import { UsersModule } from '../users/users.module';
+import { AppsModule } from '../apps/apps.module';
+import { UserEventsModule } from '../user-events/user-events.module';
+import { AppEventsModule } from '../app-events/app-events.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
