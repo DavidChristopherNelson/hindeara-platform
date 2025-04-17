@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ProcessUserInputResponseDto } from './dto/process-user-input-response.dto';
 import { UserEventsService } from 'src/user-events/user-events.service';
 import { Builder } from 'src/app-events/dto/buildDto';
 import { AppEventsService } from 'src/app-events/app-events.service';
