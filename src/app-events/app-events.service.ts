@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateAppEventDto } from './dto/create-app-event.dto';
 import { AppEvent } from './entities/app-event.entity';
 import { Repository } from 'typeorm';
@@ -14,11 +14,10 @@ export class AppEventsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(createAppEventDto: CreateAppEventDto): Promise<AppEvent> {
-    const user = await this.usersService.findOne(createAppEventDto.userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+  async create(
+    createAppEventDto: CreateAppEventDto,
+    user: User,
+  ): Promise<AppEvent> {
     const appEvent = this.appEventRepository.create({
       ...createAppEventDto,
       user,

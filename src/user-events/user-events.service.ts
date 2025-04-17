@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserEventDto } from './dto/create-user-event.dto';
 import { UserEvent } from './entities/user-event.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class UserEventsService {
@@ -13,11 +14,10 @@ export class UserEventsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(createUserEventDto: CreateUserEventDto): Promise<UserEvent> {
-    const user = await this.usersService.findOne(createUserEventDto.userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+  async create(
+    createUserEventDto: CreateUserEventDto,
+    user: User,
+  ): Promise<UserEvent> {
     const event = this.userEventRepository.create({
       ...createUserEventDto,
       user,

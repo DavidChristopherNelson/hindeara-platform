@@ -14,6 +14,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { UserByIdPipe } from './pipes/user-by-id.pipe';
 
 @Controller('users')
 export class UsersController {
@@ -30,21 +31,23 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User | null> {
-    return this.usersService.findOne(id);
+  findOne(@Param('id', ParseIntPipe, UserByIdPipe) user: User): User {
+    return user;
   }
 
   @Patch(':id')
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe, UserByIdPipe) user: User,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<User | null> {
-    return this.usersService.update(id, updateUserDto);
+  ): Promise<User> {
+    return this.usersService.update(user, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.usersService.remove(id);
+  async remove(
+    @Param('id', ParseIntPipe, UserByIdPipe) user: User,
+  ): Promise<void> {
+    return this.usersService.remove(user);
   }
 }

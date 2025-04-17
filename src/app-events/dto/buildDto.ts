@@ -1,4 +1,5 @@
 import { AppsService } from 'src/apps/apps.service';
+import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 
 export class Builder {
@@ -7,11 +8,7 @@ export class Builder {
     private readonly appsService: AppsService,
   ) {}
 
-  async createDtoFromUserId(userId: number) {
-    const user = await this.usersService.findOne(userId);
-    if (!user) {
-      throw new Error('User not found');
-    }
+  async createDtoFromUserId(user: User) {
     const currentApp = await this.appsService.findCurrentApp(user);
     return this.appsService.runApp(user, currentApp);
   }
