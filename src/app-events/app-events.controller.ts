@@ -30,6 +30,6 @@ export class AppEventsController {
   async findOne(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<AppEvent | null> {
-    return this.appEventsService.findOne(+id);
+    return this.appEventsService.findOne(id);
   }
 }
