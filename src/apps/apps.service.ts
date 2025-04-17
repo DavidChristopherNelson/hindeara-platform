@@ -1,4 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+import { AxiosResponse } from 'axios';
 import { CreateAppDto } from './dto/create-app.dto';
 import { UpdateAppDto } from './dto/update-app.dto';
 import { Repository } from 'typeorm';
@@ -7,6 +10,7 @@ import { App } from './entities/app.entity';
 import { AppEvent } from 'src/app-events/entities/app-event.entity';
 import { AppEventsService } from 'src/app-events/app-events.service';
 import { User } from 'src/users/entities/user.entity';
+import { CreateAppEventDto } from 'src/app-events/dto/create-app-event.dto';
 
 @Injectable()
 export class AppsService {
@@ -14,6 +18,7 @@ export class AppsService {
     @InjectRepository(App)
     private readonly appRepository: Repository<App>,
     private readonly appEventsService: AppEventsService,
+    private readonly httpService: HttpService,
   ) {}
 
   async create(createAppDto: CreateAppDto): Promise<App> {
@@ -41,7 +46,6 @@ export class AppsService {
   async findCurrentApp(user: User): Promise<App> {
     const pastAppEvents: AppEvent[] =
       await this.appEventsService.findAllByUser(user);
-    // TODO: const currentApp = Do logic and either return an element of pastAppEvents or call this.chooseNewApp
 
     const fiveMinutesAgo = Date.now() - 5 * 60_000;
     const listOfCompletedApps: App[] = [];
@@ -75,5 +79,13 @@ export class AppsService {
       });
     }
     return alfaApp;
+  }
+
+  async runApp(user: User, app: App): Promise<CreateAppEventDto> {
+    const url = `${app.http_path}/users/${user.id}/run`;
+    const resp: AxiosResponse<CreateAppEventDto> = await firstValueFrom(
+      this.httpService.post<CreateAppEventDto>(url),
+    );
+    return resp.data;
   }
 }

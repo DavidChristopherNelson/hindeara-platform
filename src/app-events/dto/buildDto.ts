@@ -9,6 +9,10 @@ export class Builder {
 
   async createDtoFromUserId(userId: number) {
     const user = await this.usersService.findOne(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
     const currentApp = await this.appsService.findCurrentApp(user);
+    return this.appsService.runApp(user, currentApp);
   }
 }
