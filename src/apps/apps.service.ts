@@ -4,6 +4,7 @@ import { UpdateAppDto } from './dto/update-app.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { App } from './entities/app.entity';
+import { AppEvent } from 'src/app-events/entities/app-event.entity';
 
 @Injectable()
 export class AppsService {
@@ -32,5 +33,12 @@ export class AppsService {
     }
 
     return this.findOne(id);
+  }
+
+  async findCurrentApp(user: User): Promise<App> {
+    const pastAppEvents: AppEvent[] =
+      await this.appEventsService.findAllByUser(user);
+      // TODO: const currentApp = Do logic and either return an element of pastAppEvents or call this.chooseNewApp
+      
   }
 }
