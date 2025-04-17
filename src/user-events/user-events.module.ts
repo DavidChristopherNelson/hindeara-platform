@@ -12,5 +12,6 @@ import { UserEvent } from './entities/user-event.entity';
   ],
   controllers: [UserEventsController],
   providers: [UserEventsService],
+  exports: [UserEventsService],
 })
 export class UserEventsModule {}

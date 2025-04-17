@@ -9,5 +9,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [TypeOrmModule.forFeature([AppEvent]), UsersModule],
   controllers: [AppEventsController],
   providers: [AppEventsService],
+  exports: [AppEventsService],
 })
 export class AppEventsModule {}

@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AppsService } from './apps.service';
-import { AppsController } from './apps.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { App } from './entities/app.entity';
 import { HttpModule } from '@nestjs/axios';
 
+import { AppsController } from './apps.controller';
+import { AppsService } from './apps.service';
+import { App } from './entities/app.entity';
+
+import { AppEventsModule } from '../app-events/app-events.module';
+
 @Module({
-  imports: [TypeOrmModule.forFeature([App]), HttpModule],
+  imports: [TypeOrmModule.forFeature([App]), HttpModule, AppEventsModule],
   controllers: [AppsController],
   providers: [AppsService],
   exports: [AppsService],

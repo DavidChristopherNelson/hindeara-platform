@@ -1,7 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { AppsService } from 'src/apps/apps.service';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 
+@Injectable()
 export class Builder {
   constructor(
     private readonly usersService: UsersService,

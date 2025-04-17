@@ -6,6 +6,7 @@ import { AppsModule } from '../apps/apps.module';
 import { UserEventsModule } from '../user-events/user-events.module';
 import { AppEventsModule } from '../app-events/app-events.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Builder } from 'src/app-events/dto/buildDto';
 
 @Module({
   imports: [
@@ -27,6 +28,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     AppEventsModule,
   ],
   controllers: [PlatformController],
-  providers: [PlatformService],
+  providers: [PlatformService, Builder],
 })
 export class PlatformModule {}
