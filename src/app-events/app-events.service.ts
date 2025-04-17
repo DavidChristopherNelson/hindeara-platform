@@ -4,6 +4,7 @@ import { AppEvent } from './entities/app-event.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AppEventsService {
@@ -31,5 +32,9 @@ export class AppEventsService {
 
   async findOne(id: number): Promise<AppEvent | null> {
     return this.appEventRepository.findOne({ where: { id } });
+  }
+
+  async findAllByUser(user: User): Promise<AppEvent[]> {
+    return this.appEventRepository.find({ where: { user: { id: user.id } } });
   }
 }
