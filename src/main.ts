@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { PlatformModule } from './platform/platform.module';
+import { PlatformModule } from './hindeara-platform/platform/platform.module';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {

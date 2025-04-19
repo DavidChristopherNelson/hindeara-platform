@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { AppsService } from 'src/apps/apps.service';
-import { User } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/users.service';
+import { AppsService } from 'src/hindeara-platform/apps/apps.service';
+import { User } from 'src/hindeara-platform/users/entities/user.entity';
+import { UsersService } from 'src/hindeara-platform/users/users.service';
 
 @Injectable()
 export class Builder {

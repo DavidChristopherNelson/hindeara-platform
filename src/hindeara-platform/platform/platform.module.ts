@@ -6,7 +6,7 @@ import { AppsModule } from '../apps/apps.module';
 import { UserEventsModule } from '../user-events/user-events.module';
 import { AppEventsModule } from '../app-events/app-events.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Builder } from 'src/app-events/dto/buildDto';
+import { Builder } from 'src/hindeara-platform/app-events/dto/buildDto';
 
 @Module({
   imports: [

@@ -1,4 +1,4 @@
-import { User } from 'src/users/entities/user.entity';
+import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import {
   Column,
   Entity,

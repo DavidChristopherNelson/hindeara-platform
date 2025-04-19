@@ -1,4 +1,4 @@
-import { AppEvent } from 'src/app-events/entities/app-event.entity';
+import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('apps')

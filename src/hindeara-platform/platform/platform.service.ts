@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UserEventsService } from 'src/user-events/user-events.service';
-import { Builder } from 'src/app-events/dto/buildDto';
-import { AppEventsService } from 'src/app-events/app-events.service';
-import { AppEvent } from 'src/app-events/entities/app-event.entity';
-import { User } from 'src/users/entities/user.entity';
+import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
+import { Builder } from 'src/hindeara-platform/app-events/dto/buildDto';
+import { AppEventsService } from 'src/hindeara-platform/app-events/app-events.service';
+import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
+import { User } from 'src/hindeara-platform/users/entities/user.entity';
 
 @Injectable()
 export class PlatformService {

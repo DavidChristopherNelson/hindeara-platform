@@ -1,5 +1,5 @@
-import { User } from 'src/users/entities/user.entity';
-import { App } from 'src/apps/entities/app.entity';
+import { User } from 'src/hindeara-platform/users/entities/user.entity';
+import { App } from 'src/hindeara-platform/apps/entities/app.entity';
 import {
   Column,
   Entity,

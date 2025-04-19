@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { UserEventsService } from './user-events.service';
 import { UserEventsController } from './user-events.controller';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from 'src/hindeara-platform/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEvent } from './entities/user-event.entity';
 

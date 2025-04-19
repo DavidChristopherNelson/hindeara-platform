@@ -7,10 +7,10 @@ import { UpdateAppDto } from './dto/update-app.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { App } from './entities/app.entity';
-import { AppEvent } from 'src/app-events/entities/app-event.entity';
-import { AppEventsService } from 'src/app-events/app-events.service';
-import { User } from 'src/users/entities/user.entity';
-import { CreateAppEventDto } from 'src/app-events/dto/create-app-event.dto';
+import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
+import { AppEventsService } from 'src/hindeara-platform/app-events/app-events.service';
+import { User } from 'src/hindeara-platform/users/entities/user.entity';
+import { CreateAppEventDto } from 'src/hindeara-platform/app-events/dto/create-app-event.dto';
 
 @Injectable()
 export class AppsService {

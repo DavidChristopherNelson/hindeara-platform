@@ -1,5 +1,5 @@
-import { AppEvent } from 'src/app-events/entities/app-event.entity';
-import { UserEvent } from 'src/user-events/entities/user-event.entity';
+import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
+import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('users')
