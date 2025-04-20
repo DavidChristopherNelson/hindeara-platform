@@ -1,26 +1,30 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMiniLessonDto } from './dto/create-mini-lesson.dto';
-import { UpdateMiniLessonDto } from './dto/update-mini-lesson.dto';
+import { MiniLesson } from './entities/mini-lesson.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MiniLessonsService {
-  create(createMiniLessonDto: CreateMiniLessonDto) {
-    return 'This action adds a new miniLesson';
+  constructor(
+    @InjectRepository(MiniLesson)
+    private miniLessonRepository: Repository<MiniLesson>,
+  ) {}
+
+  async create(createMiniLessonDto: CreateMiniLessonDto): Promise<MiniLesson> {
+    const miniLesson = this.miniLessonRepository.create(createMiniLessonDto);
+    return this.miniLessonRepository.save(miniLesson);
   }
 
-  findAll() {
-    return `This action returns all miniLessons`;
+  async findAll(): Promise<MiniLesson[]> {
+    return this.miniLessonRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} miniLesson`;
+  async findOne(id: number): Promise<MiniLesson | null> {
+    return this.miniLessonRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateMiniLessonDto: UpdateMiniLessonDto) {
-    return `This action updates a #${id} miniLesson`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} miniLesson`;
+  async remove(id: number): Promise<void> {
+    await this.miniLessonRepository.delete(id);
   }
 }
