@@ -3,13 +3,13 @@ import { CreateMiniLessonDto } from './dto/create-mini-lesson.dto';
 import { UpdateMiniLessonDto } from './dto/update-mini-lesson.dto';
 
 @Injectable()
-export class MiniLessonService {
+export class MiniLessonsService {
   create(createMiniLessonDto: CreateMiniLessonDto) {
     return 'This action adds a new miniLesson';
   }
 
   findAll() {
-    return `This action returns all miniLesson`;
+    return `This action returns all miniLessons`;
   }
 
   findOne(id: number) {

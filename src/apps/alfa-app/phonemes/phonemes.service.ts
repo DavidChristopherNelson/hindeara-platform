@@ -3,13 +3,13 @@ import { CreatePhonemeDto } from './dto/create-phoneme.dto';
 import { UpdatePhonemeDto } from './dto/update-phoneme.dto';
 
 @Injectable()
-export class PhonemeService {
+export class PhonemesService {
   create(createPhonemeDto: CreatePhonemeDto) {
     return 'This action adds a new phoneme';
   }
 
   findAll() {
-    return `This action returns all phoneme`;
+    return `This action returns all phonemes`;
   }
 
   findOne(id: number) {
