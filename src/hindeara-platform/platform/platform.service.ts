@@ -69,7 +69,7 @@ export class PlatformService {
     const alfaApp = await this.appsService.findOne(1);
     if (!alfaApp) {
       return this.appsService.create({
-        http_path: 'https://alfa.com',
+        http_path: 'alfa-app',
         is_active: true,
       });
     }
