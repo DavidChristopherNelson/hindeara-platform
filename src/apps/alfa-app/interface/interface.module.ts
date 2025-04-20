@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
-import { InterfaceService } from './interface.service';
+import { AlfaAppInterfaceService } from './interface.service';
 import { InterfaceController } from './interface.controller';
+import { MiniLessonsModule } from '../mini-lessons/mini-lessons.module';
+import { AppEventsModule } from 'src/hindeara-platform/app-events/app-events.module';
 
 @Module({
+  imports: [MiniLessonsModule, AppEventsModule],
   controllers: [InterfaceController],
-  providers: [InterfaceService],
+  providers: [AlfaAppInterfaceService],
+  exports: [AlfaAppInterfaceService],
 })
-export class InterfaceModule {}
+export class AlfaAppInterfaceModule {}

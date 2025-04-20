@@ -1,15 +1,11 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { UserEventsService } from './user-events.service';
 import { UserEventsController } from './user-events.controller';
-import { UsersModule } from 'src/hindeara-platform/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEvent } from './entities/user-event.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([UserEvent]),
-    forwardRef(() => UsersModule),
-  ],
+  imports: [TypeOrmModule.forFeature([UserEvent])],
   controllers: [UserEventsController],
   providers: [UserEventsService],
   exports: [UserEventsService],

@@ -36,4 +36,20 @@ export class AppEventsService {
   async findAllByUser(user: User): Promise<AppEvent[]> {
     return this.appEventRepository.find({ where: { user: { id: user.id } } });
   }
+
+  async findMostRecentNByAppIdAndUserId(
+    appId: number,
+    userId: number,
+    n: number,
+  ): Promise<AppEvent[]> {
+    const appEvents = await this.appEventRepository.find({
+      where: { app: { id: appId }, user: { id: userId } },
+      order: { createdAt: 'DESC' },
+      take: n,
+    });
+    if (appEvents.length < n) {
+      throw new Error(`There are less than ${n} database matches`);
+    }
+    return appEvents;
+  }
 }

@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { PlatformController } from './platform.controller';
 import { PlatformService } from './platform.service';
-import { UsersModule } from '../users/users.module';
 import { AppsModule } from '../apps/apps.module';
 import { UserEventsModule } from '../user-events/user-events.module';
 import { AppEventsModule } from '../app-events/app-events.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Builder } from 'src/hindeara-platform/app-events/dto/buildDto';
+import { AlfaAppInterfaceModule } from 'src/apps/alfa-app/interface/interface.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -21,13 +21,13 @@ import { Builder } from 'src/hindeara-platform/app-events/dto/buildDto';
       autoLoadEntities: true,
       synchronize: true,
     }),
-
-    UsersModule,
     AppsModule,
     UserEventsModule,
     AppEventsModule,
+    AlfaAppInterfaceModule,
+    UsersModule,
   ],
   controllers: [PlatformController],
-  providers: [PlatformService, Builder],
+  providers: [PlatformService],
 })
 export class PlatformModule {}

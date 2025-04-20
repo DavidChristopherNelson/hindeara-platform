@@ -3,7 +3,6 @@ import { CreateUserEventDto } from './dto/create-user-event.dto';
 import { UserEvent } from './entities/user-event.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UsersService } from 'src/hindeara-platform/users/users.service';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 
 @Injectable()
@@ -11,7 +10,6 @@ export class UserEventsService {
   constructor(
     @InjectRepository(UserEvent)
     private readonly userEventRepository: Repository<UserEvent>,
-    private readonly usersService: UsersService,
   ) {}
 
   async create(
