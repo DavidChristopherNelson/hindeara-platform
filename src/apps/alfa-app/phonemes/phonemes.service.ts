@@ -1,26 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePhonemeDto } from './dto/create-phoneme.dto';
 import { UpdatePhonemeDto } from './dto/update-phoneme.dto';
+import { Phoneme } from './entities/phoneme.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PhonemesService {
-  create(createPhonemeDto: CreatePhonemeDto) {
-    return 'This action adds a new phoneme';
+  constructor(
+    @InjectRepository(Phoneme)
+    private phonemeRepository: Repository<Phoneme>,
+  ) {}
+
+  async create(createPhonemeDto: CreatePhonemeDto): Promise<Phoneme> {
+    const phoneme = this.phonemeRepository.create(createPhonemeDto);
+    return this.phonemeRepository.save(phoneme);
   }
 
-  findAll() {
-    return `This action returns all phonemes`;
+  async findAll(): Promise<Phoneme[]> {
+    return this.phonemeRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} phoneme`;
+  async findOne(id: number): Promise<Phoneme | null> {
+    return this.phonemeRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updatePhonemeDto: UpdatePhonemeDto) {
-    return `This action updates a #${id} phoneme`;
-  }
+  async update(
+    id: number,
+    updatePhonemeDto: UpdatePhonemeDto,
+  ): Promise<Phoneme> {
+    const phoneme = await this.findOne(id);
+    if (!phoneme) {
+      throw new NotFoundException('Phoneme not found');
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} phoneme`;
+    Object.assign(phoneme, updatePhonemeDto);
+    return this.phonemeRepository.save(phoneme);
   }
 }

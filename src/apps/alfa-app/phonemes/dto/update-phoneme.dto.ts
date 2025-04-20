@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreatePhonemeDto } from './create-phoneme.dto';
+import { PickType } from '@nestjs/mapped-types';
+import { PhonemeDto } from './phoneme.dto';
 
-export class UpdatePhonemeDto extends PartialType(CreatePhonemeDto) {}
+export class UpdatePhonemeDto extends PickType(PhonemeDto, [
+  'isActive',
+] as const) {}
