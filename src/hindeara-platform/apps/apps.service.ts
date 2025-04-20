@@ -1,7 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
-import { AxiosResponse } from 'axios';
 import { CreateAppDto } from './dto/create-app.dto';
 import { UpdateAppDto } from './dto/update-app.dto';
 import { Repository } from 'typeorm';
@@ -11,6 +9,7 @@ import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.en
 import { AppEventsService } from 'src/hindeara-platform/app-events/app-events.service';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import { CreateAppEventDto } from 'src/hindeara-platform/app-events/dto/create-app-event.dto';
+import { AlfaAppInterface } from '../../apps/alfa-app/interface/interface.service';
 
 @Injectable()
 export class AppsService {
@@ -19,6 +18,7 @@ export class AppsService {
     private readonly appRepository: Repository<App>,
     private readonly appEventsService: AppEventsService,
     private readonly httpService: HttpService,
+    private readonly alfaAppInterface: AlfaAppInterface,
   ) {}
 
   async create(createAppDto: CreateAppDto): Promise<App> {
@@ -82,10 +82,10 @@ export class AppsService {
   }
 
   async runApp(user: User, app: App): Promise<CreateAppEventDto> {
-    const url = `${app.http_path}/users/${user.id}/run`;
-    const resp: AxiosResponse<CreateAppEventDto> = await firstValueFrom(
-      this.httpService.post<CreateAppEventDto>(url),
-    );
-    return resp.data;
+    switch (app.http_path) {
+      case 'alfa-app':
+        return this.alfaAppInterface.run(user);
+    }
+    throw new Error('App not found');
   }
 }
