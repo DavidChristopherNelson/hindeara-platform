@@ -40,6 +40,9 @@ export class PlatformService {
   async findCurrentApp(user: User): Promise<App> {
     const pastAppEvents: AppEvent[] =
       await this.appEventsService.findAllByUser(user);
+    if (pastAppEvents.length === 0) {
+      return this.chooseNewApp();
+    }
 
     const fiveMinutesAgo = Date.now() - 5 * 60_000;
     const listOfCompletedApps: App[] = [];
@@ -48,7 +51,7 @@ export class PlatformService {
       if (appEvent.createdAt.getTime() < fiveMinutesAgo) {
         return this.chooseNewApp();
       }
-      if (appEvent.is_complete) {
+      if (appEvent.isComplete) {
         listOfCompletedApps.push(appEvent.app);
         continue;
       }

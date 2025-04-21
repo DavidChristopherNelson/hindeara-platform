@@ -42,14 +42,10 @@ export class AppEventsService {
     userId: number,
     n: number,
   ): Promise<AppEvent[]> {
-    const appEvents = await this.appEventRepository.find({
+    return this.appEventRepository.find({
       where: { app: { id: appId }, user: { id: userId } },
       order: { createdAt: 'DESC' },
       take: n,
     });
-    if (appEvents.length < n) {
-      throw new Error(`There are less than ${n} database matches`);
-    }
-    return appEvents;
   }
 }

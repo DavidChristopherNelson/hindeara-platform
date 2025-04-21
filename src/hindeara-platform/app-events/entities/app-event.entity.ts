@@ -20,7 +20,7 @@ export class AppEvent {
   uiData: string;
 
   @Column()
-  is_complete: boolean;
+  isComplete: boolean;
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;

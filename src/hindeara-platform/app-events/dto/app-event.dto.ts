@@ -17,7 +17,7 @@ export class AppEventDto {
   uiData!: string;
 
   @Expose()
-  is_complete!: boolean;
+  isComplete!: boolean;
 
   @Expose()
   createdAt!: Date;

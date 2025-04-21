@@ -62,7 +62,7 @@ describe('PlatformController (e2e)', () => {
     // Verify response structure
     expect(res.body).toHaveProperty('id');
     expect(res.body).toHaveProperty('recording');
-    expect(res.body).toHaveProperty('is_complete');
+    expect(res.body).toHaveProperty('isComplete');
 
     // Check the resources
     const userEvents = await userEventRepo.find({
@@ -81,8 +81,9 @@ describe('PlatformController (e2e)', () => {
     expect(appEvents.length).toBe(1);
     expect(appEvents[0].recording).toBe('dummy recording');
 
-    expect(miniLessons.length).toBe(1);
+    expect(miniLessons.length).toBe(2);
     expect(miniLessons[0].word).toBe('dummy word');
-    expect(miniLessons[0].state).toBe('dummy state');
+    expect(miniLessons[0].state).toBe('dummy initial state');
+    expect(miniLessons[1].state).toBe('dummy state + dummy initial state');
   });
 });
