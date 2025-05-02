@@ -34,7 +34,7 @@ export class MiniLessonsService {
     secondLatestAppEvent: AppEvent | undefined,
     userId: number,
   ): Promise<MiniLesson> {
-    // Handle initial startup edge case
+    // Handle initial startup edge cases
     if (!latestAppEvent) {
       return this.create({
         appEventId: 0,

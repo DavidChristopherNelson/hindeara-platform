@@ -7,6 +7,10 @@ export class PhonemeDto {
   @Expose()
   id!: number;
 
+  /** letter → letter */
+  @Expose()
+  letter!: string;
+
   /** example_noun → exampleNoun */
   @Expose()
   @Transform(

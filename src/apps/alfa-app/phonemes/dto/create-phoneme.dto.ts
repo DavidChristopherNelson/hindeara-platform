@@ -4,6 +4,10 @@ import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class CreatePhonemeDto {
   @IsNotEmpty()
   @IsString()
+  letter: string;
+
+  @IsNotEmpty()
+  @IsString()
   example_noun: string;
 
   @IsNotEmpty()
