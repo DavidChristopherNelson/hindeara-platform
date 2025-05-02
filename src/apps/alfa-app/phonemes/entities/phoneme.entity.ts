@@ -7,6 +7,9 @@ export class Phoneme {
   id: number;
 
   @Column()
+  letter: string;
+
+  @Column()
   example_noun: string;
 
   @Column()
