@@ -3,9 +3,10 @@ import { AlfaAppInterfaceService } from './interface.service';
 import { InterfaceController } from './interface.controller';
 import { MiniLessonsModule } from '../mini-lessons/mini-lessons.module';
 import { AppEventsModule } from 'src/hindeara-platform/app-events/app-events.module';
+import { UserEventsModule } from 'src/hindeara-platform/user-events/user-events.module';
 
 @Module({
-  imports: [MiniLessonsModule, AppEventsModule],
+  imports: [MiniLessonsModule, AppEventsModule, UserEventsModule],
   controllers: [InterfaceController],
   providers: [AlfaAppInterfaceService],
   exports: [AlfaAppInterfaceService],

@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Phoneme } from '../../phonemes/entities/phoneme.entity';
+import { LessonSnapshot } from '../entities/mini-lesson.entity';
 
 export class CreateMiniLessonDto {
   @IsNotEmpty()
@@ -15,8 +16,7 @@ export class CreateMiniLessonDto {
   word: string;
 
   @IsNotEmpty()
-  @IsString()
-  state: string;
+  state: LessonSnapshot;
 
   @IsOptional()
   phoneme?: Phoneme;

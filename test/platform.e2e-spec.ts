@@ -9,6 +9,8 @@ import { UserEvent } from '../src/hindeara-platform/user-events/entities/user-ev
 import { AppEvent } from '../src/hindeara-platform/app-events/entities/app-event.entity';
 import { MiniLesson } from '../src/apps/alfa-app/mini-lessons/entities/mini-lesson.entity';
 import { Server } from 'http';
+import { createActor } from 'xstate';
+import { lessonMachine } from 'src/apps/alfa-app/state/state.machine';
 
 describe('PlatformController (e2e)', () => {
   let app: INestApplication;
@@ -83,7 +85,13 @@ describe('PlatformController (e2e)', () => {
 
     expect(miniLessons.length).toBe(2);
     expect(miniLessons[0].word).toBe('dummy word');
-    expect(miniLessons[0].state).toBe('dummy initial state');
-    expect(miniLessons[1].state).toBe('dummy state + dummy initial state');
+    const firstLessonState = createActor(lessonMachine, {
+      snapshot: miniLessons[0].state,
+    }).start();
+    expect(firstLessonState.getSnapshot().value).toBe('word');
+    const secondLessonState = createActor(lessonMachine, {
+      snapshot: miniLessons[1].state,
+    }).start();
+    expect(secondLessonState.getSnapshot().value).toBe('word');
   });
 });

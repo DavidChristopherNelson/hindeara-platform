@@ -30,4 +30,11 @@ export class UserEventsService {
   async findOne(id: number): Promise<UserEvent | null> {
     return this.userEventRepository.findOne({ where: { id } });
   }
+
+  async findMostRecentByUserId(userId: number): Promise<UserEvent | null> {
+    return this.userEventRepository.findOne({
+      where: { user: { id: userId } },
+      order: { createdAt: 'DESC' },
+    });
+  }
 }

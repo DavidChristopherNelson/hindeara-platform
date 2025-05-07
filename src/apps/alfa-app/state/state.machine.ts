@@ -3,7 +3,10 @@ import { assign, setup } from 'xstate';
 export const lessonMachine = setup({
   types: {
     context: {} as { word: string; index: number },
-    events: {} as { type: 'CORRECT_ANSWER' } | { type: 'INCORRECT_ANSWER' },
+    events: {} as
+      | { type: 'CORRECT_ANSWER' }
+      | { type: 'INCORRECT_ANSWER' }
+      | { type: 'START_LESSON' },
   },
   actions: {
     incrementIndex: assign({
@@ -33,6 +36,7 @@ export const lessonMachine = setup({
       on: {
         CORRECT_ANSWER: { target: 'complete' },
         INCORRECT_ANSWER: { target: 'letter' },
+        START_LESSON: { target: 'word' }, // Handle the initial startup edge case.
       },
     },
 

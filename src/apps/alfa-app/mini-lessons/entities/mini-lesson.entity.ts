@@ -6,6 +6,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Phoneme } from '../../phonemes/entities/phoneme.entity';
+import { Snapshot } from 'xstate';
+
+export type LessonSnapshot = Snapshot<unknown>;
 
 @Entity('mini-lessons')
 export class MiniLesson {
@@ -21,8 +24,10 @@ export class MiniLesson {
   @Column()
   word: string;
 
-  @Column()
-  state: string;
+  @Column({
+    type: 'simple-json',
+  })
+  state: Snapshot<unknown>;
 
   @ManyToOne(() => Phoneme, (phoneme) => phoneme.miniLessons)
   @JoinColumn()

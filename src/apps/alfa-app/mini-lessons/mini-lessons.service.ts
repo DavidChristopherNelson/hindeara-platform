@@ -4,6 +4,8 @@ import { MiniLesson } from './entities/mini-lesson.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
+import { lessonMachine } from '../state/state.machine';
+import { createActor } from 'xstate';
 
 @Injectable()
 export class MiniLessonsService {
@@ -40,7 +42,7 @@ export class MiniLessonsService {
         appEventId: 0,
         userId,
         word: 'dummy word',
-        state: 'dummy initial state',
+        state: createActor(lessonMachine).start().getPersistedSnapshot(),
       });
     }
     if (!secondLatestAppEvent) {
