@@ -84,7 +84,7 @@ export class PlatformService {
       case 'alfa-app': {
         const createAppEventDto = await this.alfaAppInterface.run(user.id);
         if (!createAppEventDto) {
-          throw new Error('App not found');
+          throw new Error(`App not found: ${app.http_path}`);
         }
         return createAppEventDto;
       }

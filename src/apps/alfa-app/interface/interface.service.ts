@@ -82,30 +82,3 @@ export class AlfaAppInterfaceService {
       : { type: 'INCORRECT_ANSWER' };
   }
 }
-
-// Run a method
-//   * const latestMiniLesson = await this.miniLessonsService.findByAppEventId(latestAppEvent?.id ?? 0)
-//   * const lessonActor = createActor(lessonMachine, { latestMiniLesson?.state }).start();
-//   * If this is the first miniLesson or if the previous miniLesson is complete.
-//     * create a new lessonMachine actor.
-//   * else hydrate the actor
-//     * const snapshot = latestMiniLesson.state
-//     * const actor = createActor(lessonMachine, { snapshot }).start()
-//   * runs the state machine
-//     * actor.send(CORRECT_ANSWER)
-//     * actor.send(INCORRECT_ANSWER)
-//   * serializes the state
-//     * actor.getPersistedSnapshot()
-//   * creates and returns a new MiniLesson.
-// const latestState = latestMiniLesson.state;
-//   Run state machine
-// const answerStatus = evaluateAnswer(latestUserEvent, latestMiniLesson);
-// const lessonActor = createActor(lessonMachine, { latestMiniLesson?.state }).start();
-// const lessonActor.send(answerStatus);
-// await this.miniLessonsService.create({
-//   appEventId: XXX,
-//   userId,
-//   word: lessonActor.getContext().word,
-//   state: lessonActor.getPersistedSnapshot();
-//   phoneme: this.phonemeService.findlessonActor.getContext().phoneme,
-// })
