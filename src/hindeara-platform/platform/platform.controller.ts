@@ -14,6 +14,8 @@ export class PlatformController {
     @Param('userId', ParseIntPipe, UserByIdPipe) user: User,
     @Body() dto: ProcessUserInputDto,
   ): Promise<ProcessUserInputResponseDto> {
-    return await this.platformService.processUserInput(user, dto.recording);
+    return ProcessUserInputResponseDto.fromAppEvent(
+      await this.platformService.processUserInput(user, dto.recording),
+    );
   }
 }

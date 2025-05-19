@@ -6,10 +6,8 @@ import { AppsController } from './apps.controller';
 import { AppsService } from './apps.service';
 import { App } from './entities/app.entity';
 
-import { AppEventsModule } from '../app-events/app-events.module';
-
 @Module({
-  imports: [TypeOrmModule.forFeature([App]), HttpModule, AppEventsModule],
+  imports: [TypeOrmModule.forFeature([App]), HttpModule],
   controllers: [AppsController],
   providers: [AppsService],
   exports: [AppsService],

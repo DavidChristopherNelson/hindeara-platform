@@ -18,26 +18,31 @@ export class PlatformService {
   ) {}
 
   async processUserInput(user: User, recording: string): Promise<AppEvent> {
+    console.log('-----------------------------------------------------------');
+    console.log('processUserInput');
+    console.log('-----------------------------------------------------------');
     // create user event
     const createUserEventDto = { recording: recording };
     await this.userEventsService.create(createUserEventDto, user);
 
+    // find and run current app
+    const currentApp = await this.findCurrentApp(user);
+    const createAppEventDto = await this.runApp(user, currentApp);
+
     // create app event
-    const createAppEventDto = await this.createDtoFromUserId(user);
     const appEvent = await this.appEventsService.create(
       createAppEventDto,
       user,
+      currentApp,
     );
 
     return appEvent;
   }
 
-  async createDtoFromUserId(user: User): Promise<CreateAppEventDto> {
-    const currentApp = await this.findCurrentApp(user);
-    return this.runApp(user, currentApp);
-  }
-
   async findCurrentApp(user: User): Promise<App> {
+    console.log('-----------------------------------------------------------');
+    console.log('findCurrentApp');
+    console.log('-----------------------------------------------------------');
     const pastAppEvents: AppEvent[] =
       await this.appEventsService.findAllByUser(user);
     if (pastAppEvents.length === 0) {
@@ -69,6 +74,9 @@ export class PlatformService {
 
   // Put this in appsService
   async chooseNewApp(): Promise<App> {
+    console.log('-----------------------------------------------------------');
+    console.log('chooseNewApp');
+    console.log('-----------------------------------------------------------');
     const alfaApp = await this.appsService.findOne(1);
     if (!alfaApp) {
       return this.appsService.create({
@@ -76,16 +84,23 @@ export class PlatformService {
         is_active: true,
       });
     }
+    console.log('-----------------------------------------------------------');
+    console.log(`alfaApp`);
+    console.log(alfaApp);
+    console.log('-----------------------------------------------------------');
     return alfaApp;
   }
 
   async runApp(user: User, app: App): Promise<CreateAppEventDto> {
+    console.log('runApp');
     switch (app.http_path) {
       case 'alfa-app': {
         const createAppEventDto = await this.alfaAppInterface.run(user.id);
         if (!createAppEventDto) {
           throw new Error(`App not found: ${app.http_path}`);
         }
+        console.log('createAppEventDto');
+        console.log(createAppEventDto);
         return createAppEventDto;
       }
       default:

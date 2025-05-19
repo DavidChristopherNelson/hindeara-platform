@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateAppEventDto } from './dto/create-app-event.dto';
 import { AppEvent } from './entities/app-event.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
+import { App } from '../apps/entities/app.entity';
 
 @Injectable()
 export class AppEventsService {
@@ -15,24 +16,42 @@ export class AppEventsService {
   async create(
     createAppEventDto: CreateAppEventDto,
     user: User,
+    app: App,
   ): Promise<AppEvent> {
-    const appEvent = this.appEventRepository.create({
+    const createdAppEvent = this.appEventRepository.create({
       ...createAppEventDto,
       user,
+      app,
     });
-    return this.appEventRepository.save(appEvent);
+    await this.appEventRepository.save(createdAppEvent);
+
+    // Explicitly update AppEvent's app relations.
+    const appEvent = await this.findOne(createdAppEvent.id);
+    if (!appEvent) {
+      throw new InternalServerErrorException(
+        'AppEvent not found after creation',
+      );
+    }
+
+    return appEvent;
   }
 
   async findAll(): Promise<AppEvent[]> {
-    return this.appEventRepository.find();
+    return this.appEventRepository.find({ relations: ['user', 'app'] });
   }
 
   async findOne(id: number): Promise<AppEvent | null> {
-    return this.appEventRepository.findOne({ where: { id } });
+    return this.appEventRepository.findOne({
+      where: { id },
+      relations: ['user', 'app'],
+    });
   }
 
   async findAllByUser(user: User): Promise<AppEvent[]> {
-    return this.appEventRepository.find({ where: { user: { id: user.id } } });
+    return this.appEventRepository.find({
+      where: { user: { id: user.id } },
+      relations: ['user', 'app'],
+    });
   }
 
   async findMostRecentNByAppIdAndUserId(
@@ -44,6 +63,7 @@ export class AppEventsService {
       where: { app: { id: appId }, user: { id: userId } },
       order: { createdAt: 'DESC' },
       take: n,
+      relations: ['user', 'app'],
     });
   }
 }

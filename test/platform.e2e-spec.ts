@@ -11,12 +11,14 @@ import { MiniLesson } from '../src/apps/alfa-app/mini-lessons/entities/mini-less
 import { Server } from 'http';
 import { createActor } from 'xstate';
 import { lessonMachine } from 'src/apps/alfa-app/state/state.machine';
+import { App } from 'src/hindeara-platform/apps/entities/app.entity';
 
 describe('PlatformController (e2e)', () => {
-  let app: INestApplication;
+  let nestApp: INestApplication;
   let server: Server;
 
   let userRepo: Repository<User>;
+  let appRepo: Repository<App>;
   let userEventRepo: Repository<UserEvent>;
   let appEventRepo: Repository<AppEvent>;
   let miniLessonRepo: Repository<MiniLesson>;
@@ -28,30 +30,42 @@ describe('PlatformController (e2e)', () => {
       imports: [PlatformModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    nestApp = moduleFixture.createNestApplication();
+    await nestApp.init();
 
-    userRepo = app.get<Repository<User>>(getRepositoryToken(User));
-    userEventRepo = app.get<Repository<UserEvent>>(
+    userRepo = nestApp.get<Repository<User>>(getRepositoryToken(User));
+    appRepo = nestApp.get<Repository<App>>(getRepositoryToken(App));
+    userEventRepo = nestApp.get<Repository<UserEvent>>(
       getRepositoryToken(UserEvent),
     );
-    appEventRepo = app.get<Repository<AppEvent>>(getRepositoryToken(AppEvent));
-    miniLessonRepo = app.get<Repository<MiniLesson>>(
+    appEventRepo = nestApp.get<Repository<AppEvent>>(
+      getRepositoryToken(AppEvent),
+    );
+    miniLessonRepo = nestApp.get<Repository<MiniLesson>>(
       getRepositoryToken(MiniLesson),
     );
 
     // Capture the HTTP server as a proper Server type
-    server = app.getHttpServer() as unknown as Server;
+    server = nestApp.getHttpServer() as unknown as Server;
 
     // Create a user for testing
     createdUser = await userRepo.save(userRepo.create({}));
+
+    // Create an app for testing
+    await appRepo.save(
+      appRepo.create({
+        http_path: 'alfa-app',
+        is_active: true,
+      }),
+    );
   });
 
   afterEach(async () => {
-    await app.close();
+    await nestApp.close();
   });
 
   it('POST /users/:userId/processUserInput should create all necessary records', async () => {
+    console.log('-----------------------------------------------------------');
     const payload = {
       recording: 'test-recording',
     };
@@ -62,9 +76,10 @@ describe('PlatformController (e2e)', () => {
       .expect(201);
 
     // Verify response structure
-    expect(res.body).toHaveProperty('id');
     expect(res.body).toHaveProperty('recording');
-    expect(res.body).toHaveProperty('isComplete');
+    expect(res.body).toHaveProperty('uiData');
+    expect(res.body).toHaveProperty('userId');
+    expect(res.body).toHaveProperty('appId');
 
     // Check the resources
     const userEvents = await userEventRepo.find({
@@ -93,5 +108,6 @@ describe('PlatformController (e2e)', () => {
       snapshot: miniLessons[1].state,
     }).start();
     expect(secondLessonState.getSnapshot().value).toBe('word');
+    console.log('-----------------------------------------------------------');
   });
 });
