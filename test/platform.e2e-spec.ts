@@ -65,7 +65,6 @@ describe('PlatformController (e2e)', () => {
   });
 
   it('POST /users/:userId/processUserInput should create all necessary records', async () => {
-    console.log('-----------------------------------------------------------');
     const payload = {
       recording: 'test-recording',
     };
@@ -108,6 +107,5 @@ describe('PlatformController (e2e)', () => {
       snapshot: miniLessons[1].state,
     }).start();
     expect(secondLessonState.getSnapshot().value).toBe('word');
-    console.log('-----------------------------------------------------------');
   });
 });
