@@ -11,27 +11,45 @@ import { AppsService } from './apps.service';
 import { CreateAppDto } from './dto/create-app.dto';
 import { UpdateAppDto } from './dto/update-app.dto';
 import { App } from './entities/app.entity';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('apps')
 export class AppsController {
   constructor(private readonly appsService: AppsService) {}
 
   @Post()
+  @ApiResponse({
+    status: 201,
+    description: 'App successfully created.',
+    type: App,
+  })
   async create(@Body() createAppDto: CreateAppDto): Promise<App> {
     return this.appsService.create(createAppDto);
   }
 
   @Get()
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of all apps.',
+    type: [App],
+  })
   async findAll(): Promise<App[]> {
     return this.appsService.findAll();
   }
 
   @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the app that matches the id.',
+    type: App,
+  })
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<App | null> {
     return this.appsService.findOne(id);
   }
 
   @Patch(':id')
+  @ApiResponse({ status: 200, description: 'App updated.', type: App })
+  @ApiResponse({ status: 404, description: 'App not found.' })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateAppDto: UpdateAppDto,

@@ -29,16 +29,32 @@ export class UsersController {
   }
 
   @Get()
+  @ApiResponse({
+    status: 200,
+    description: 'Returns a list of all users.',
+    type: [User],
+  })
   async findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
   @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the user with a matching id.',
+    type: User,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found.',
+  })
   findOne(@Param('id', ParseIntPipe, UserByIdPipe) user: User): User {
     return user;
   }
 
   @Patch(':id')
+  @ApiResponse({ status: 200, description: 'User updated.', type: User })
+  @ApiResponse({ status: 404, description: 'User not found.' })
   async update(
     @Param('id', ParseIntPipe, UserByIdPipe) user: User,
     @Body() updateUserDto: UpdateUserDto,
@@ -47,6 +63,8 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @ApiResponse({ status: 204, description: 'User deleted.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(
     @Param('id', ParseIntPipe, UserByIdPipe) user: User,
