@@ -12,7 +12,11 @@ export class PlatformController {
   constructor(private readonly platformService: PlatformService) {}
 
   @Post('/users/:userId/processUserInput')
-  @ApiResponse({ status: 200, type: ProcessUserInputResponseDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Processes user input and returns structured response.',
+    type: ProcessUserInputResponseDto,
+  })
   async processUserInput(
     @Param('userId', ParseIntPipe, UserByIdPipe) user: User,
     @Body() dto: ProcessUserInputDto,
