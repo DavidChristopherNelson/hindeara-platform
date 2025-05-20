@@ -2,6 +2,7 @@
 import { Expose, Transform } from 'class-transformer';
 import type { TransformFnParams } from 'class-transformer';
 import type { User } from '../entities/user.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 /**
  * Read‑model DTO for the User entity.
@@ -10,13 +11,16 @@ import type { User } from '../entities/user.entity';
  * - Uses `@Expose` so that `class-transformer` strips everything not listed here
  */
 export class UserDto {
+  @ApiProperty()
   @Expose()
   id!: number;
 
+  @ApiProperty()
   @Expose()
   createdAt!: Date;
 
   /** UserEvent[] → number[] */
+  @ApiProperty()
   @Expose()
   @Transform(
     ({ obj }: TransformFnParams): number[] => {
@@ -28,6 +32,7 @@ export class UserDto {
   userEventIds!: number[];
 
   /** AppEvent[] → number[] */
+  @ApiProperty()
   @Expose()
   @Transform(
     ({ obj }: TransformFnParams): number[] => {

@@ -1,12 +1,15 @@
 import { Expose, Transform } from 'class-transformer';
 import type { TransformFnParams } from 'class-transformer';
 import type { App } from '../entities/app.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class AppDto {
+  @ApiProperty()
   @Expose()
   id!: number;
 
   /** http_path  → httpPath */
+  @ApiProperty()
   @Expose()
   @Transform(
     ({ obj }: TransformFnParams): string => (obj as App).http_path, // 👈 cast
@@ -15,6 +18,7 @@ export class AppDto {
   httpPath!: string;
 
   /** is_active  → isActive */
+  @ApiProperty()
   @Expose()
   @Transform(
     ({ obj }: TransformFnParams): boolean => (obj as App).is_active, // 👈 cast
@@ -23,6 +27,7 @@ export class AppDto {
   isActive!: boolean;
 
   /** AppEvent[] → number[] */
+  @ApiProperty()
   @Expose()
   @Transform(
     ({ obj }: TransformFnParams): number[] => {
