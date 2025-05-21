@@ -7,6 +7,7 @@ import { AppsService } from '../apps/apps.service';
 import { AlfaAppInterfaceService } from 'src/apps/alfa-app/interface/interface.service';
 import { CreateAppEventDto } from '../app-events/dto/create-app-event.dto';
 import { App } from '../apps/entities/app.entity';
+import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @Injectable()
 export class PlatformService {
@@ -17,6 +18,7 @@ export class PlatformService {
     private readonly alfaAppInterface: AlfaAppInterfaceService,
   ) {}
 
+  @LogMethod()
   async processUserInput(user: User, recording: string): Promise<AppEvent> {
     // create user event
     const createUserEventDto = { recording: recording };
@@ -36,6 +38,7 @@ export class PlatformService {
     return appEvent;
   }
 
+  @LogMethod()
   async findCurrentApp(user: User): Promise<App> {
     const pastAppEvents: AppEvent[] =
       await this.appEventsService.findAllByUser(user);
@@ -67,6 +70,7 @@ export class PlatformService {
   }
 
   // Put this in appsService
+  @LogMethod()
   async chooseNewApp(): Promise<App> {
     const alfaApp = await this.appsService.findOne(1);
     if (!alfaApp) {
@@ -78,6 +82,7 @@ export class PlatformService {
     return alfaApp;
   }
 
+  @LogMethod()
   async runApp(user: User, app: App): Promise<CreateAppEventDto> {
     switch (app.http_path) {
       case 'alfa-app': {
