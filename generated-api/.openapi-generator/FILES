@@ -1,0 +1,14 @@
+.openapi-generator-ignore
+apis/AppEventsApi.ts
+apis/AppsApi.ts
+apis/MiniLessonsApi.ts
+apis/PlatformsApi.ts
+apis/UserEventsApi.ts
+apis/UsersApi.ts
+apis/index.ts
+index.ts
+models/CreateAppDto.ts
+models/ProcessUserInputDto.ts
+models/ProcessUserInputResponseDto.ts
+models/index.ts
+runtime.ts
