@@ -18,6 +18,9 @@ export class Phoneme {
   @Column()
   is_active: boolean;
 
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
   @OneToMany(() => MiniLesson, (miniLesson) => miniLesson.phoneme)
   miniLessons: MiniLesson[];
 }

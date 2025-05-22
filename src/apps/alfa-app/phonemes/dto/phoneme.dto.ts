@@ -41,6 +41,10 @@ export class PhonemeDto {
   )
   isActive!: boolean;
 
+  @ApiProperty()
+  @Expose()
+  createdAt!: Date;
+
   /** MiniLesson[] → number[] */
   @ApiProperty()
   @Expose()

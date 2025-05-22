@@ -29,6 +29,9 @@ export class MiniLesson {
   })
   state: Snapshot<unknown>;
 
+  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
   @ManyToOne(() => Phoneme, (phoneme) => phoneme.miniLessons)
   @JoinColumn()
   phoneme: Phoneme;

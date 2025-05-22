@@ -8,6 +8,10 @@ export class AppDto {
   @Expose()
   id!: number;
 
+  @ApiProperty()
+  @Expose()
+  createdAt!: Date;
+
   /** http_path  → httpPath */
   @ApiProperty()
   @Expose()
