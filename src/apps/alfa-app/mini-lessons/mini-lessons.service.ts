@@ -38,25 +38,28 @@ export class MiniLessonsService {
 
   @LogMethod()
   async findLatestMiniLesson(
-    latestAppEvent: AppEvent | undefined,
     secondLatestAppEvent: AppEvent | undefined,
     userId: number,
   ): Promise<MiniLesson> {
     // Handle initial startup edge cases
-    if (!latestAppEvent) {
-      return this.create({
-        appEventId: 0,
-        userId,
-        word: 'dummy word',
-        state: createActor(lessonMachine).start().getPersistedSnapshot(),
-      });
-    }
     if (!secondLatestAppEvent) {
-      return this.findByAppEventId(0);
+      return this.findEarliestByUserId(userId);
     }
 
     // Handle normal case
     return this.findByAppEventId(secondLatestAppEvent.id);
+  }
+
+  async findEarliestByUserId(userId: number): Promise<MiniLesson> {
+    const miniLesson = await this.miniLessonRepository.findOne({
+      where: { userId },
+      order: { createdAt: 'ASC' },
+      take: 1,
+    });
+    if (!miniLesson) {
+      throw new Error('No miniLesson found. This should not happen.');
+    }
+    return miniLesson;
   }
 
   async findByAppEventId(appEventId: number): Promise<MiniLesson> {
