@@ -54,7 +54,6 @@ export class MiniLessonsService {
     const miniLesson = await this.miniLessonRepository.findOne({
       where: { userId },
       order: { createdAt: 'ASC' },
-      take: 1,
     });
     if (!miniLesson) {
       throw new Error('No miniLesson found. This should not happen.');

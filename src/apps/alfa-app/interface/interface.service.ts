@@ -51,7 +51,6 @@ export class AlfaAppInterfaceService {
       return createAppEventDto;
     }
     const latestMiniLesson = await this.miniLessonsService.findLatestMiniLesson(
-      latestAppEvent,
       secondLatestAppEvent,
       userId,
     );
