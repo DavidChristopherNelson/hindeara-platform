@@ -7,6 +7,7 @@ import { lessonMachine } from '../state/state.machine';
 import { MiniLesson } from '../mini-lessons/entities/mini-lesson.entity';
 import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
 import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
+import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @Injectable()
 export class AlfaAppInterfaceService {
@@ -18,6 +19,7 @@ export class AlfaAppInterfaceService {
     private readonly userEventsService: UserEventsService,
   ) {}
 
+  @LogMethod()
   async run(userId: number): Promise<CreateAppEventDto> {
     // Get previous states
     const latestUserEvent =
@@ -64,6 +66,7 @@ export class AlfaAppInterfaceService {
     return createAppEventDto;
   }
 
+  @LogMethod()
   evaluateAnswer(
     latestUserEvent: UserEvent,
     latestMiniLesson: MiniLesson,
