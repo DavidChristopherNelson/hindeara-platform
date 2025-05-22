@@ -31,7 +31,7 @@ export class AppEventsService {
     const appEvent = await this.findOne(createdAppEvent.id);
     if (!appEvent) {
       throw new InternalServerErrorException(
-        'AppEvent not found after creation',
+        'AppEvent not found after creation, this should not happen.',
       );
     }
 

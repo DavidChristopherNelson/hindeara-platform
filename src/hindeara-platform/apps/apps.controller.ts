@@ -11,7 +11,7 @@ import { AppsService } from './apps.service';
 import { CreateAppDto } from './dto/create-app.dto';
 import { UpdateAppDto } from './dto/update-app.dto';
 import { App } from './entities/app.entity';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @Controller('apps')
@@ -19,6 +19,7 @@ export class AppsController {
   constructor(private readonly appsService: AppsService) {}
 
   @Post()
+  @ApiBody({ type: CreateAppDto })
   @ApiResponse({
     status: 201,
     description: 'App successfully created.',
@@ -52,6 +53,7 @@ export class AppsController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateAppDto })
   @ApiResponse({ status: 200, description: 'App updated.', type: App })
   @ApiResponse({ status: 404, description: 'App not found.' })
   @LogMethod()

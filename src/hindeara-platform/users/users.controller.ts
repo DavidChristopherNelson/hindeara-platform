@@ -15,7 +15,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserByIdPipe } from './pipes/user-by-id.pipe';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @ApiTags('users')
@@ -24,6 +24,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @ApiBody({ type: CreateUserDto })
   @ApiResponse({
     status: 201,
     description: 'User successfully created.',
@@ -61,6 +62,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateUserDto })
   @ApiResponse({ status: 200, description: 'User updated.', type: User })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @LogMethod()
