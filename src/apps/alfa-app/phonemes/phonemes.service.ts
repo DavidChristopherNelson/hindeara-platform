@@ -4,6 +4,7 @@ import { UpdatePhonemeDto } from './dto/update-phoneme.dto';
 import { Phoneme } from './entities/phoneme.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @Injectable()
 export class PhonemesService {
@@ -12,19 +13,23 @@ export class PhonemesService {
     private phonemeRepository: Repository<Phoneme>,
   ) {}
 
+  @LogMethod()
   async create(createPhonemeDto: CreatePhonemeDto): Promise<Phoneme> {
     const phoneme = this.phonemeRepository.create(createPhonemeDto);
     return this.phonemeRepository.save(phoneme);
   }
 
+  @LogMethod()
   async findAll(): Promise<Phoneme[]> {
     return this.phonemeRepository.find();
   }
 
+  @LogMethod()
   async findOne(id: number): Promise<Phoneme | null> {
     return this.phonemeRepository.findOne({ where: { id } });
   }
 
+  @LogMethod()
   async update(
     id: number,
     updatePhonemeDto: UpdatePhonemeDto,

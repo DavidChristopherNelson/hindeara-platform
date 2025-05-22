@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
 import { lessonMachine } from '../state/state.machine';
 import { createActor } from 'xstate';
+import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @Injectable()
 export class MiniLessonsService {
@@ -14,23 +15,28 @@ export class MiniLessonsService {
     private miniLessonRepository: Repository<MiniLesson>,
   ) {}
 
+  @LogMethod()
   async create(createMiniLessonDto: CreateMiniLessonDto): Promise<MiniLesson> {
     const miniLesson = this.miniLessonRepository.create(createMiniLessonDto);
     return this.miniLessonRepository.save(miniLesson);
   }
 
+  @LogMethod()
   async findAll(): Promise<MiniLesson[]> {
     return this.miniLessonRepository.find();
   }
 
+  @LogMethod()
   async findOne(id: number): Promise<MiniLesson | null> {
     return this.miniLessonRepository.findOne({ where: { id } });
   }
 
+  @LogMethod()
   async remove(id: number): Promise<void> {
     await this.miniLessonRepository.delete(id);
   }
 
+  @LogMethod()
   async findLatestMiniLesson(
     latestAppEvent: AppEvent | undefined,
     secondLatestAppEvent: AppEvent | undefined,
