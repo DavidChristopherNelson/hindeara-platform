@@ -8,6 +8,7 @@ import { MiniLesson } from '../mini-lessons/entities/mini-lesson.entity';
 import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
 import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
 
 @Injectable()
 export class AlfaAppInterfaceService {
@@ -56,7 +57,7 @@ export class AlfaAppInterfaceService {
     );
 
     // Calculate new state
-    const answerStatus = this.evaluateAnswer(latestUserEvent, latestMiniLesson);
+    const answerStatus = this.evaluateAnswer(latestUserEvent, latestAppEvent);
     const lessonActor: ActorRefFrom<typeof lessonMachine> = createActor(
       lessonMachine,
       { snapshot: latestMiniLesson.state },
@@ -83,17 +84,14 @@ export class AlfaAppInterfaceService {
   @LogMethod()
   evaluateAnswer(
     latestUserEvent: UserEvent,
-    latestMiniLesson: MiniLesson,
-  ):
-    | { type: 'CORRECT_ANSWER' }
-    | { type: 'INCORRECT_ANSWER' }
-    | { type: 'START_LESSON' } {
-    // Handle the initial startup edge case.
-    if (latestMiniLesson.appEventId === 0) {
-      return { type: 'START_LESSON' };
-    }
-
-    // Handle the normal case.
+    latestAppEvent: AppEvent,
+  ): { type: 'CORRECT_ANSWER' } | { type: 'INCORRECT_ANSWER' } {
+    const prompt = `
+      The student was asked the question: ${latestAppEvent.recording}
+      The student was shown the following UI data on their phone: ${latestAppEvent.uiData}
+      The student's answer is ${latestUserEvent.recording}
+      `;
+    console.log(prompt);
     return Math.random() < 0.5
       ? { type: 'CORRECT_ANSWER' }
       : { type: 'INCORRECT_ANSWER' };
