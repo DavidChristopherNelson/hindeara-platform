@@ -2,6 +2,7 @@ import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { AppEventsService } from './app-events.service';
 import { AppEvent } from './entities/app-event.entity';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @ApiTags('appEvents')
 @Controller('app-events')
@@ -14,6 +15,7 @@ export class AppEventsController {
     description: 'Returns a list of all appEvents.',
     type: [AppEvent],
   })
+  @LogMethod()
   async findAll(): Promise<AppEvent[]> {
     return this.appEventsService.findAll();
   }
@@ -28,6 +30,7 @@ export class AppEventsController {
     status: 404,
     description: 'AppEvent not found.',
   })
+  @LogMethod()
   async findOne(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<AppEvent | null> {

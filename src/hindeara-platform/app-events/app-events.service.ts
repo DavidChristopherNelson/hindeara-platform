@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import { App } from '../apps/entities/app.entity';
+import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @Injectable()
 export class AppEventsService {
@@ -13,6 +14,7 @@ export class AppEventsService {
     private appEventRepository: Repository<AppEvent>,
   ) {}
 
+  @LogMethod()
   async create(
     createAppEventDto: CreateAppEventDto,
     user: User,
@@ -36,10 +38,12 @@ export class AppEventsService {
     return appEvent;
   }
 
+  @LogMethod()
   async findAll(): Promise<AppEvent[]> {
     return this.appEventRepository.find({ relations: ['user', 'app'] });
   }
 
+  @LogMethod()
   async findOne(id: number): Promise<AppEvent | null> {
     return this.appEventRepository.findOne({
       where: { id },
@@ -47,6 +51,7 @@ export class AppEventsService {
     });
   }
 
+  @LogMethod()
   async findAllByUser(user: User): Promise<AppEvent[]> {
     return this.appEventRepository.find({
       where: { user: { id: user.id } },
@@ -54,6 +59,7 @@ export class AppEventsService {
     });
   }
 
+  @LogMethod()
   async findMostRecentNByAppIdAndUserId(
     appId: number,
     userId: number,
