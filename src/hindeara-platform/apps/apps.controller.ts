@@ -12,6 +12,7 @@ import { CreateAppDto } from './dto/create-app.dto';
 import { UpdateAppDto } from './dto/update-app.dto';
 import { App } from './entities/app.entity';
 import { ApiResponse } from '@nestjs/swagger';
+import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @Controller('apps')
 export class AppsController {
@@ -23,6 +24,7 @@ export class AppsController {
     description: 'App successfully created.',
     type: App,
   })
+  @LogMethod()
   async create(@Body() createAppDto: CreateAppDto): Promise<App> {
     return this.appsService.create(createAppDto);
   }
@@ -33,6 +35,7 @@ export class AppsController {
     description: 'Returns a list of all apps.',
     type: [App],
   })
+  @LogMethod()
   async findAll(): Promise<App[]> {
     return this.appsService.findAll();
   }
@@ -43,6 +46,7 @@ export class AppsController {
     description: 'Returns the app that matches the id.',
     type: App,
   })
+  @LogMethod()
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<App | null> {
     return this.appsService.findOne(id);
   }
@@ -50,6 +54,7 @@ export class AppsController {
   @Patch(':id')
   @ApiResponse({ status: 200, description: 'App updated.', type: App })
   @ApiResponse({ status: 404, description: 'App not found.' })
+  @LogMethod()
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateAppDto: UpdateAppDto,
