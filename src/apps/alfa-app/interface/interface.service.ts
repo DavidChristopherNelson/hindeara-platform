@@ -34,6 +34,22 @@ export class AlfaAppInterfaceService {
         2,
       );
     const [latestAppEvent, secondLatestAppEvent] = appEvents;
+
+    // Guard clause for the initial startup edge case.
+    if (!latestAppEvent) {
+      await this.miniLessonsService.create({
+        appEventId: 0,
+        userId,
+        word: 'dummy word',
+        state: createActor(lessonMachine).start().getPersistedSnapshot(),
+      });
+      const createAppEventDto: CreateAppEventDto = {
+        recording: 'dummy recording',
+        uiData: 'dummy uiData',
+        isComplete: false,
+      };
+      return createAppEventDto;
+    }
     const latestMiniLesson = await this.miniLessonsService.findLatestMiniLesson(
       latestAppEvent,
       secondLatestAppEvent,
@@ -49,12 +65,11 @@ export class AlfaAppInterfaceService {
     lessonActor.send(answerStatus);
 
     // Save state
-    const state = lessonActor.getPersistedSnapshot();
     await this.miniLessonsService.create({
       appEventId: latestAppEvent?.id ?? 0,
       userId,
       word: 'dummy word',
-      state,
+      state: lessonActor.getPersistedSnapshot(),
     });
 
     // Pass state to Hindeara Platform

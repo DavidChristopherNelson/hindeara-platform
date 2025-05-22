@@ -97,15 +97,11 @@ describe('PlatformController (e2e)', () => {
     expect(appEvents.length).toBe(1);
     expect(appEvents[0].recording).toBe('dummy recording');
 
-    expect(miniLessons.length).toBe(2);
+    expect(miniLessons.length).toBe(1);
     expect(miniLessons[0].word).toBe('dummy word');
     const firstLessonState = createActor(lessonMachine, {
       snapshot: miniLessons[0].state,
     }).start();
     expect(firstLessonState.getSnapshot().value).toBe('word');
-    const secondLessonState = createActor(lessonMachine, {
-      snapshot: miniLessons[1].state,
-    }).start();
-    expect(secondLessonState.getSnapshot().value).toBe('word');
   });
 });
