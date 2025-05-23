@@ -1,6 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { ChatGPTService } from './chatgpt.service';
-import { ChatMessage } from './chatgpt.types';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
@@ -36,13 +35,34 @@ export class ChatGPTController {
     },
   })
   @LogMethod()
-  async chat(@Body('message') message: string) {
-    const messages: ChatMessage[] = [
-      { role: 'system', content: 'You are a helpful assistant.' },
-      { role: 'user', content: message },
-    ] as const;
+  async chat(@Body('message') userPrompt: string) {
+    return this.chatGPTService.sendMessage(userPrompt);
+  }
 
-    const reply = await this.chatGPTService.sendMessage(messages);
-    return { reply };
+  @Post('/chat/boolean')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string', example: 'Is Paris the capital of France?' },
+      },
+      required: ['message'],
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'AI-generated reply (boolean)',
+    schema: {
+      type: 'object',
+      properties: { reply: { type: 'boolean', example: true } },
+    },
+  })
+  @LogMethod()
+  async chatBoolean(@Body('message') userPrompt: string) {
+    return this.chatGPTService.sendMessage(
+      userPrompt,
+      'You are a helpful assistant.',
+      'boolean',
+    );
   }
 }

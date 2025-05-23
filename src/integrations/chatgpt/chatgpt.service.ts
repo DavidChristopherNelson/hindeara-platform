@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import {
-  StringResponseSchema,
+  PlainStringResponseSchema,
   ToolCallBooleanResponseSchema,
 } from './chatgpt.schema';
 
@@ -34,11 +34,6 @@ const tools = [
 
 type ToolName = 'string' | 'boolean';
 
-interface ToolMap {
-  boolean: boolean;
-  string: string;
-}
-
 @Injectable()
 export class ChatGPTService {
   private readonly apiUrl = 'https://api.openai.com/v1/chat/completions';
@@ -68,14 +63,13 @@ export class ChatGPTService {
     }
   }
 
-  private async getResponseFromAI(
+  private async getBooleanFromAI(
     payload: Record<string, unknown>,
-    tool: ToolName,
   ): Promise<boolean> {
     payload.tools = tools;
     payload.tool_choice = {
       type: 'function',
-      function: `${tool}`,
+      function: { name: 'boolean' },
     };
     const response = await this.callOpenAI(payload);
     if (!ToolCallBooleanResponseSchema.safeParse(response).success) {
@@ -95,16 +89,14 @@ export class ChatGPTService {
     payload: Record<string, unknown>,
   ): Promise<string> {
     const response = await this.callOpenAI(payload);
-    if (!StringResponseSchema.safeParse(response).success) {
+    if (!PlainStringResponseSchema.safeParse(response).success) {
       throw new Error('Unexpected response structure from OpenAI');
     }
-    const message = response.data.choices[0].message;
-    if (!message.tool_calls?.[0]?.function?.arguments) {
-      throw new Error('Unexpected response structure from OpenAI');
+    const content = response.data.choices[0].message.content;
+    if (content === null) {
+      throw new Error('OpenAI returned null content');
     }
-    const rawArgs = message.tool_calls[0].function.arguments;
-    const parsed = JSON.parse(rawArgs) as { response: string };
-    return parsed.response;
+    return content;
   }
 
   private async callOpenAI(

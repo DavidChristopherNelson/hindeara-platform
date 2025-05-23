@@ -1,10 +1,11 @@
 import { z } from 'zod';
 
-export const StringResponseSchema = z.object({
+export const PlainStringResponseSchema = z.object({
   data: z.object({
     choices: z.tuple([
       z.object({
         message: z.object({
+          role: z.literal('assistant'),
           content: z.string(),
         }),
       }),
