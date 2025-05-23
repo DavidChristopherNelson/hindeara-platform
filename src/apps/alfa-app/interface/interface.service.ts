@@ -4,7 +4,6 @@ import { CreateAppEventDto } from 'src/hindeara-platform/app-events/dto/create-a
 import { MiniLessonsService } from 'src/apps/alfa-app/mini-lessons/mini-lessons.service';
 import { ActorRefFrom, createActor } from 'xstate';
 import { lessonMachine } from '../state/state.machine';
-import { MiniLesson } from '../mini-lessons/entities/mini-lesson.entity';
 import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
 import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
@@ -25,6 +24,7 @@ export class AlfaAppInterfaceService {
     // Get previous states
     const latestUserEvent =
       await this.userEventsService.findMostRecentByUserId(userId);
+    // Todo: Handle the case where there is no UserEvent.
     if (!latestUserEvent) {
       throw new Error('Cannot find a UserEvent associated with this User.');
     }
@@ -92,8 +92,6 @@ export class AlfaAppInterfaceService {
       The student's answer is ${latestUserEvent.recording}
       `;
     console.log(prompt);
-    return Math.random() < 0.5
-      ? { type: 'CORRECT_ANSWER' }
-      : { type: 'INCORRECT_ANSWER' };
+    return { type: 'CORRECT_ANSWER' };
   }
 }

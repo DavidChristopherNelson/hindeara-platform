@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { PlatformController } from './platform.controller';
 import { PlatformService } from './platform.service';
 import { AppsModule } from '../apps/apps.module';
@@ -7,9 +8,11 @@ import { AppEventsModule } from '../app-events/app-events.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AlfaAppInterfaceModule } from 'src/apps/alfa-app/interface/interface.module';
 import { UsersModule } from '../users/users.module';
+import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: ':memory:',
@@ -26,6 +29,7 @@ import { UsersModule } from '../users/users.module';
     AppEventsModule,
     AlfaAppInterfaceModule,
     UsersModule,
+    ChatGPTModule,
   ],
   controllers: [PlatformController],
   providers: [PlatformService],
