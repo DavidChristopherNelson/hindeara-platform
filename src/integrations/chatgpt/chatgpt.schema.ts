@@ -1,6 +1,18 @@
 import { z } from 'zod';
 
-export const ToolCallBooleanSchema = z.object({
+export const StringResponseSchema = z.object({
+  data: z.object({
+    choices: z.tuple([
+      z.object({
+        message: z.object({
+          content: z.string(),
+        }),
+      }),
+    ]),
+  }),
+});
+
+export const ToolCallBooleanResponseSchema = z.object({
   data: z.object({
     choices: z.tuple([
       z.object({
