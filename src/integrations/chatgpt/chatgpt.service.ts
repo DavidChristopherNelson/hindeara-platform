@@ -12,35 +12,54 @@ export class ChatGPTService {
   @LogMethod()
   async sendMessage(messages: ChatMessage[]): Promise<string> {
     try {
-      const response: AxiosResponse<ChatCompletionResponse> = await axios.post(
-        this.apiUrl,
-        {
-          model: 'gpt-4',
-          messages,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      const reply = response.data.choices[0]?.message?.content;
-      if (!reply) {
-        throw new Error('No reply returned from ChatGPT');
-      }
-      return reply;
+      const response = await this.callOpenAI(messages);
+      return this.extractReply(response);
     } catch (error: unknown) {
-      if (typeof error === 'object' && error !== null && 'message' in error) {
-        this.logger.error(
-          'Failed to call ChatGPT API',
-          (error as { message: string }).message,
-        );
-      } else {
-        this.logger.error('Unknown error calling ChatGPT API');
-      }
+      this.handleError(error);
       throw error;
     }
+  }
+
+  private async callOpenAI(
+    messages: ChatMessage[],
+  ): Promise<AxiosResponse<ChatCompletionResponse>> {
+    const payload = {
+      model: 'gpt-3.5-turbo',
+      messages,
+    };
+
+    const headers = {
+      Authorization: `Bearer ${this.apiKey}`,
+      'Content-Type': 'application/json',
+    };
+
+    return axios.post(this.apiUrl, payload, { headers });
+  }
+
+  private extractReply(
+    response: AxiosResponse<ChatCompletionResponse>,
+  ): string {
+    const reply = response.data.choices[0]?.message?.content;
+    if (!reply) {
+      throw new Error('No reply returned from ChatGPT');
+    }
+    return reply;
+  }
+
+  private handleError(error: unknown): void {
+    if (this.isErrorWithMessage(error)) {
+      const typedError = error as { message: string };
+      this.logger.error('Failed to call ChatGPT API', typedError.message);
+    } else {
+      this.logger.error('Unknown error calling ChatGPT API');
+    }
+  }
+
+  private isErrorWithMessage(error: unknown): error is { message: string } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      typeof (error as { message?: unknown }).message === 'string'
+    );
   }
 }
