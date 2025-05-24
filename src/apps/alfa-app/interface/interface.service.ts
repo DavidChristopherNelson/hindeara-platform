@@ -8,6 +8,7 @@ import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event
 import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
+import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 
 @Injectable()
 export class AlfaAppInterfaceService {
@@ -17,6 +18,7 @@ export class AlfaAppInterfaceService {
     private readonly appEventsService: AppEventsService,
     private readonly miniLessonsService: MiniLessonsService,
     private readonly userEventsService: UserEventsService,
+    private readonly chatgptService: ChatGPTService,
   ) {}
 
   @LogMethod()
@@ -57,7 +59,10 @@ export class AlfaAppInterfaceService {
     );
 
     // Calculate new state
-    const answerStatus = this.evaluateAnswer(latestUserEvent, latestAppEvent);
+    const answerStatus = await this.evaluateAnswer(
+      latestUserEvent,
+      latestAppEvent,
+    );
     const lessonActor: ActorRefFrom<typeof lessonMachine> = createActor(
       lessonMachine,
       { snapshot: latestMiniLesson.state },
@@ -82,16 +87,20 @@ export class AlfaAppInterfaceService {
   }
 
   @LogMethod()
-  evaluateAnswer(
+  async evaluateAnswer(
     latestUserEvent: UserEvent,
     latestAppEvent: AppEvent,
-  ): { type: 'CORRECT_ANSWER' } | { type: 'INCORRECT_ANSWER' } {
+  ): Promise<{ type: 'CORRECT_ANSWER' } | { type: 'INCORRECT_ANSWER' }> {
     const prompt = `
       The student was asked the question: ${latestAppEvent.recording}
       The student was shown the following UI data on their phone: ${latestAppEvent.uiData}
       The student's answer is ${latestUserEvent.recording}
       `;
-    console.log(prompt);
-    return { type: 'CORRECT_ANSWER' };
+    const answer = await this.chatgptService.sendMessage(
+      prompt,
+      "You are the world's kindest, best, most patient and most encouraging teacher.",
+      'boolean',
+    );
+    return answer ? { type: 'CORRECT_ANSWER' } : { type: 'INCORRECT_ANSWER' };
   }
 }
