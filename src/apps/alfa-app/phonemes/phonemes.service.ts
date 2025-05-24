@@ -5,6 +5,8 @@ import { Phoneme } from './entities/phoneme.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { ENGLISH_PHONEMES } from './data/english-phonemes';
+import { HINDI_PHONEMES } from './data/hindi-phonemes';
 
 @Injectable()
 export class PhonemesService {
@@ -41,5 +43,37 @@ export class PhonemesService {
 
     Object.assign(phoneme, updatePhonemeDto);
     return this.phonemeRepository.save(phoneme);
+  }
+
+  @LogMethod()
+  async seedEnglishAlphabet(): Promise<Phoneme[]> {
+    // avoid duplicates by skipping letters that already exist
+    const existing = await this.phonemeRepository.find({
+      select: ['letter'],
+    });
+    const existingLetters = new Set(
+      existing.map((p) => p.letter.toUpperCase()),
+    );
+    const toInsert = ENGLISH_PHONEMES.filter(
+      (p) => !existingLetters.has(p.letter.toUpperCase()),
+    );
+    const entities = this.phonemeRepository.create(toInsert);
+    return this.phonemeRepository.save(entities);
+  }
+
+  @LogMethod()
+  async seedHindiAlphabet(): Promise<Phoneme[]> {
+    // avoid duplicates by skipping letters that already exist
+    const existing = await this.phonemeRepository.find({
+      select: ['letter'],
+    });
+    const existingLetters = new Set(
+      existing.map((p) => p.letter.toUpperCase()),
+    );
+    const toInsert = HINDI_PHONEMES.filter(
+      (p) => !existingLetters.has(p.letter.toUpperCase()),
+    );
+    const entities = this.phonemeRepository.create(toInsert);
+    return this.phonemeRepository.save(entities);
   }
 }

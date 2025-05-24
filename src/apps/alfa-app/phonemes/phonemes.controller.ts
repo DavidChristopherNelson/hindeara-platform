@@ -68,4 +68,28 @@ export class PhonemesController {
   ): Promise<Phoneme> {
     return this.phonemesService.update(id, updatePhonemeDto);
   }
+
+  @Post('seed-english-alphabet')
+  @ApiResponse({
+    status: 201,
+    description:
+      'Creates all English phonemes (one per letter) if they do not already exist.',
+    type: [Phoneme],
+  })
+  @LogMethod()
+  async seedEnglishAlphabet(): Promise<Phoneme[]> {
+    return this.phonemesService.seedEnglishAlphabet();
+  }
+
+  @Post('seed-hindi-alphabet')
+  @ApiResponse({
+    status: 201,
+    description:
+      'Creates all Hindi phonemes (one per letter) if they do not already exist.',
+    type: [Phoneme],
+  })
+  @LogMethod()
+  async seedHindiAlphabet(): Promise<Phoneme[]> {
+    return this.phonemesService.seedHindiAlphabet();
+  }
 }
