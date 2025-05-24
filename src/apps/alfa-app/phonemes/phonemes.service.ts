@@ -32,6 +32,15 @@ export class PhonemesService {
   }
 
   @LogMethod()
+  async findByLetter(letter: string): Promise<Phoneme> {
+    const phoneme = await this.phonemeRepository.findOne({ where: { letter } });
+    if (!phoneme) {
+      throw new NotFoundException('Phoneme not found');
+    }
+    return phoneme;
+  }
+
+  @LogMethod()
   async update(
     id: number,
     updatePhonemeDto: UpdatePhonemeDto,

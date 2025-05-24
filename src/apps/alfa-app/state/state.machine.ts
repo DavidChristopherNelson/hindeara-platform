@@ -1,4 +1,4 @@
-import { assign, setup } from 'xstate';
+import { assign, setup, SnapshotFrom } from 'xstate';
 
 export const lessonMachine = setup({
   types: {
@@ -86,3 +86,16 @@ export const lessonMachine = setup({
     },
   },
 });
+
+export type LessonSnapshot = SnapshotFrom<typeof lessonMachine>;
+
+export const getWord = (state: LessonSnapshot) => state.context.word;
+
+export const getIndex = (state: LessonSnapshot) => state.context.index;
+
+export const getPrompt = (state: LessonSnapshot): string => {
+  const meta = state.getMeta() as Record<string, { prompt?: string }>;
+
+  const key = `lesson.${state.value as string}`;
+  return meta[key]?.prompt ?? '';
+};
