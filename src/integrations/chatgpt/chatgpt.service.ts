@@ -53,8 +53,10 @@ export class ChatGPTService {
       ],
     };
 
+    console.log(`tool: ${tool}`);
     switch (tool) {
       case 'boolean':
+        console.log('switch getBooleanFromAI');
         return this.getBooleanFromAI(payload);
       case 'string':
         return this.getStringFromAI(payload);
@@ -63,6 +65,7 @@ export class ChatGPTService {
     }
   }
 
+  @LogMethod()
   private async getBooleanFromAI(
     payload: Record<string, unknown>,
   ): Promise<boolean> {
@@ -72,19 +75,24 @@ export class ChatGPTService {
       function: { name: 'boolean' },
     };
     const response = await this.callOpenAI(payload);
-    if (!ToolCallBooleanResponseSchema.safeParse(response).success) {
-      throw new Error('Unexpected response structure from OpenAI');
+    if (!ToolCallBooleanResponseSchema.safeParse(response.data).success) {
+      throw new Error(
+        `OpenAI's response data structure does not match ToolCallBooleanResponseSchema. response.data: ${JSON.stringify(response.data)}`,
+      );
     }
 
     const message = response.data.choices[0].message;
     if (!message.tool_calls?.[0]?.function?.arguments) {
-      throw new Error('Unexpected response structure from OpenAI');
+      throw new Error(
+        `OpenAI did not return the data structure requested in the tool. message: ${JSON.stringify(message)}`,
+      );
     }
     const rawArgs = message.tool_calls[0].function.arguments;
     const parsed = JSON.parse(rawArgs) as { response: boolean };
     return parsed.response;
   }
 
+  @LogMethod()
   private async getStringFromAI(
     payload: Record<string, unknown>,
   ): Promise<string> {
@@ -99,6 +107,7 @@ export class ChatGPTService {
     return content;
   }
 
+  @LogMethod()
   private async callOpenAI(
     payload: Record<string, unknown>,
   ): Promise<AxiosResponse<ChatCompletion>> {
