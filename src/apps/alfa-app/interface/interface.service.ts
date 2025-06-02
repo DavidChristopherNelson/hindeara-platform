@@ -15,6 +15,7 @@ import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
 import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { PhonemesService } from '../phonemes/phonemes.service';
+import { UiDataDto } from './dto/ui-data.dto';
 
 @Injectable()
 export class AlfaAppInterfaceService {
@@ -89,7 +90,7 @@ export class AlfaAppInterfaceService {
     // Generate UI data
     const word = getWord(snapshot);
     const index = getIndex(snapshot);
-    const uiData = {
+    const uiData: UiDataDto = {
       word,
       letter: word[index],
       picture: (await this.phonemeService.findByLetter(word[index]))
