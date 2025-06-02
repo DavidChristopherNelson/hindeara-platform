@@ -54,9 +54,14 @@ export class AlfaAppInterfaceService {
         word: 'cat',
         state: createActor(lessonMachine).start().getPersistedSnapshot(),
       });
+      const uiData: UiDataDto = {
+        word: 'cat',
+        letter: 'c',
+        picture: 'carrot.png',
+      };
       const createAppEventDto: CreateAppEventDto = {
         recording: 'dummy recording',
-        uiData: 'dummy uiData',
+        uiData: JSON.stringify(uiData),
         isComplete: false,
       };
       return createAppEventDto;
