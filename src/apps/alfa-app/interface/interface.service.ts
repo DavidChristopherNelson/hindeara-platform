@@ -48,19 +48,35 @@ export class AlfaAppInterfaceService {
 
     // Guard clause for the initial startup edge case.
     if (!latestAppEvent) {
-      await this.miniLessonsService.create({
+      const initialMiniLesson = await this.miniLessonsService.create({
         appEventId: 0,
         userId,
         word: 'cat',
         state: createActor(lessonMachine).start().getPersistedSnapshot(),
       });
+      const initialLessonActor: ActorRefFrom<typeof lessonMachine> =
+        createActor(lessonMachine, {
+          snapshot: initialMiniLesson.state,
+        }).start();
+      const initialSnapshot = initialLessonActor.getSnapshot();
+      const initialPrompt = getPrompt(initialSnapshot);
+      const initialTextResponse =
+        await this.chatgptService.sendMessage(initialPrompt);
+      if (typeof initialTextResponse !== 'string') {
+        throw new Error(
+          `Incorrectly formatted text response from AI. Expected string but instead got ${typeof initialTextResponse}`,
+        );
+      }
+      const word = getWord(initialSnapshot);
+      const index = getIndex(initialSnapshot);
       const uiData: UiDataDto = {
-        word: 'cat',
-        letter: 'c',
-        picture: 'carrot.png',
+        word,
+        letter: word[index],
+        picture: (await this.phonemeService.findByLetter(word[index][0]))
+          .example_image,
       };
       const createAppEventDto: CreateAppEventDto = {
-        recording: 'dummy recording',
+        recording: initialTextResponse,
         uiData: JSON.stringify(uiData),
         isComplete: false,
       };
