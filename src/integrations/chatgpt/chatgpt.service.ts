@@ -115,6 +115,17 @@ export class ChatGPTService {
       Authorization: `Bearer ${this.apiKey}`,
       'Content-Type': 'application/json',
     };
-    return axios.post(this.apiUrl, payload, { headers });
+
+    try {
+      return await axios.post(this.apiUrl, payload, {
+        headers,
+        timeout: 10000,
+      });
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        throw new Error(`OpenAI request failed: ${err.message}`);
+      }
+      throw new Error('OpenAI request failed: unknown error');
+    }
   }
 }
