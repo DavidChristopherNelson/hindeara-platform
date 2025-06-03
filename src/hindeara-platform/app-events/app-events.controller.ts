@@ -1,3 +1,4 @@
+//src/hindeara-platform/app-events/app-events.controller.ts
 import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { AppEventsService } from './app-events.service';
 import { AppEvent } from './entities/app-event.entity';

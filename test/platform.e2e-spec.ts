@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, Logger } from '@nestjs/common';
 import * as request from 'supertest';
 import { PlatformModule } from '../src/hindeara-platform/platform/platform.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -12,6 +12,8 @@ import { Server } from 'http';
 import { createActor } from 'xstate';
 import { lessonMachine } from 'src/apps/alfa-app/state/state.machine';
 import { App } from 'src/hindeara-platform/apps/entities/app.entity';
+import { PhonemesModule } from 'src/apps/alfa-app/phonemes/phonemes.module';
+import { PhonemesService } from 'src/apps/alfa-app/phonemes/phonemes.service';
 
 describe('PlatformController (e2e)', () => {
   let nestApp: INestApplication;
@@ -23,14 +25,18 @@ describe('PlatformController (e2e)', () => {
   let appEventRepo: Repository<AppEvent>;
   let miniLessonRepo: Repository<MiniLesson>;
 
+  let phonemesService: PhonemesService;
+
   let createdUser: User;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [PlatformModule],
+      imports: [PlatformModule, PhonemesModule],
     }).compile();
 
-    nestApp = moduleFixture.createNestApplication();
+    nestApp = moduleFixture.createNestApplication({
+      logger: new Logger('E2E'),
+    });
     await nestApp.init();
 
     userRepo = nestApp.get<Repository<User>>(getRepositoryToken(User));
@@ -50,6 +56,10 @@ describe('PlatformController (e2e)', () => {
 
     // Create a user for testing
     createdUser = await userRepo.save(userRepo.create({}));
+
+    // ---- SEED ----
+    phonemesService = nestApp.get(PhonemesService);
+    await phonemesService.seedEnglishAlphabet();
 
     // Create an app for testing
     await appRepo.save(
@@ -95,7 +105,8 @@ describe('PlatformController (e2e)', () => {
     expect(userEvents[0].recording).toBe('test-recording');
 
     expect(appEvents.length).toBe(1);
-    expect(appEvents[0].recording).toBe('dummy recording');
+    expect(appEvents[0].recording).toEqual(expect.any(String));
+    expect(appEvents[0].recording.length).toBeGreaterThan(0);
 
     expect(miniLessons.length).toBe(1);
     expect(miniLessons[0].word).toBe('cat');

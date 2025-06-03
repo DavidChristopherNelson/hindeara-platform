@@ -1,3 +1,4 @@
+// src/hindeara-platform/app-events/app-events.service.ts
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateAppEventDto } from './dto/create-app-event.dto';
 import { AppEvent } from './entities/app-event.entity';
