@@ -6,6 +6,13 @@ export class CreatePhonemeDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @Transform(
+    ({ value }): string => {
+      if (typeof value === 'string') return value.toUpperCase();
+      throw new Error('letter must be a string');
+    },
+    { toClassOnly: true },
+  )
   letter: string;
 
   @ApiProperty()
