@@ -39,7 +39,7 @@ export const lessonMachine = setup({
     letter: {
       meta: {
         prompt:
-          'Please ask the student to sound out the letter that they can see on the screen. Your response must only contain the actual words you want to communicate to the student.',
+          'Please also ask the student to sound out the letter that they can see on the screen. Please generate a unique response. Your response must only contain the actual words you want to communicate to the student.',
       },
       on: {
         CORRECT_ANSWER: [
@@ -53,7 +53,7 @@ export const lessonMachine = setup({
     picture: {
       meta: {
         prompt:
-          'The student can see a picture on a screen. Please ask the student what the picture is of. Your response must only contain the actual words you want to communicate to the student.',
+          'Please gently tell the student they got the previous answer wrong. Please encourage the student. The student can see a picture on a screen. Please ask the student what the picture is of. Please generate a unique response. Your response must only contain the actual words you want to communicate to the student.',
       },
       on: {
         CORRECT_ANSWER: { target: 'letterPicture' },
@@ -63,7 +63,7 @@ export const lessonMachine = setup({
 
     letterPicture: {
       meta: {
-        prompt: `The student can see a picture on a screen. The student has just successfully identified the picture. Please ask the student what the first sound of the noun in the picture is. Your response must only contain the actual words you want to communicate to the student.`,
+        prompt: `The student can see a picture on a screen. The student has just successfully identified the picture. Please ask the student what the first sound of the object represented in the picture. Please generate a unique response. Your response must only contain the actual words you want to communicate to the student.`,
       },
       on: {
         CORRECT_ANSWER: [
@@ -77,7 +77,7 @@ export const lessonMachine = setup({
     complete: {
       type: 'final',
       meta: {
-        prompt: `The student successfully read a word. Please congratulate them. Your response must only contain the actual words you want to communicate to the student.`,
+        prompt: `The student successfully read a word. Please congratulate them. Please generate a unique response. Your response must only contain the actual words you want to communicate to the student.`,
       },
     },
   },

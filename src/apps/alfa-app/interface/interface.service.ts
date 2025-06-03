@@ -144,6 +144,7 @@ export class AlfaAppInterfaceService {
       The student was asked the question: ${latestAppEvent.recording}
       The student was shown the following UI data on their phone: ${latestAppEvent.uiData}
       The student's answer is ${latestUserEvent.recording}
+      Is the student's answer correct?
       `;
     const answer = await this.chatgptService.sendMessage(
       prompt,
