@@ -8,7 +8,7 @@ import {
   ParseIntPipe,
   NotFoundException,
 } from '@nestjs/common';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PhonemesService } from './phonemes.service';
 import { CreatePhonemeDto } from './dto/create-phoneme.dto';
 import { UpdatePhonemeDto } from './dto/update-phoneme.dto';
@@ -44,6 +44,12 @@ export class PhonemesController {
   }
 
   @Get(':id')
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    description: 'Numeric ID of the phoneme to retrieve',
+  })
   @ApiResponse({
     status: 200,
     description: 'Returns the phoneme with the matching id.',
@@ -53,6 +59,26 @@ export class PhonemesController {
   @LogMethod()
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Phoneme> {
     const phoneme = await this.phonemesService.findOne(id);
+    if (!phoneme) throw new NotFoundException('Phoneme not found');
+    return phoneme;
+  }
+
+  @Get('letter/:letter')
+  @ApiParam({
+    name: 'letter',
+    type: String,
+    required: true,
+    description: 'Search for phoneme by letter',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns the phoneme with the matching letter.',
+    type: Phoneme,
+  })
+  @ApiResponse({ status: 404, description: 'Phoneme not found.' })
+  @LogMethod()
+  async findByLetter(@Param('letter') letter: string): Promise<Phoneme> {
+    const phoneme = await this.phonemesService.findByLetter(letter);
     if (!phoneme) throw new NotFoundException('Phoneme not found');
     return phoneme;
   }

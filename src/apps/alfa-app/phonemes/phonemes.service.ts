@@ -33,7 +33,10 @@ export class PhonemesService {
 
   @LogMethod()
   async findByLetter(letter: string): Promise<Phoneme> {
-    const phoneme = await this.phonemeRepository.findOne({ where: { letter } });
+    const letterUpperCase = letter.toUpperCase();
+    const phoneme = await this.phonemeRepository.findOne({
+      where: { letter: letterUpperCase },
+    });
     if (!phoneme) {
       throw new NotFoundException('Phoneme not found');
     }

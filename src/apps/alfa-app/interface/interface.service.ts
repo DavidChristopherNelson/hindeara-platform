@@ -72,7 +72,7 @@ export class AlfaAppInterfaceService {
       const uiData: UiDataDto = {
         word,
         letter: word[index],
-        picture: (await this.phonemeService.findByLetter(word[index][0]))
+        picture: (await this.phonemeService.findByLetter(word[index]))
           .example_image,
       };
       const createAppEventDto: CreateAppEventDto = {
