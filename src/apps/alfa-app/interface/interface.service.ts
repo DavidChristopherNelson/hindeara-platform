@@ -71,7 +71,7 @@ export class AlfaAppInterfaceService {
     return {
       recording: recording.toString(),
       uiData: JSON.stringify(uiData),
-      isComplete: false,
+      isComplete: state === 'complete' ? true : false,
     };
   }
 
