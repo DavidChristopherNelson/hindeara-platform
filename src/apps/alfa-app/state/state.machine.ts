@@ -1,9 +1,12 @@
-import { assign, setup, SnapshotFrom } from 'xstate';
+import { ActorRefFrom, assign, setup, SnapshotFrom } from 'xstate';
 
 export const lessonMachine = setup({
   types: {
     context: {} as { word: string; index: number },
-    events: {} as { type: 'CORRECT_ANSWER' } | { type: 'INCORRECT_ANSWER' },
+    events: {} as
+      | { type: 'CORRECT_ANSWER' }
+      | { type: 'INCORRECT_ANSWER' }
+      | { type: 'START_OF_LESSON' },
   },
   actions: {
     incrementIndex: assign({
@@ -33,6 +36,7 @@ export const lessonMachine = setup({
       on: {
         CORRECT_ANSWER: { target: 'complete' },
         INCORRECT_ANSWER: { target: 'letter' },
+        START_OF_LESSON: { target: 'word' },
       },
     },
 
@@ -84,14 +88,17 @@ export const lessonMachine = setup({
 });
 
 export type LessonSnapshot = SnapshotFrom<typeof lessonMachine>;
+type LessonActor = ActorRefFrom<typeof lessonMachine>;
 
-export const getWord = (state: LessonSnapshot) => state.context.word;
+export const getWord = (actor: LessonActor) => actor.getSnapshot().context.word;
 
-export const getIndex = (state: LessonSnapshot) => state.context.index;
+export const getIndex = (actor: LessonActor) =>
+  actor.getSnapshot().context.index;
 
-export const getPrompt = (state: LessonSnapshot): string => {
-  const meta = state.getMeta() as Record<string, { prompt?: string }>;
+export const getPrompt = (actor: LessonActor): string => {
+  const snap = actor.getSnapshot();
+  const meta = snap.getMeta() as Record<string, { prompt?: string }>;
 
-  const key = `lesson.${state.value as string}`;
+  const key = `lesson.${snap.value as string}`;
   return meta[key]?.prompt ?? '';
 };

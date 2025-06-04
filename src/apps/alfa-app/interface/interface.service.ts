@@ -32,125 +32,143 @@ export class AlfaAppInterfaceService {
   @LogMethod()
   async run(userId: number): Promise<CreateAppEventDto> {
     // Get previous states
-    const latestUserEvent =
-      await this.userEventsService.findMostRecentByUserId(userId);
-    // Todo: Handle the case where there is no UserEvent.
-    if (!latestUserEvent) {
-      throw new Error('Cannot find a UserEvent associated with this User.');
-    }
-    const appEvents =
-      await this.appEventsService.findMostRecentNByAppIdAndUserId(
-        this.appId,
-        userId,
-        2,
-      );
-    const [latestAppEvent, secondLatestAppEvent] = appEvents;
-
-    // Guard clause for the initial startup edge case.
-    if (!latestAppEvent) {
-      const initialMiniLesson = await this.miniLessonsService.create({
-        appEventId: 0,
-        userId,
-        word: 'cat',
-        state: createActor(lessonMachine).start().getPersistedSnapshot(),
-      });
-      const initialLessonActor: ActorRefFrom<typeof lessonMachine> =
-        createActor(lessonMachine, {
-          snapshot: initialMiniLesson.state,
-        }).start();
-      const initialSnapshot = initialLessonActor.getSnapshot();
-      const initialPrompt = getPrompt(initialSnapshot);
-      const initialTextResponse =
-        await this.chatgptService.sendMessage(initialPrompt);
-      if (typeof initialTextResponse !== 'string') {
-        throw new Error(
-          `Incorrectly formatted text response from AI. Expected string but instead got ${typeof initialTextResponse}`,
-        );
-      }
-      const word = getWord(initialSnapshot);
-      const index = getIndex(initialSnapshot);
-      const uiData: UiDataDto = {
-        word,
-        letter: word[index],
-        picture: (await this.phonemeService.findByLetter(word[index]))
-          .example_image,
-      };
-      const createAppEventDto: CreateAppEventDto = {
-        recording: initialTextResponse,
-        uiData: JSON.stringify(uiData),
-        isComplete: false,
-      };
-      return createAppEventDto;
-    }
-    const latestMiniLesson = await this.miniLessonsService.findLatestMiniLesson(
-      secondLatestAppEvent,
-      userId,
-    );
+    const ctx = await this.buildContext(userId);
 
     // Calculate new state
-    const answerStatus = await this.evaluateAnswer(
-      latestUserEvent,
-      latestAppEvent,
+    const answerStatus = await this.evaluateAnswer(ctx);
+    ctx.lessonActor.send(answerStatus);
+
+    // Generate return data
+    const word: string = getWord(ctx.lessonActor);
+    const letter: string = word[getIndex(ctx.lessonActor)];
+    const picture: string = (await this.phonemeService.findByLetter(letter)).example_image;
+    const uiData: UiDataDto = { word, letter, picture };
+    const recording = await this.chatgptService.sendMessage(
+      getPrompt(ctx.lessonActor),
     );
-    const lessonActor: ActorRefFrom<typeof lessonMachine> = createActor(
-      lessonMachine,
-      { snapshot: latestMiniLesson.state },
-    ).start();
-    lessonActor.send(answerStatus);
 
-    // Generate text response
-    const snapshot = lessonActor.getSnapshot();
-    const prompt = getPrompt(snapshot);
-    const textResponse = await this.chatgptService.sendMessage(prompt);
-    if (typeof textResponse !== 'string') {
-      throw new Error(
-        `Incorrectly formatted text response from AI. Expected string but instead got ${typeof textResponse}`,
-      );
-    }
-
-    // Generate UI data
-    const word = getWord(snapshot);
-    const index = getIndex(snapshot);
-    const uiData: UiDataDto = {
-      word,
-      letter: word[index],
-      picture: (await this.phonemeService.findByLetter(word[index]))
-        .example_image,
-    };
-
-    // Save state
+    // Persist the new state and respond
     await this.miniLessonsService.create({
-      appEventId: latestAppEvent?.id ?? 0,
-      userId,
-      word,
-      state: lessonActor.getPersistedSnapshot(),
+      appEventId: ctx.latestAppEvent ? ctx.latestAppEvent.id : 0,
+      userId: ctx.userId,
+      word: getWord(ctx.lessonActor),
+      state: ctx.lessonActor.getPersistedSnapshot(),
     });
-
-    // Pass state to Hindeara Platform
-    const createAppEventDto: CreateAppEventDto = {
-      recording: textResponse,
+    return {
+      recording: recording.toString(),
       uiData: JSON.stringify(uiData),
       isComplete: false,
     };
-    return createAppEventDto;
   }
 
   @LogMethod()
-  async evaluateAnswer(
-    latestUserEvent: UserEvent,
-    latestAppEvent: AppEvent,
-  ): Promise<{ type: 'CORRECT_ANSWER' } | { type: 'INCORRECT_ANSWER' }> {
+  private async persistLesson(
+    actor: ActorRefFrom<typeof lessonMachine>,
+    appEventId: number,
+    userId: number,
+  ) {
+    await this.miniLessonsService.create({
+      appEventId,
+      userId,
+      word: getWord(actor),
+      state: actor.getPersistedSnapshot(),
+    });
+  }
+
+  @LogMethod()
+  private async evaluateAnswer(ctx: {
+    readonly userId: number;
+    readonly latestUserEvent: UserEvent | null;
+    readonly latestAppEvent: AppEvent | undefined;
+    readonly lessonActor: ActorRefFrom<typeof lessonMachine>;
+    readonly isFirstRun: boolean;
+  }): Promise<
+    | { type: 'CORRECT_ANSWER' }
+    | { type: 'INCORRECT_ANSWER' }
+    | { type: 'START_OF_LESSON' }
+  > {
+    if (!this.doesValidLessonExist(ctx.userId, ctx.latestAppEvent))
+      return { type: 'START_OF_LESSON' };
+    if (!ctx.latestAppEvent) return { type: 'START_OF_LESSON' };
+    if (!ctx.latestUserEvent) return { type: 'START_OF_LESSON' };
+
     const prompt = `
-      The student was asked the question: ${latestAppEvent.recording}
-      The student was shown the following UI data on their phone: ${latestAppEvent.uiData}
-      The student's answer is ${latestUserEvent.recording}
+      The student was asked the question: ${ctx.latestAppEvent.recording}
+      The student was shown the following UI data on their phone: ${ctx.latestAppEvent.uiData}
+      The student's answer is ${ctx.latestUserEvent.recording}
+      Please be strict, here are some examples of being strict. 
+      If the image is tiger.png the student's answer must have the word tiger in it (not 'animal', 'big cat', etc). 
+      If the word to be read is 'cat' the student's answer must have the word 'cat' in it. 
       Is the student's answer correct?
       `;
     const answer = await this.chatgptService.sendMessage(
       prompt,
-      'You are a teacher that cares deeply about truth.',
+      'You are a teacher that cares deeply about exact answers.',
       'boolean',
     );
     return answer ? { type: 'CORRECT_ANSWER' } : { type: 'INCORRECT_ANSWER' };
+  }
+
+  @LogMethod()
+  private async buildContext(userId: number): Promise<{
+    readonly userId: number;
+    readonly latestUserEvent: UserEvent | null;
+    readonly latestAppEvent: AppEvent | undefined;
+    readonly lessonActor: ActorRefFrom<typeof lessonMachine>;
+    readonly isFirstRun: boolean;
+  }> {
+    const [latestUserEvent, recentAppEvents] = await Promise.all([
+      this.userEventsService.findMostRecentByUserId(userId),
+      this.appEventsService.findMostRecentNByAppIdAndUserId(
+        this.appId,
+        userId,
+        2,
+      ),
+    ]);
+    const [latestAppEvent, secondLatest] = recentAppEvents;
+
+    // Handle the case where no valid lesson exists.
+    let lessonActor: ActorRefFrom<typeof lessonMachine>;
+    if (this.doesValidLessonExist(userId, latestAppEvent)) {
+      const latestMiniLesson =
+        await this.miniLessonsService.findLatestMiniLesson(
+          secondLatest,
+          userId,
+        );
+      lessonActor = createActor(lessonMachine, {
+        snapshot: latestMiniLesson.state,
+      }).start();
+    } else {
+      lessonActor = createActor(lessonMachine).start();
+    }
+
+    return {
+      userId,
+      latestUserEvent,
+      latestAppEvent,
+      lessonActor,
+      isFirstRun: !latestAppEvent,
+    } as const;
+  }
+
+  @LogMethod()
+  private doesValidLessonExist(
+    userId: number,
+    latestAppEvent: AppEvent | undefined,
+  ): boolean {
+    // Is there a previous app event associated with both this app and user?
+    if (!latestAppEvent) return false;
+
+    // Is the previous app event completed?
+    if (latestAppEvent.isComplete) return false;
+
+    // Is the previous app event too stale?
+    if (
+      Date.now() - new Date(latestAppEvent.createdAt).getTime() >
+      2 * 60 * 1000
+    )
+      return false;
+
+    return true;
   }
 }
