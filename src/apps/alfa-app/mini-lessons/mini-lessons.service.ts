@@ -70,4 +70,27 @@ export class MiniLessonsService {
     }
     return miniLesson;
   }
+
+  @LogMethod()
+  async findAllWordsByUserId(userId: number): Promise<string[]> {
+    const result: { word: string }[] = await this.miniLessonRepository
+      .createQueryBuilder('mini')
+      .select('DISTINCT mini.word', 'word')
+      .where('mini.userId = :userId', { userId })
+      .orderBy('mini.word', 'ASC')
+      .getRawMany();
+    return result.map((row) => row.word);
+  }
+
+  @LogMethod()
+  async findAllLettersByUserId(userId: number): Promise<string[]> {
+    const result: { letter: string }[] = await this.miniLessonRepository
+      .createQueryBuilder('mini')
+      .innerJoin('mini.phoneme', 'phoneme')
+      .select('DISTINCT phoneme.letter', 'letter')
+      .where('mini.userId = :userId', { userId })
+      .orderBy('phoneme.letter', 'ASC')
+      .getRawMany();
+    return result.map((row) => row.letter);
+  }
 }
