@@ -224,13 +224,17 @@ export class AlfaAppInterfaceService {
   }
 
   @LogMethod()
-  private async generateWord(userId): Promise<string> {
+  private async generateWord(userId: number): Promise<string> {
     const words = await this.miniLessonsService.findAllWordsByUserId(userId);
-    const letters = await this.miniLessonsService.findAllLettersByUserId(userId);
-    const seed = Math.floor(Math.random() * 10000);
+    const letters =
+      await this.miniLessonsService.findAllLettersByUserId(userId);
     const word = await this.chatgptService.sendMessage(
       `
-        Generate a simple, common, three-letter noun that is appropriate for a five-year-old child. The word cannot be Then, using the number ${seed} as a random seed, choose one word from the list. Return only the selected word. Do not include the seed, the list, or any other explanation.
+        Generate a simple, common, three-letter noun that is appropriate for a five-year-old child.
+        The word cannot be from this list ${words.toString()}.
+        The word must contain two letters from this list ${letters.toString()}.
+        The word must contain one letter not from this list ${letters.toString()}.
+        Your response must only contain the chosen word.
       `,
     );
     return word.toString();
