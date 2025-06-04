@@ -35,7 +35,7 @@ describe('PlatformController (e2e)', () => {
     }).compile();
 
     nestApp = moduleFixture.createNestApplication({
-      logger: new Logger('E2E'),
+      logger: false /*new Logger('E2E')*/,
     });
     await nestApp.init();
 

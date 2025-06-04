@@ -54,7 +54,6 @@ export class AlfaAppInterfaceService {
         ${await this.giveHint(ctx.lessonActor)}
         Your response must only contain the actual words you want to communicate to the student.
       `,
-      //`This is what the previous lesson state was: ${JSON.stringify(ctx.latestAppEvent)}. This is what the previous student's response was: ${JSON.stringify(ctx.latestUserEvent)}. ${getPrompt(ctx.lessonActor)}`,
     );
 
     // Persist the new state and respond
