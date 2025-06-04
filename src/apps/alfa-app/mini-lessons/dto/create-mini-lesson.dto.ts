@@ -23,7 +23,8 @@ export class CreateMiniLessonDto {
   @IsNotEmpty()
   state: LessonSnapshot;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
-  phoneme?: Phoneme;
+  @IsNumber()
+  phonemeId?: number;
 }

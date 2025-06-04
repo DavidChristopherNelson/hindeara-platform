@@ -39,6 +39,7 @@ export class AlfaAppInterfaceService {
     ctx.lessonActor.send(answerStatus);
 
     // Generate return data
+    const state = ctx.lessonActor.getSnapshot().value;
     const word: string = getWord(ctx.lessonActor);
     const letter: string = word[getIndex(ctx.lessonActor)];
     const picture: string = (await this.phonemeService.findByLetter(letter))
@@ -58,10 +59,14 @@ export class AlfaAppInterfaceService {
 
     // Persist the new state and respond
     await this.miniLessonsService.create({
-      appEventId: ctx.latestAppEvent ? ctx.latestAppEvent.id : 0,
+      appEventId: ctx.latestAppEvent?.id ?? 0,
       userId: ctx.userId,
-      word: getWord(ctx.lessonActor),
+      word,
       state: ctx.lessonActor.getPersistedSnapshot(),
+      phonemeId:
+        state === 'letter' || state === 'letterImage'
+          ? (await this.phonemeService.findByLetter(letter))?.id
+          : undefined,
     });
     return {
       recording: recording.toString(),
