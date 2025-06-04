@@ -41,10 +41,20 @@ export class AlfaAppInterfaceService {
     // Generate return data
     const word: string = getWord(ctx.lessonActor);
     const letter: string = word[getIndex(ctx.lessonActor)];
-    const picture: string = (await this.phonemeService.findByLetter(letter)).example_image;
+    const picture: string = (await this.phonemeService.findByLetter(letter))
+      .example_image;
     const uiData: UiDataDto = { word, letter, picture };
     const recording = await this.chatgptService.sendMessage(
-      getPrompt(ctx.lessonActor),
+      `
+        For context this was the previous question that the student was asked: ${ctx.latestAppEvent?.recording}. 
+        And this is the student's previous response: ${ctx.latestUserEvent?.recording}. 
+        The student's previous response is ${JSON.stringify(answerStatus)}.
+        ${getPrompt(ctx.lessonActor)}
+        Please generate a unique response.
+        ${await this.giveHint(ctx.lessonActor)}
+        Your response must only contain the actual words you want to communicate to the student.
+      `,
+      //`This is what the previous lesson state was: ${JSON.stringify(ctx.latestAppEvent)}. This is what the previous student's response was: ${JSON.stringify(ctx.latestUserEvent)}. ${getPrompt(ctx.lessonActor)}`,
     );
 
     // Persist the new state and respond
@@ -91,19 +101,16 @@ export class AlfaAppInterfaceService {
       return { type: 'START_OF_LESSON' };
     if (!ctx.latestAppEvent) return { type: 'START_OF_LESSON' };
     if (!ctx.latestUserEvent) return { type: 'START_OF_LESSON' };
-
     const prompt = `
-      The student was asked the question: ${ctx.latestAppEvent.recording}
-      The student was shown the following UI data on their phone: ${ctx.latestAppEvent.uiData}
-      The student's answer is ${ctx.latestUserEvent.recording}
-      Please be strict, here are some examples of being strict. 
-      If the image is tiger.png the student's answer must have the word tiger in it (not 'animal', 'big cat', etc). 
-      If the word to be read is 'cat' the student's answer must have the word 'cat' in it. 
+      Target token: "${await this.getAnswer(ctx.lessonActor)}".
+      Student's answer: "${ctx.latestUserEvent.recording}".
       Is the student's answer correct?
       `;
     const answer = await this.chatgptService.sendMessage(
       prompt,
-      'You are a teacher that cares deeply about exact answers.',
+      'You grade with exactness but ignore surrounding punctuation. \
+      A student answer is correct iff, after lower-casing and stripping punctuation, \
+      it contains the exact target token (or group of tokens) as a separate token (or group of tokens).',
       'boolean',
     );
     return answer ? { type: 'CORRECT_ANSWER' } : { type: 'INCORRECT_ANSWER' };
@@ -170,5 +177,43 @@ export class AlfaAppInterfaceService {
       return false;
 
     return true;
+  }
+
+  @LogMethod()
+  private async getAnswer(
+    actor: ActorRefFrom<typeof lessonMachine>,
+  ): Promise<string> {
+    const snap = actor.getSnapshot();
+    const word = snap.context.word;
+    const letter = word[snap.context.index];
+    const image = (
+      await this.phonemeService.findByLetter(letter)
+    ).example_image.replace(/\.[^.]+$/, '');
+
+    switch (snap.value) {
+      case 'word':
+        return word;
+      case 'letter':
+        return letter;
+      case 'image':
+        return image;
+      case 'letterImage':
+        return letter;
+      default:
+        return '';
+    }
+  }
+
+  @LogMethod()
+  private async giveHint(
+    actor: ActorRefFrom<typeof lessonMachine>,
+  ): Promise<string> {
+    const snap = actor.getSnapshot();
+    switch (snap.value) {
+      case 'image':
+        return `Please give a hint 50% of the time. The answer is "${await this.getAnswer(actor)}". Do not include the string "${await this.getAnswer(actor)}" in your response.`;
+      default:
+        return '';
+    }
   }
 }

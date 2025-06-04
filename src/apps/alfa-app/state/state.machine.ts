@@ -31,7 +31,7 @@ export const lessonMachine = setup({
     word: {
       meta: {
         prompt:
-          'Please ask the student to sound out the word that they can see on the screen. Your response must only contain the actual words you want to communicate to the student.',
+          'Please ask the student to sound out the word that they can see on the screen.',
       },
       on: {
         CORRECT_ANSWER: { target: 'complete' },
@@ -43,45 +43,45 @@ export const lessonMachine = setup({
     letter: {
       meta: {
         prompt:
-          'Please also ask the student to sound out the letter that they can see on the screen. Please generate a unique response. Your response must only contain the actual words you want to communicate to the student.',
+          'Please also ask the student to sound out the letter that they can see on the screen.',
       },
       on: {
         CORRECT_ANSWER: [
           { guard: 'isLastLetter', target: 'word', actions: 'resetIndex' },
           { target: 'letter', actions: 'incrementIndex' },
         ],
-        INCORRECT_ANSWER: { target: 'picture' },
+        INCORRECT_ANSWER: { target: 'image' },
       },
     },
 
-    picture: {
+    image: {
       meta: {
         prompt:
-          'Please gently tell the student they got the previous answer wrong. Please encourage the student. The student can see a picture on a screen. Please ask the student what the picture is of. Please generate a unique response. Your response must only contain the actual words you want to communicate to the student.',
+          'Please gently tell the student they got the previous answer wrong. Please briefly encourage the student. The student can see a image on a screen. Please ask the student what the image is of.',
       },
       on: {
-        CORRECT_ANSWER: { target: 'letterPicture' },
-        INCORRECT_ANSWER: { target: 'picture' },
+        CORRECT_ANSWER: { target: 'letterImage' },
+        INCORRECT_ANSWER: { target: 'image' },
       },
     },
 
-    letterPicture: {
+    letterImage: {
       meta: {
-        prompt: `The student can see a picture on a screen. The student has just successfully identified the picture. Please ask the student what the first sound of the object represented in the picture. Please generate a unique response. Your response must only contain the actual words you want to communicate to the student.`,
+        prompt: `The student can see a image on a screen. The student has just successfully identified the image. Please ask the student what the first sound of the object represented in the image.`,
       },
       on: {
         CORRECT_ANSWER: [
           { guard: 'isLastLetter', target: 'word', actions: 'resetIndex' },
           { target: 'letter', actions: 'incrementIndex' },
         ],
-        INCORRECT_ANSWER: { target: 'picture' },
+        INCORRECT_ANSWER: { target: 'image' },
       },
     },
 
     complete: {
       type: 'final',
       meta: {
-        prompt: `The student successfully read a word. Please congratulate them. Please generate a unique response. Your response must only contain the actual words you want to communicate to the student.`,
+        prompt: `The student successfully read a word. Please congratulate them.`,
       },
     },
   },
