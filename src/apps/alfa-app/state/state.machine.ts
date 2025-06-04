@@ -22,10 +22,10 @@ export const lessonMachine = setup({
 }).createMachine({
   id: 'lesson',
   initial: 'word',
-  context: {
-    word: 'cat',
+  context: ({ input }) => ({
+    word: (input as { word?: string } | undefined)?.word ?? 'hat',
     index: 0,
-  },
+  }),
 
   states: {
     word: {

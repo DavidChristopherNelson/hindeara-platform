@@ -145,7 +145,23 @@ export class AlfaAppInterfaceService {
         snapshot: latestMiniLesson.state,
       }).start();
     } else {
-      lessonActor = createActor(lessonMachine).start();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      await this.generateWord();
+      lessonActor = createActor(lessonMachine, {
+        input: { word: await this.generateWord() },
+      }).start();
     }
 
     return {
@@ -214,5 +230,16 @@ export class AlfaAppInterfaceService {
       default:
         return '';
     }
+  }
+
+  @LogMethod()
+  private async generateWord(): Promise<string> {
+    const seed = Math.floor(Math.random() * 10000);
+    const word = await this.chatgptService.sendMessage(
+      `
+        Generate a list of 100 simple, common, three-letter nouns that are appropriate for a five-year-old child. Then, using the number ${seed} as a random seed, choose one word from the list. Return only the selected word. Do not include the seed, the list, or any other explanation.
+      `,
+    );
+    return word.toString();
   }
 }
