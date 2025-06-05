@@ -115,6 +115,7 @@ export class AlfaAppInterfaceService {
       'You grade with exactness but ignore surrounding punctuation. \
       A student answer is correct iff, after lower-casing and stripping punctuation, \
       it contains the exact target token (or group of tokens) as a separate token (or group of tokens).',
+      'gpt-4o-mini',
       'boolean',
     );
     return answer ? { type: 'CORRECT_ANSWER' } : { type: 'INCORRECT_ANSWER' };
@@ -230,13 +231,30 @@ export class AlfaAppInterfaceService {
       await this.miniLessonsService.findAllLettersByUserId(userId);
     const word = await this.chatgptService.sendMessage(
       `
-        Generate a simple, common, three-letter noun that is appropriate for a five-year-old child.
-        The word cannot be from this list ${words.toString()}.
-        The word must contain two letters from this list ${letters.toString()}.
-        The word must contain one letter not from this list ${letters.toString()}.
-        Your response must only contain the chosen word.
+        Generate a simple, common, three-letter noun for a 5-year-old child.
+
+        Constraints:
+        - It must NOT be any of these words: ${words.toString()}.
+        - It must contain **exactly TWO** letters from this list: ${letters.toString()}
+        - It must contain **exactly ONE** letter NOT from this list: ${letters.toString()}
+
+        Step-by-step:
+        1. Generate candidate words.
+        2. Check which letters are in the allowed list.
+        3. Ensure the there are two letters in the list and one not in the list.
+        4. Confirm it's not excluded.
+        
+        Only if the word satisfies all the rules give the response.
+        The response must only contain the chosen word.
       `,
+      'You are a helpful assistant that must strictly follow letter-based logic rules.',
+      'gpt-4o',
     );
-    return word.toString();
+    return word
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s]|_/g, '')
+      .split(/\s+/)[0];
   }
 }

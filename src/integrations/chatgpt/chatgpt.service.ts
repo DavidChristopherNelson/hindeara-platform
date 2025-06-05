@@ -43,10 +43,11 @@ export class ChatGPTService {
   async sendMessage(
     userPrompt: string,
     roleContent: string = 'You are a helpful assistant.',
+    model: string = 'gpt-4o-mini',
     tool: ToolName = 'string',
   ): Promise<string | boolean> {
     const payload = {
-      model: 'gpt-4o-mini',
+      model,
       messages: [
         { role: 'system', content: roleContent },
         { role: 'user', content: userPrompt },

@@ -62,6 +62,7 @@ export class ChatGPTController {
     return this.chatGPTService.sendMessage(
       userPrompt,
       'You are a helpful assistant.',
+      'gpt-4o-mini',
       'boolean',
     );
   }

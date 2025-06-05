@@ -4,8 +4,6 @@ import { MiniLesson } from './entities/mini-lesson.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
-import { lessonMachine } from '../state/state.machine';
-import { createActor } from 'xstate';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @Injectable()
@@ -84,13 +82,36 @@ export class MiniLessonsService {
 
   @LogMethod()
   async findAllLettersByUserId(userId: number): Promise<string[]> {
-    const result: { letter: string }[] = await this.miniLessonRepository
+    // Step 1: Get letters from the database
+    const dbResult: { letter: string }[] = await this.miniLessonRepository
       .createQueryBuilder('mini')
       .innerJoin('mini.phoneme', 'phoneme')
       .select('DISTINCT phoneme.letter', 'letter')
       .where('mini.userId = :userId', { userId })
       .orderBy('phoneme.letter', 'ASC')
       .getRawMany();
-    return result.map((row) => row.letter);
+    const dbLetters = new Set(dbResult.map((row) => row.letter.toLowerCase()));
+
+    // Step 2: Get all words by user
+    const words = await this.findAllWordsByUserId(userId);
+
+    // Step 3: Extract unique letters from words
+    const lettersInWords = new Set(
+      words.flatMap((word) =>
+        word
+          .toLowerCase()
+          .replace(/[^a-z]/g, '')
+          .split(''),
+      ),
+    );
+
+    // Step 4: Find letters in words that are NOT in dbLetters
+    const missingLetters = [...lettersInWords].filter(
+      (letter) => !dbLetters.has(letter),
+    );
+
+    // Step 5: Combine and return all unique letters
+    const combined = new Set([...dbLetters, ...missingLetters]);
+    return Array.from(combined).sort(); // sorted alphabetically
   }
 }
