@@ -43,7 +43,7 @@ export const lessonMachine = setup({
     letter: {
       meta: {
         prompt:
-          'Please also ask the student to sound out the letter that they can see on the screen.',
+          'Please also ask the student to sound out the letter that they can see on the screen. Do not say any letter in your response.',
       },
       on: {
         CORRECT_ANSWER: [

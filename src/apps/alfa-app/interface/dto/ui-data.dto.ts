@@ -9,4 +9,7 @@ export class UiDataDto {
 
   @ApiProperty({ example: 'apple.png' })
   picture: string;
+
+  @ApiProperty({ example: 'apple.png' })
+  state: string;
 }

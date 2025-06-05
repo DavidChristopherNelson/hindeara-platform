@@ -44,7 +44,7 @@ export class AlfaAppInterfaceService {
     const letter: string = word[getIndex(ctx.lessonActor)];
     const picture: string = (await this.phonemeService.findByLetter(letter))
       .example_image;
-    const uiData: UiDataDto = { word, letter, picture };
+    const uiData: UiDataDto = { word, letter, picture, state };
     const recording = await this.chatgptService.sendMessage(
       `
         For context this was the previous question that the student was asked: ${ctx.latestAppEvent?.recording}. 
