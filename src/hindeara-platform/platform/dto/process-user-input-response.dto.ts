@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
 
 export class ProcessUserInputResponseDto {
@@ -22,12 +22,18 @@ export class ProcessUserInputResponseDto {
   @IsNumber()
   appId: number;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsBoolean()
+  isComplete: boolean;
+
   static fromAppEvent(appEvent: AppEvent): ProcessUserInputResponseDto {
     return {
       recording: appEvent.recording,
       uiData: appEvent.uiData,
       userId: appEvent.user.id,
       appId: appEvent.app.id,
+      isComplete: appEvent.isComplete,
     };
   }
 }
