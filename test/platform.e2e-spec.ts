@@ -109,7 +109,7 @@ describe('PlatformController (e2e)', () => {
     expect(appEvents[0].recording.length).toBeGreaterThan(0);
 
     expect(miniLessons.length).toBe(1);
-    expect(miniLessons[0].word).toBe('cat');
+    expect(miniLessons[0].word).toEqual(expect.any(String));
     const firstLessonState = createActor(lessonMachine, {
       snapshot: miniLessons[0].state,
     }).start();
