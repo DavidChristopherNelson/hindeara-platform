@@ -46,8 +46,8 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'ए',
-    example_noun: 'एड़ी',
-    example_image: 'heel.png',
+    example_noun: 'एरोप्लेन',
+    example_image: 'aeroplane.png',
     is_active: true,
   },
   {
@@ -91,7 +91,7 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   {
     letter: 'घ',
     example_noun: 'घड़ी',
-    example_image: 'watch.png',
+    example_image: 'clock.png',
     is_active: true,
   },
   {
@@ -138,8 +138,8 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'ठ',
-    example_noun: 'ठठेरा',
-    example_image: 'coppersmith.png',
+    example_noun: 'ठप्पा',
+    example_image: 'stamp.png',
     is_active: true,
   },
   {
@@ -150,8 +150,8 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'ढ',
-    example_noun: 'ढोल',
-    example_image: 'big_drum.png',
+    example_noun: 'ढक्कन',
+    example_image: 'lid.png',
     is_active: true,
   },
   {

@@ -74,7 +74,7 @@ export const lessonMachine = setup({
           { guard: 'isLastLetter', target: 'word', actions: 'resetIndex' },
           { target: 'letter', actions: 'incrementIndex' },
         ],
-        INCORRECT_ANSWER: { target: 'image' },
+        INCORRECT_ANSWER: { target: 'letterImage' },
       },
     },
 
