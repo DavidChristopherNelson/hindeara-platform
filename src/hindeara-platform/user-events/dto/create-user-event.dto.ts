@@ -6,4 +6,9 @@ export class CreateUserEventDto {
   @IsNotEmpty()
   @IsString()
   recording: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  locale: string;
 }

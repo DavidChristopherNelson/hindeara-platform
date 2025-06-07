@@ -12,6 +12,10 @@ export class UserEventDto {
 
   @ApiProperty()
   @Expose()
+  locale!: string;
+
+  @ApiProperty()
+  @Expose()
   createdAt!: Date;
 
   @ApiProperty()

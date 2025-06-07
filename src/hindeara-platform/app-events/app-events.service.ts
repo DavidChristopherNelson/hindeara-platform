@@ -18,11 +18,13 @@ export class AppEventsService {
   @LogMethod()
   async create(
     createAppEventDto: CreateAppEventDto,
+    locale: string,
     user: User,
     app: App,
   ): Promise<AppEvent> {
     const createdAppEvent = this.appEventRepository.create({
       ...createAppEventDto,
+      locale,
       user,
       app,
     });

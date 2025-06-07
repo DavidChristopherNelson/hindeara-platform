@@ -15,6 +15,9 @@ export class UserEvent {
   @Column()
   recording: string;
 
+  @Column()
+  locale: string;
+
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 

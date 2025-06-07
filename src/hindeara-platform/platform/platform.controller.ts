@@ -1,4 +1,11 @@
-import { Body, Controller, Param, ParseIntPipe, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  ParseIntPipe,
+  Post,
+  Headers,
+} from '@nestjs/common';
 import { PlatformService } from './platform.service';
 import { ProcessUserInputDto } from './dto/process-user-input.dto';
 import { ProcessUserInputResponseDto } from './dto/process-user-input-response.dto';
@@ -27,11 +34,12 @@ export class PlatformController {
   })
   @LogMethod()
   async processUserInput(
+    @Headers('accept-language') locale: string,
     @Param('userId', ParseIntPipe, UserByIdPipe) user: User,
     @Body() dto: ProcessUserInputDto,
   ): Promise<ProcessUserInputResponseDto> {
     return ProcessUserInputResponseDto.fromAppEvent(
-      await this.platformService.processUserInput(user, dto.recording),
+      await this.platformService.processUserInput(user, dto.recording, locale),
     );
   }
 }

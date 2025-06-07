@@ -18,6 +18,10 @@ export class AppEventDto {
 
   @ApiProperty()
   @Expose()
+  locale!: string;
+
+  @ApiProperty()
+  @Expose()
   uiData!: string;
 
   @ApiProperty()

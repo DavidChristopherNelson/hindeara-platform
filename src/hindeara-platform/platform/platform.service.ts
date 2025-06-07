@@ -8,6 +8,7 @@ import { AlfaAppInterfaceService } from 'src/apps/alfa-app/interface/interface.s
 import { CreateAppEventDto } from '../app-events/dto/create-app-event.dto';
 import { App } from '../apps/entities/app.entity';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { CreateUserEventDto } from '../user-events/dto/create-user-event.dto';
 
 @Injectable()
 export class PlatformService {
@@ -19,18 +20,26 @@ export class PlatformService {
   ) {}
 
   @LogMethod()
-  async processUserInput(user: User, recording: string): Promise<AppEvent> {
+  async processUserInput(
+    user: User,
+    recording: string,
+    locale: string,
+  ): Promise<AppEvent> {
     // create user event
-    const createUserEventDto = { recording: recording };
+    const createUserEventDto: CreateUserEventDto = { recording, locale };
     await this.userEventsService.create(createUserEventDto, user);
 
     // find and run current app
     const currentApp = await this.findCurrentApp(user);
-    const createAppEventDto = await this.runApp(user, currentApp);
+    const createAppEventDto: CreateAppEventDto = await this.runApp(
+      user,
+      currentApp,
+    );
 
     // create app event
     const appEvent = await this.appEventsService.create(
       createAppEventDto,
+      locale,
       user,
       currentApp,
     );

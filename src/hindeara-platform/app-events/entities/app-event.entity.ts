@@ -17,6 +17,9 @@ export class AppEvent {
   recording: string;
 
   @Column()
+  locale: string;
+
+  @Column()
   uiData: string;
 
   @Column()
