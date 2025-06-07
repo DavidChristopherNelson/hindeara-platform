@@ -17,6 +17,14 @@ import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { PhonemesService } from '../phonemes/phonemes.service';
 import { UiDataDto } from './dto/ui-data.dto';
 
+type LessonContext = Readonly<{
+  userId: number;
+  latestUserEvent: UserEvent | null;
+  latestAppEvent: AppEvent | undefined;
+  lessonActor: ActorRefFrom<typeof lessonMachine>;
+  isFirstRun: boolean;
+}>;
+
 @Injectable()
 export class AlfaAppInterfaceService {
   private readonly appId = 1;
@@ -76,59 +84,7 @@ export class AlfaAppInterfaceService {
   }
 
   @LogMethod()
-  private async persistLesson(
-    actor: ActorRefFrom<typeof lessonMachine>,
-    appEventId: number,
-    userId: number,
-  ) {
-    await this.miniLessonsService.create({
-      appEventId,
-      userId,
-      word: getWord(actor),
-      state: actor.getPersistedSnapshot(),
-    });
-  }
-
-  @LogMethod()
-  private async evaluateAnswer(ctx: {
-    readonly userId: number;
-    readonly latestUserEvent: UserEvent | null;
-    readonly latestAppEvent: AppEvent | undefined;
-    readonly lessonActor: ActorRefFrom<typeof lessonMachine>;
-    readonly isFirstRun: boolean;
-  }): Promise<
-    | { type: 'CORRECT_ANSWER' }
-    | { type: 'INCORRECT_ANSWER' }
-    | { type: 'START_OF_LESSON' }
-  > {
-    if (!this.doesValidLessonExist(ctx.userId, ctx.latestAppEvent))
-      return { type: 'START_OF_LESSON' };
-    if (!ctx.latestAppEvent) return { type: 'START_OF_LESSON' };
-    if (!ctx.latestUserEvent) return { type: 'START_OF_LESSON' };
-    const prompt = `
-      Target token: "${await this.getAnswer(ctx.lessonActor)}".
-      Student's answer: "${ctx.latestUserEvent.recording}".
-      Is the student's answer correct?
-      `;
-    const answer = await this.chatgptService.sendMessage(
-      prompt,
-      'You grade with exactness but ignore surrounding punctuation. \
-      A student answer is correct iff, after lower-casing and stripping punctuation, \
-      it contains the exact target token (or group of tokens) as a separate token (or group of tokens).',
-      'gpt-4o-mini',
-      'boolean',
-    );
-    return answer ? { type: 'CORRECT_ANSWER' } : { type: 'INCORRECT_ANSWER' };
-  }
-
-  @LogMethod()
-  private async buildContext(userId: number): Promise<{
-    readonly userId: number;
-    readonly latestUserEvent: UserEvent | null;
-    readonly latestAppEvent: AppEvent | undefined;
-    readonly lessonActor: ActorRefFrom<typeof lessonMachine>;
-    readonly isFirstRun: boolean;
-  }> {
+  private async buildContext(userId: number): Promise<LessonContext> {
     const [latestUserEvent, recentAppEvents] = await Promise.all([
       this.userEventsService.findMostRecentByUserId(userId),
       this.appEventsService.findMostRecentNByAppIdAndUserId(
@@ -184,6 +140,34 @@ export class AlfaAppInterfaceService {
       return false;
 
     return true;
+  }
+
+  @LogMethod()
+  private async evaluateAnswer(
+    ctx: LessonContext,
+  ): Promise<
+    | { type: 'CORRECT_ANSWER' }
+    | { type: 'INCORRECT_ANSWER' }
+    | { type: 'START_OF_LESSON' }
+  > {
+    if (!this.doesValidLessonExist(ctx.userId, ctx.latestAppEvent))
+      return { type: 'START_OF_LESSON' };
+    if (!ctx.latestAppEvent) return { type: 'START_OF_LESSON' };
+    if (!ctx.latestUserEvent) return { type: 'START_OF_LESSON' };
+    const prompt = `
+      Target token: "${await this.getAnswer(ctx.lessonActor)}".
+      Student's answer: "${ctx.latestUserEvent.recording}".
+      Is the student's answer correct?
+      `;
+    const answer = await this.chatgptService.sendMessage(
+      prompt,
+      'You grade with exactness but ignore surrounding punctuation. \
+      A student answer is correct iff, after lower-casing and stripping punctuation, \
+      it contains the exact target token (or group of tokens) as a separate token (or group of tokens).',
+      'gpt-4o-mini',
+      'boolean',
+    );
+    return answer ? { type: 'CORRECT_ANSWER' } : { type: 'INCORRECT_ANSWER' };
   }
 
   @LogMethod()
