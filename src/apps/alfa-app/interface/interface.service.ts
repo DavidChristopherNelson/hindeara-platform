@@ -68,6 +68,7 @@ export class AlfaAppInterfaceService {
         ${await this.giveHint(ctx.lessonActor)}
         Your response must only contain the actual words you want to communicate to the student.
       `,
+      locale: ctx.locale,
     });
 
     // Persist the new state and respond
@@ -209,27 +210,12 @@ export class AlfaAppInterfaceService {
       userId,
       locale,
     );
-    const letters =
-      await this.miniLessonsService.findAllLettersByUserIdAndLocale(
-        userId,
-        locale,
-      );
     const word = await this.chatgptService.sendMessage({
       userPrompt: `
-        Generate a simple, common, three-letter noun for a 5-year-old child.
-
-        Constraints:
-        - It must NOT be any of these words: ${words.toString()}.
-        - It must contain **exactly TWO** letters from this list: ${letters.toString()}
-        - It must contain **exactly ONE** letter NOT from this list: ${letters.toString()}
-
-        Step-by-step:
-        1. Generate candidate words.
-        2. Check which letters are in the allowed list.
-        3. Ensure the there are two letters in the list and one not in the list.
-        4. Confirm it's not excluded.
-        
-        Only if the word satisfies all the rules give the response.
+        Generate a simple, common, three-letter noun for a 5-year-old child to 
+        practice reading. Do not pick a word with any diacritics, matras, 
+        bindus, or ligatures.
+        ${words.length !== 0 ? `It must not be any of these words: ${words.toString()}.` : ''}
         The response must only contain the chosen word.
       `,
       roleContent:
@@ -241,7 +227,7 @@ export class AlfaAppInterfaceService {
       .toString()
       .toLowerCase()
       .trim()
-      .replace(/[^\w\s]|_/g, '')
+      .replace(/[^\p{L}\p{N}\s]|_/gu, '')
       .split(/\s+/)[0];
   }
 }
