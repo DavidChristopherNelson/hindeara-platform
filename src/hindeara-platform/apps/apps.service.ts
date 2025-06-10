@@ -38,4 +38,16 @@ export class AppsService {
 
     return this.findOne(id);
   }
+
+  @LogMethod()
+  async chooseNewApp(): Promise<App> {
+    const alfaApp = await this.findOne(1);
+    if (!alfaApp) {
+      return this.create({
+        http_path: 'alfa-app',
+        is_active: true,
+      });
+    }
+    return alfaApp;
+  }
 }

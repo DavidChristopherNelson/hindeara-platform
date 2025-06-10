@@ -7,6 +7,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import { App } from '../apps/entities/app.entity';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { findAllFilter } from './dto/find-all-filter.dto';
+
+interface RawAppEventWithIds {
+  event_id: number;
+  event_recording: string;
+  event_locale: string;
+  event_uiData: string;
+  event_isComplete: 0 | 1;
+  event_createdAt: Date;
+
+  userId: number;
+  appId: number;
+}
+
+interface AppEventWithIds extends Omit<RawAppEventWithIds, 'event_isComplete'> {
+  event_isComplete: boolean; // mapped to boolean before return
+}
 
 @Injectable()
 export class AppEventsService {
@@ -42,8 +59,40 @@ export class AppEventsService {
   }
 
   @LogMethod()
-  async findAll(): Promise<AppEvent[]> {
-    return this.appEventRepository.find({ relations: ['user', 'app'] });
+  async findAll(filter: findAllFilter): Promise<AppEventWithIds[]> {
+    /* build query -------------------------------------------------- */
+    const qb = this.appEventRepository
+      .createQueryBuilder('event')
+      .leftJoin('event.user', 'user')
+      .leftJoin('event.app', 'app')
+      .select('event')
+      .addSelect('user.id', 'userId')
+      .addSelect('app.id', 'appId');
+
+    /* dynamic filters ---------------------------------------------- */
+    if (filter.userId !== undefined) {
+      qb.andWhere('user.id = :userId', { userId: filter.userId });
+    }
+    if (filter.since !== undefined) {
+      qb.andWhere('event.createdAt > :since', { since: filter.since });
+    }
+    if (filter.appId !== undefined) {
+      qb.andWhere('app.id = :appId', { appId: filter.appId });
+    }
+    if (filter.locale !== undefined) {
+      qb.andWhere('event.locale = :locale', { locale: filter.locale });
+    }
+
+    /* execute & map ------------------------------------------------- */
+    const rawRows = await qb
+      .orderBy('event.createdAt', 'DESC')
+      .getRawMany<RawAppEventWithIds>();
+
+    // very cheap in-memory map: 0|1 → boolean
+    return rawRows.map(({ event_isComplete, ...rest }) => ({
+      ...rest,
+      event_isComplete: Boolean(event_isComplete),
+    }));
   }
 
   @LogMethod()
