@@ -1,7 +1,7 @@
-import { Controller, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Query } from '@nestjs/common';
 import { MiniLessonsService } from './mini-lessons.service';
 import { MiniLesson } from './entities/mini-lesson.entity';
-import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @ApiTags('mini-lessons')
@@ -51,12 +51,18 @@ export class MiniLessonsController {
     return this.miniLessonsService.remove(+id);
   }
 
-  @Get('words/by-user/:userId')
+  @Get('by-user/:userId')
   @ApiParam({
     name: 'userId',
     type: Number,
     required: true,
     description: 'User ID',
+  })
+  @ApiQuery({
+    name: 'locale',
+    type: String,
+    required: true,
+    description: 'Locale code (e.g., "en" or "hi")',
   })
   @ApiResponse({
     status: 200,
@@ -64,16 +70,28 @@ export class MiniLessonsController {
     type: [String],
   })
   @LogMethod()
-  findAllWordsByUserId(@Param('userId') userId: string): Promise<string[]> {
-    return this.miniLessonsService.findAllWordsByUserId(+userId);
+  findAllWordsByUserIdAndLocale(
+    @Param('userId') userId: string,
+    @Query('locale') locale: string,
+  ): Promise<string[]> {
+    return this.miniLessonsService.findAllWordsByUserIdAndLocale(
+      +userId,
+      locale,
+    );
   }
 
-  @Get('letters/by-user/:userId')
+  @Get('by-user/:userId')
   @ApiParam({
     name: 'userId',
     type: Number,
     required: true,
     description: 'User ID',
+  })
+  @ApiQuery({
+    name: 'locale',
+    type: String,
+    required: true,
+    description: 'Locale code (e.g., "en" or "hi")',
   })
   @ApiResponse({
     status: 200,
@@ -81,7 +99,13 @@ export class MiniLessonsController {
     type: [String],
   })
   @LogMethod()
-  findAllLettersByUserId(@Param('userId') userId: string): Promise<string[]> {
-    return this.miniLessonsService.findAllLettersByUserId(+userId);
+  findAllLettersByUserIdAndLocale(
+    @Param('userId') userId: string,
+    @Query('locale') locale: string,
+  ): Promise<string[]> {
+    return this.miniLessonsService.findAllLettersByUserIdAndLocale(
+      +userId,
+      locale,
+    );
   }
 }

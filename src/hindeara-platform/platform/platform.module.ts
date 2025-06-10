@@ -1,3 +1,4 @@
+// src/hindeara-platform/platform/platform.module.ts
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PlatformController } from './platform.controller';
@@ -9,6 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AlfaAppInterfaceModule } from 'src/apps/alfa-app/interface/interface.module';
 import { UsersModule } from '../users/users.module';
 import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   imports: [
@@ -16,11 +18,6 @@ import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: ':memory:',
-      // host: process.env.DB_HOST ?? 'localhost',
-      // port: +(process.env.DB_PORT ?? 5432),
-      // username: process.env.DB_USER ?? 'test',
-      // password: process.env.DB_PASS ?? 'test',
-      // database: process.env.DB_NAME ?? 'hindeara',
       autoLoadEntities: true,
       synchronize: true,
     }),
@@ -30,6 +27,7 @@ import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
     AlfaAppInterfaceModule,
     UsersModule,
     ChatGPTModule,
+    CommonModule,
   ],
   controllers: [PlatformController],
   providers: [PlatformService],

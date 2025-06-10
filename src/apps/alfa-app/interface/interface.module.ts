@@ -6,6 +6,7 @@ import { AppEventsModule } from 'src/hindeara-platform/app-events/app-events.mod
 import { UserEventsModule } from 'src/hindeara-platform/user-events/user-events.module';
 import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
 import { PhonemesModule } from '../phonemes/phonemes.module';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PhonemesModule } from '../phonemes/phonemes.module';
     UserEventsModule,
     ChatGPTModule,
     PhonemesModule,
+    CommonModule,
   ],
   controllers: [InterfaceController],
   providers: [AlfaAppInterfaceService],

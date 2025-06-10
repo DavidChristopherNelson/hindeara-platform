@@ -1,6 +1,6 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Query } from '@nestjs/common';
 import { ChatGPTService } from './chatgpt.service';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @ApiTags('chatgpt')
@@ -13,13 +13,16 @@ export class ChatGPTController {
     schema: {
       type: 'object',
       properties: {
-        message: {
-          type: 'string',
-          example: 'What is the capital of France?',
-        },
+        message: { type: 'string', example: 'What is the capital of France?' },
       },
       required: ['message'],
     },
+  })
+  @ApiQuery({
+    name: 'locale',
+    required: false,
+    example: 'en',
+    description: 'Locale code (`en` or `hi`). Defaults to `en`.',
   })
   @ApiResponse({
     status: 201,
@@ -27,16 +30,16 @@ export class ChatGPTController {
     schema: {
       type: 'object',
       properties: {
-        reply: {
-          type: 'string',
-          example: 'The capital of France is Paris.',
-        },
+        reply: { type: 'string', example: 'The capital of France is Paris.' },
       },
     },
   })
   @LogMethod()
-  async chat(@Body('message') userPrompt: string) {
-    return this.chatGPTService.sendMessage(userPrompt);
+  async chat(
+    @Body('message') userPrompt: string,
+    @Query('locale') locale = 'en',
+  ) {
+    return this.chatGPTService.sendMessage({ userPrompt, locale });
   }
 
   @Post('/chat/boolean')
@@ -59,11 +62,9 @@ export class ChatGPTController {
   })
   @LogMethod()
   async chatBoolean(@Body('message') userPrompt: string) {
-    return this.chatGPTService.sendMessage(
+    return this.chatGPTService.sendMessage({
       userPrompt,
-      'You are a helpful assistant.',
-      'gpt-4o-mini',
-      'boolean',
-    );
+      tool: 'boolean',
+    });
   }
 }

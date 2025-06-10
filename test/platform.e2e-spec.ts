@@ -35,9 +35,10 @@ describe('PlatformController (e2e)', () => {
     }).compile();
 
     nestApp = moduleFixture.createNestApplication({
-      logger: false /*new Logger('E2E')*/,
+      logger: new Logger('E2E'),
     });
     await nestApp.init();
+    nestApp.useLogger(['log', 'debug', 'warn', 'error', 'verbose']);
 
     userRepo = nestApp.get<Repository<User>>(getRepositoryToken(User));
     appRepo = nestApp.get<Repository<App>>(getRepositoryToken(App));

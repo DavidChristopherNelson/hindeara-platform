@@ -21,7 +21,8 @@ interface RawAppEventWithIds {
   appId: number;
 }
 
-interface AppEventWithIds extends Omit<RawAppEventWithIds, 'event_isComplete'> {
+export interface AppEventWithIds
+  extends Omit<RawAppEventWithIds, 'event_isComplete'> {
   event_isComplete: boolean; // mapped to boolean before return
 }
 

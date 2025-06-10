@@ -1,9 +1,11 @@
 //src/hindeara-platform/app-events/app-events.controller.ts
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { AppEventsService } from './app-events.service';
 import { AppEvent } from './entities/app-event.entity';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { findAllFilter } from './dto/find-all-filter.dto';
+import { AppEventWithIds } from './app-events.service';
 
 @ApiTags('appEvents')
 @Controller('app-events')
@@ -17,8 +19,8 @@ export class AppEventsController {
     type: [AppEvent],
   })
   @LogMethod()
-  async findAll(): Promise<AppEvent[]> {
-    return this.appEventsService.findAll();
+  async findAll(@Query() filter: findAllFilter): Promise<AppEventWithIds[]> {
+    return this.appEventsService.findAll(filter ?? {});
   }
 
   @Get(':id')

@@ -17,6 +17,7 @@ import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { PhonemesService } from '../phonemes/phonemes.service';
 import { UiDataDto } from './dto/ui-data.dto';
 import { PlatformService } from 'src/hindeara-platform/platform/platform.service';
+import { UtilsService } from 'src/common/utils.service';
 
 type LessonContext = Readonly<{
   userId: number;
@@ -39,6 +40,7 @@ export class AlfaAppInterfaceService {
     private readonly chatgptService: ChatGPTService,
     private readonly phonemesService: PhonemesService,
     private readonly platformService: PlatformService,
+    private readonly utilsService: UtilsService,
   ) {}
 
   @LogMethod()
@@ -97,7 +99,7 @@ export class AlfaAppInterfaceService {
           userId,
           2,
         ),
-        this.platformService.currentLocale({ userId }),
+        this.utilsService.currentLocale({ userId }),
       ]);
     if (!latestUserEvent) {
       throw new Error(
@@ -108,7 +110,7 @@ export class AlfaAppInterfaceService {
     // If there is a valid lesson then use it's state otherwise create a new
     // lesson.
     const isLatestAppEventValid =
-      !!(await this.platformService.isAppEventValid(latestAppEvent));
+      !!(await this.utilsService.isAppEventValid(latestAppEvent));
     let lessonActor: ActorRefFrom<typeof lessonMachine>;
     if (isLatestAppEventValid) {
       const latestMiniLesson =
