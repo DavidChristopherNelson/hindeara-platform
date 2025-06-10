@@ -14,6 +14,7 @@ import { lessonMachine } from 'src/apps/alfa-app/state/state.machine';
 import { App } from 'src/hindeara-platform/apps/entities/app.entity';
 import { PhonemesModule } from 'src/apps/alfa-app/phonemes/phonemes.module';
 import { PhonemesService } from 'src/apps/alfa-app/phonemes/phonemes.service';
+import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 
 describe('PlatformController (e2e)', () => {
   let nestApp: INestApplication;
@@ -32,7 +33,14 @@ describe('PlatformController (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [PlatformModule, PhonemesModule],
-    }).compile();
+    })
+      .overrideProvider(ChatGPTService)
+      .useValue({
+        sendMessage: jest.fn().mockResolvedValue('mock-reply'),
+        getStringFromAI: jest.fn().mockResolvedValue('mock-reply'),
+        getBooleanFromAI: jest.fn().mockResolvedValue(true),
+      })
+      .compile();
 
     nestApp = moduleFixture.createNestApplication({
       logger: new Logger('E2E'),
@@ -61,6 +69,7 @@ describe('PlatformController (e2e)', () => {
     // ---- SEED ----
     phonemesService = nestApp.get(PhonemesService);
     await phonemesService.seedEnglishAlphabet();
+    await phonemesService.seedHindiAlphabet();
 
     // Create an app for testing
     await appRepo.save(
@@ -76,13 +85,10 @@ describe('PlatformController (e2e)', () => {
   });
 
   it('POST /users/:userId/processUserInput should create all necessary records', async () => {
-    const payload = {
-      recording: 'test-recording',
-    };
-
     const res = await request(server)
       .post(`/users/${createdUser.id}/processUserInput`)
-      .send(payload)
+      .set('Accept-Language', 'en')
+      .send({ recording: 'test-recording' })
       .expect(201);
 
     // Verify response structure

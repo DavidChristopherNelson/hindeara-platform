@@ -16,7 +16,6 @@ import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.en
 import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { PhonemesService } from '../phonemes/phonemes.service';
 import { UiDataDto } from './dto/ui-data.dto';
-import { PlatformService } from 'src/hindeara-platform/platform/platform.service';
 import { UtilsService } from 'src/common/utils.service';
 
 type LessonContext = Readonly<{
@@ -39,7 +38,6 @@ export class AlfaAppInterfaceService {
     private readonly userEventsService: UserEventsService,
     private readonly chatgptService: ChatGPTService,
     private readonly phonemesService: PhonemesService,
-    private readonly platformService: PlatformService,
     private readonly utilsService: UtilsService,
   ) {}
 
