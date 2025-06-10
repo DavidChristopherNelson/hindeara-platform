@@ -40,12 +40,19 @@ export class ChatGPTService {
   private readonly apiKey = process.env.OPENAI_API_KEY ?? '';
 
   @LogMethod()
-  async sendMessage(
-    userPrompt: string,
-    roleContent: string = 'You are a helpful assistant.',
-    model: string = 'gpt-4o-mini',
-    tool: ToolName = 'string',
-  ): Promise<string | boolean> {
+  async sendMessage({
+    userPrompt,
+    roleContent = 'You are a helpful assistant.',
+    model = 'gpt-4o-mini',
+    tool = 'string',
+    locale = 'en',
+  }: {
+    userPrompt: string;
+    roleContent?: string;
+    model?: string;
+    tool?: ToolName;
+    locale?: string;
+  }): Promise<string | boolean> {
     const payload = {
       model,
       messages: [
@@ -54,12 +61,31 @@ export class ChatGPTService {
       ],
     };
 
+    let setResponseLanguage: string;
+    switch (locale) {
+      case 'en':
+        setResponseLanguage =
+          'Provide all answers in English (en-US) using the Roman script.';
+        break;
+      case 'hi':
+        setResponseLanguage =
+          'सभी उत्तर हिंदी (hi-IN) में देवनागरी लिपि का उपयोग करके दें। अंग्रेज़ी या रोमन लिपि का प्रयोग न करें।';
+        break;
+      default:
+        throw new Error(`Unknown language detected. locale = ${locale}`);
+    }
+
     console.log(`tool: ${tool}`);
+
     switch (tool) {
       case 'boolean':
         console.log('switch getBooleanFromAI');
         return this.getBooleanFromAI(payload);
       case 'string':
+        payload.messages.unshift({
+          role: 'system',
+          content: setResponseLanguage,
+        });
         return this.getStringFromAI(payload);
       default:
         throw new Error('Invalid AI call.');

@@ -15,6 +15,9 @@ export class MiniLessonDto {
   @ApiProperty({ example: 'cat' })
   word: string;
 
+  @ApiProperty({ example: 'hi' })
+  locale: string;
+
   @ApiProperty({
     description: 'XState snapshot serialised as JSON',
     type: Object,

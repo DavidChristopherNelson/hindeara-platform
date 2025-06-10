@@ -92,6 +92,7 @@ export class PlatformService {
       params.user ?? (await this.usersService.findOne(params.userId));
     if (!user) throw new Error('Unable to find user.');
     const locale = await this.currentLocale({ user });
+    // Todo: convert this into a global variable.
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60_000).toISOString();
 
     const allPotentiallyValidAppEvents = await this.appEventsService.findAll({
@@ -131,6 +132,7 @@ export class PlatformService {
     const user =
       params.user ?? (await this.usersService.findOne(params.userId));
     if (!user) throw new Error('Unable to find user.');
+
     const userEvent = await this.userEventsService.findMostRecentByUserId(
       user.id,
     );

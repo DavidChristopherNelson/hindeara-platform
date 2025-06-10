@@ -24,6 +24,9 @@ export class MiniLesson {
   @Column()
   word: string;
 
+  @Column()
+  locale: string;
+
   @Column({
     type: 'simple-json',
   })

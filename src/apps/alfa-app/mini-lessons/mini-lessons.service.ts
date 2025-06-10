@@ -5,12 +5,14 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { PhonemesService } from '../phonemes/phonemes.service';
 
 @Injectable()
 export class MiniLessonsService {
   constructor(
     @InjectRepository(MiniLesson)
     private miniLessonRepository: Repository<MiniLesson>,
+    private readonly phonemesService: PhonemesService,
   ) {}
 
   @LogMethod()
@@ -70,48 +72,39 @@ export class MiniLessonsService {
   }
 
   @LogMethod()
-  async findAllWordsByUserId(userId: number): Promise<string[]> {
+  async findAllWordsByUserIdAndLocale(
+    userId: number,
+    locale: string,
+  ): Promise<string[]> {
     const result: { word: string }[] = await this.miniLessonRepository
       .createQueryBuilder('mini')
       .select('DISTINCT mini.word', 'word')
       .where('mini.userId = :userId', { userId })
+      .andWhere('mini.locale = :locale', { locale })
       .orderBy('mini.word', 'ASC')
       .getRawMany();
     return result.map((row) => row.word);
   }
 
   @LogMethod()
-  async findAllLettersByUserId(userId: number): Promise<string[]> {
-    // Step 1: Get letters from the database
-    const dbResult: { letter: string }[] = await this.miniLessonRepository
-      .createQueryBuilder('mini')
-      .innerJoin('mini.phoneme', 'phoneme')
-      .select('DISTINCT phoneme.letter', 'letter')
-      .where('mini.userId = :userId', { userId })
-      .orderBy('phoneme.letter', 'ASC')
-      .getRawMany();
-    const dbLetters = new Set(dbResult.map((row) => row.letter.toLowerCase()));
+  async findAllLettersByUserIdAndLocale(
+    userId: number,
+    locale: string,
+  ): Promise<string[]> {
+    const words = await this.findAllWordsByUserIdAndLocale(userId, locale);
 
-    // Step 2: Get all words by user
-    const words = await this.findAllWordsByUserId(userId);
+    const learntLetters = new Set<string>();
+    for (const letter of words.join('')) {
+      // Check for matching phoneme.
+      if (
+        !(await this.phonemesService.findByLetter(
+          letter.toLocaleLowerCase(locale),
+        ))
+      )
+        continue;
+      learntLetters.add(letter.toLocaleLowerCase(locale));
+    }
 
-    // Step 3: Extract unique letters from words
-    const lettersInWords = new Set(
-      words.flatMap((word) =>
-        word
-          .toLowerCase()
-          .replace(/[^a-z]/g, '')
-          .split(''),
-      ),
-    );
-
-    // Step 4: Find letters in words that are NOT in dbLetters
-    const missingLetters = [...lettersInWords].filter(
-      (letter) => !dbLetters.has(letter),
-    );
-
-    // Step 5: Combine and return all unique letters
-    const combined = new Set([...dbLetters, ...missingLetters]);
-    return Array.from(combined).sort(); // sorted alphabetically
+    return Array.from(learntLetters).sort((a, b) => a.localeCompare(b, locale));
   }
 }

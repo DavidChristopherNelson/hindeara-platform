@@ -1,5 +1,4 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { Phoneme } from '../../phonemes/entities/phoneme.entity';
 import { LessonSnapshot } from '../entities/mini-lesson.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -18,6 +17,11 @@ export class CreateMiniLessonDto {
   @IsNotEmpty()
   @IsString()
   word: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  locale: string;
 
   @ApiProperty()
   @IsNotEmpty()

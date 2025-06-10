@@ -33,5 +33,6 @@ import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
   ],
   controllers: [PlatformController],
   providers: [PlatformService],
+  exports: [PlatformService],
 })
 export class PlatformModule {}
