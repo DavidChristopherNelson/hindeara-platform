@@ -11,7 +11,7 @@ import { AppsService } from './apps.service';
 import { CreateAppDto } from './dto/create-app.dto';
 import { UpdateAppDto } from './dto/update-app.dto';
 import { App } from './entities/app.entity';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @Controller('apps')
@@ -42,6 +42,7 @@ export class AppsController {
   }
 
   @Get(':id')
+  @ApiParam({ name: 'id', type: Number, required: true, description: 'ID' })
   @ApiResponse({
     status: 200,
     description: 'Returns the app that matches the id.',
@@ -53,6 +54,7 @@ export class AppsController {
   }
 
   @Patch(':id')
+  @ApiParam({ name: 'id', type: Number, required: true, description: 'ID' })
   @ApiBody({ type: UpdateAppDto })
   @ApiResponse({ status: 200, description: 'App updated.', type: App })
   @ApiResponse({ status: 404, description: 'App not found.' })

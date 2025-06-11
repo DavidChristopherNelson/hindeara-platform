@@ -1,4 +1,4 @@
-// src/users/dto/user.dto.ts
+// src/hindeara-platform/users/dto/user.dto.ts
 import { Expose, Transform } from 'class-transformer';
 import type { TransformFnParams } from 'class-transformer';
 import type { User } from '../entities/user.entity';

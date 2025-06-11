@@ -1,3 +1,4 @@
+// src/hindeara-platform/users/users.controller.ts
 import {
   Controller,
   Get,
@@ -15,7 +16,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserByIdPipe } from './pipes/user-by-id.pipe';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @ApiTags('users')
@@ -47,6 +48,12 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    description: 'User ID',
+  })
   @ApiResponse({
     status: 200,
     description: 'Returns the user with a matching id.',
@@ -62,6 +69,12 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    description: 'User ID',
+  })
   @ApiBody({ type: UpdateUserDto })
   @ApiResponse({ status: 200, description: 'User updated.', type: User })
   @ApiResponse({ status: 404, description: 'User not found.' })
@@ -74,6 +87,12 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    description: 'User ID',
+  })
   @ApiResponse({ status: 204, description: 'User deleted.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @HttpCode(HttpStatus.NO_CONTENT)

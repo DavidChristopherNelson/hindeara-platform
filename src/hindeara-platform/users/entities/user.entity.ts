@@ -1,3 +1,4 @@
+// src/hindeara-platform/users/entities/user.entity.ts
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
 import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';

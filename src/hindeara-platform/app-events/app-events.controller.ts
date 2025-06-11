@@ -2,7 +2,7 @@
 import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { AppEventsService } from './app-events.service';
 import { AppEvent } from './entities/app-event.entity';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import { findAllFilter } from './dto/find-all-filter.dto';
 import { AppEventWithIds } from './app-events.service';
@@ -24,6 +24,7 @@ export class AppEventsController {
   }
 
   @Get(':id')
+  @ApiParam({ name: 'id', type: Number, required: true, description: 'ID' })
   @ApiResponse({
     status: 200,
     description: 'Returns the appEvent that matches the id.',
