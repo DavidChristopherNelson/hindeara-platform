@@ -55,6 +55,13 @@ pids
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# ignore build output
+/dist/
+# ignore stray JS/DT/Maps emitted next to sources
+generated-api/**/*.js
+generated-api/**/*.d.ts
+generated-api/**/*.js.map
+tsconfig.build.tsbuildinfo
 
 # Programmer Quality of Life Files
 sandbox.*
