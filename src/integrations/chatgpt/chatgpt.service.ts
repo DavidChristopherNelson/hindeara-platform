@@ -43,7 +43,7 @@ export class ChatGPTService {
   async sendMessage({
     userPrompt,
     roleContent = 'You are a helpful assistant.',
-    model = 'gpt-4o-mini',
+    model = 'gpt-4o',
     tool = 'string',
     locale = 'en',
   }: {

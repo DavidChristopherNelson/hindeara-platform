@@ -31,7 +31,7 @@ export const lessonMachine = setup({
     word: {
       meta: {
         prompt:
-          'Please ask the student to sound out the word that they can see on the screen.',
+          'Please ask the student to sound out the word that they can see on the screen. (Do not name or describe the word yourself.)',
       },
       on: {
         CORRECT_ANSWER: { target: 'complete' },

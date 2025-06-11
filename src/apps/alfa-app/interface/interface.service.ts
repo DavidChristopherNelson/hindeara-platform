@@ -66,7 +66,7 @@ export class AlfaAppInterfaceService {
         ${getPrompt(ctx.lessonActor)}
         Please generate a unique response.
         ${await this.giveHint(ctx.lessonActor)}
-        Your response must only contain the actual words you want to communicate to the student.
+        Your response must only contain the actual words you want to communicate to the student **and must not include any emojis or emoticons**.
       `,
       locale: ctx.locale,
     });
@@ -159,7 +159,7 @@ export class AlfaAppInterfaceService {
         'You grade with exactness but ignore surrounding punctuation. \
         A student answer is correct iff, after lower-casing and stripping punctuation, \
         it contains the exact target token (or group of tokens) as a separate token (or group of tokens).',
-      model: 'gpt-4o-mini',
+      model: 'gpt-4o',
       tool: 'boolean',
       locale: ctx.locale,
     });
