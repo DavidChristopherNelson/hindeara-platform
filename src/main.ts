@@ -1,3 +1,4 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { PlatformModule } from './hindeara-platform/platform/platform.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -17,6 +18,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document); // at http://localhost:3000/api
-  await app.listen(process.env.PORT ?? 3001);
+  await app.listen(process.env.PORT || 3001, '0.0.0.0');
 }
 void bootstrap();
