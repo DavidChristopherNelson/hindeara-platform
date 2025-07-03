@@ -61,8 +61,8 @@ export class AlfaAppInterfaceService {
     const uiData: UiDataDto = { word, letter, picture, state };
     const recording = await this.chatgptService.sendMessage({
       userPrompt: `
-        For context this was the previous question that the student was asked: ${ctx.latestAppEvent?.recording}. 
-        And this is the student's previous response: ${ctx.latestUserEvent?.recording}. 
+        For context this was the previous question that the student was asked: ${ctx.transcription}. 
+        And this is the student's previous response: ${ctx.transcription}. 
         The student's previous response is ${JSON.stringify(answerStatus)}.
         ${getPrompt(ctx.lessonActor)}
         Please generate a unique response.
@@ -164,7 +164,7 @@ export class AlfaAppInterfaceService {
     if (!ctx.latestUserEvent) return { type: 'START_OF_LESSON' };
     const prompt = `
       Target token: "${await this.getAnswer(ctx.lessonActor)}".
-      Student's answer: "${ctx.latestUserEvent.recording}".
+      Student's answer: "${ctx.transcription}".
       Is the student's answer correct?
       `;
     const answer = await this.chatgptService.sendMessage({
