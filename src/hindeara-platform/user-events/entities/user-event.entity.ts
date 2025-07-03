@@ -13,7 +13,7 @@ export class UserEvent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'bytea' })
+  @Column()
   recording: Buffer;
 
   @Column()

@@ -1,3 +1,4 @@
+// test/platform.e2e-spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, Logger } from '@nestjs/common';
 import * as request from 'supertest';
@@ -85,10 +86,13 @@ describe('PlatformController (e2e)', () => {
   });
 
   it('POST /users/:userId/processUserInput should create all necessary records', async () => {
+    const dummyText = 'test-recording';
+    const base64Payload = Buffer.from(dummyText, 'utf8').toString('base64');
+
     const res = await request(server)
       .post(`/users/${createdUser.id}/processUserInput`)
       .set('Accept-Language', 'en')
-      .send({ recording: 'test-recording' })
+      .send({ recording: base64Payload })
       .expect(201);
 
     // Verify response structure
@@ -109,7 +113,7 @@ describe('PlatformController (e2e)', () => {
     });
 
     expect(userEvents.length).toBe(1);
-    expect(userEvents[0].recording).toBe('test-recording');
+    expect(userEvents[0].recording.toString('utf8')).toBe(dummyText);
 
     expect(appEvents.length).toBe(1);
     expect(appEvents[0].recording).toEqual(expect.any(String));
