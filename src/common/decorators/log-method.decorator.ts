@@ -3,12 +3,34 @@ import { Logger } from '@nestjs/common';
 
 type AnyFunc = (...args: unknown[]) => unknown;
 
+/** Per-value limit for very large strings (e.g. base-64 blobs). */
+const VALUE_LIMIT = 10000;
+/** After JSON-stringify, stop printing at this length as an absolute cap. */
+const LINE_LIMIT = 1000000;
+
+/** Replacer that truncates *string* values but leaves keys intact. */
+function truncatingReplacer(_: string, value: unknown): unknown {
+  if (typeof value === 'string' && value.length > VALUE_LIMIT) {
+    return value.slice(0, VALUE_LIMIT) + '…';
+  }
+  return value;
+}
+
+/** Utility used twice below. */
+function safeStringify(data: unknown): string {
+  try {
+    const json = JSON.stringify(data, truncatingReplacer);
+    return json.length > LINE_LIMIT ? json.slice(0, LINE_LIMIT) + '…' : json;
+  } catch {
+    return '«non-serialisable»';
+  }
+}
+
 /**
  * @LogMethod()
  *
  * Logs class name, method name, arguments, execution time, and—if JSON-serialisable—the result.
- * Contains **zero occurrences of `any`** and is therefore eslint-clean under the
- * default NestJS ESLint configuration.
+ * String values are truncated to 10 000 chars; whole log lines are capped at 100 000 chars.
  */
 export function LogMethod(): MethodDecorator {
   return (
@@ -16,7 +38,7 @@ export function LogMethod(): MethodDecorator {
     propertyKey: string | symbol,
     descriptor: PropertyDescriptor,
   ): void => {
-    // Original method cast once, in a single place, to a known-safe type.
+    // Preserve original
     const original = descriptor.value as AnyFunc;
 
     descriptor.value = function (...args: unknown[]) {
@@ -27,37 +49,26 @@ export function LogMethod(): MethodDecorator {
       const methodName = String(propertyKey);
       const logger = new Logger(className);
 
-      logger.log(`→ ${methodName} called with: ${JSON.stringify(args)}`);
+      logger.log(`→ ${methodName} called with: ${safeStringify(args)}`);
 
       const started = Date.now();
 
       /* ---------- invoke ---------- */
       const raw = original.apply(this, args) as unknown;
 
-      /* ---------- post-call helper (shared by sync + async paths) ---------- */
+      /* ---------- post-call helper (shared by sync + async) ---------- */
       const finish = (result: unknown): unknown => {
         const duration = Date.now() - started;
-
-        let printable = '«non-serialisable»';
-        try {
-          printable = JSON.stringify(result);
-        } catch {
-          /* ignore – some objects cannot be stringified */
-        }
-
         logger.log(
-          `← ${methodName} finished in ${duration} ms with: ${printable}`,
+          `← ${methodName} finished in ${duration} ms with: ${safeStringify(result)}`,
         );
         return result;
       };
 
-      /* If the user method returns a Promise, wait for it. */
-      if (raw instanceof Promise) {
-        return raw.then(finish) as unknown;
-      }
-
-      /* Synchronous return */
-      return finish(raw);
+      /* Promise-aware */
+      return raw instanceof Promise
+        ? (raw.then(finish) as unknown)
+        : finish(raw);
     };
   };
 }
