@@ -3,9 +3,14 @@ import { NestFactory } from '@nestjs/core';
 import { PlatformModule } from './hindeara-platform/platform/platform.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(PlatformModule);
+
+  app.use(bodyParser.json({ limit: '25mb' }));
+  app.use(bodyParser.urlencoded({ limit: '25mb', extended: true }));
+
   app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
     origin: [

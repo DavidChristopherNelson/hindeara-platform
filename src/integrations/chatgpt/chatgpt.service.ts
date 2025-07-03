@@ -2,7 +2,10 @@
 import type { ChatCompletion } from 'openai/resources/chat';
 import { Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
-import FormData from 'form-data';
+/* eslint-disable @typescript-eslint/no-require-imports --
+ * form-data is CommonJS-only (export =) so this is the correct form. */
+import FormData = require('form-data');
+/* eslint-enable @typescript-eslint/no-require-imports */
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import {
   PlainStringResponseSchema,
