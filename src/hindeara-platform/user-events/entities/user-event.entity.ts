@@ -1,3 +1,4 @@
+// src/hindeara-platform/user-events/entities/user-event.entity.ts
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import {
   Column,
@@ -12,8 +13,8 @@ export class UserEvent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  recording: string;
+  @Column({ type: 'bytea' })
+  recording: Buffer;
 
   @Column()
   locale: string;

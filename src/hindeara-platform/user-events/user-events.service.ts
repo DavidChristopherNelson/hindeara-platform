@@ -20,6 +20,7 @@ export class UserEventsService {
   ): Promise<UserEvent> {
     const event = this.userEventRepository.create({
       ...createUserEventDto,
+      recording: Buffer.from(createUserEventDto.recording, 'base64'),
       user,
     });
     return this.userEventRepository.save(event);

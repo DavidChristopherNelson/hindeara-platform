@@ -1,3 +1,4 @@
+// src/hindeara-platform/user-events/dto/user-event.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 
