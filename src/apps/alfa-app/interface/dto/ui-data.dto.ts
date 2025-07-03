@@ -1,3 +1,4 @@
+// src/apps/alfa-app/interface/dto/ui-data.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UiDataDto {
@@ -10,6 +11,9 @@ export class UiDataDto {
   @ApiProperty({ example: 'apple.png' })
   picture: string;
 
-  @ApiProperty({ example: 'apple.png' })
+  @ApiProperty({ example: 'letter' })
   state: string;
+
+  @ApiProperty({ example: 'It is a cat!' })
+  transcript: string | null;
 }

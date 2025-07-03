@@ -26,7 +26,7 @@ type LessonContext = Readonly<{
   isFirstRun: boolean;
   locale: string;
   isLatestAppEventValid: boolean;
-  transcription: string | null;
+  transcript: string | null;
 }>;
 
 @Injectable()
@@ -58,11 +58,18 @@ export class AlfaAppInterfaceService {
     const phoneme = await this.phonemesService.findByLetter(letter);
     if (!phoneme) throw new Error('Unable to find phoneme.');
     const picture: string = phoneme.example_image;
-    const uiData: UiDataDto = { word, letter, picture, state };
+    const uiData: UiDataDto = {
+      word,
+      letter,
+      picture,
+      state,
+      transcript: ctx.transcript,
+    };
+
     const recording = await this.chatgptService.sendMessage({
       userPrompt: `
-        For context this was the previous question that the student was asked: ${ctx.transcription}. 
-        And this is the student's previous response: ${ctx.transcription}. 
+        For context this was the previous question that the student was asked: ${ctx.transcript}. 
+        And this is the student's previous response: ${ctx.transcript}. 
         The student's previous response is ${JSON.stringify(answerStatus)}.
         ${getPrompt(ctx.lessonActor)}
         Please generate a unique response.
@@ -106,9 +113,9 @@ export class AlfaAppInterfaceService {
         'No latestUserEvent found. This should not have happened.',
       );
     }
-    let transcription: string | null = null;
+    let transcript: string | null = null;
     try {
-      transcription = await this.chatgptService.transcribeAudio(
+      transcript = await this.chatgptService.transcribeAudio(
         latestUserEvent.recording,
         locale,
       );
@@ -147,7 +154,7 @@ export class AlfaAppInterfaceService {
       isFirstRun: !latestAppEvent,
       locale,
       isLatestAppEventValid,
-      transcription,
+      transcript,
     } as const;
   }
 
@@ -164,7 +171,7 @@ export class AlfaAppInterfaceService {
     if (!ctx.latestUserEvent) return { type: 'START_OF_LESSON' };
     const prompt = `
       Target token: "${await this.getAnswer(ctx.lessonActor)}".
-      Student's answer: "${ctx.transcription}".
+      Student's answer: "${ctx.transcript}".
       Is the student's answer correct?
       `;
     const answer = await this.chatgptService.sendMessage({
