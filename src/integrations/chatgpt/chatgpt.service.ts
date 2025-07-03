@@ -1,6 +1,8 @@
+// src/integrations/chatgpt/chatgpt.service.ts
 import type { ChatCompletion } from 'openai/resources/chat';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
+import FormData from 'form-data';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import {
   PlainStringResponseSchema,
@@ -38,6 +40,7 @@ type ToolName = 'string' | 'boolean';
 export class ChatGPTService {
   private readonly apiUrl = 'https://api.openai.com/v1/chat/completions';
   private readonly apiKey = process.env.OPENAI_API_KEY ?? '';
+  private readonly log = new Logger(ChatGPTService.name);
 
   @LogMethod()
   async sendMessage({
@@ -154,5 +157,41 @@ export class ChatGPTService {
       }
       throw new Error('OpenAI request failed: unknown error');
     }
+  }
+
+  @LogMethod()
+  async transcribeAudio(
+    audio: Buffer,
+    locale: string,
+    model: string = 'gpt-4o-transcribe',
+  ): Promise<string> {
+    /* Build multipart/form-data body ---------------------------------- */
+    const form = new FormData();
+    form.append('file', audio, {
+      filename: 'audio.webm',
+      contentType: 'audio/webm',
+    });
+    form.append('model', model);
+    form.append('response_format', 'json');
+    form.append('language', locale);
+
+    /* Compose headers -------------------------------------------------- */
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${this.apiKey}`,
+      ...form.getHeaders(),
+    };
+
+    type TranscriptionResponse = { text: string };
+
+    const { data } = await axios.post<TranscriptionResponse>(
+      'https://api.openai.com/v1/audio/transcriptions',
+      form,
+      { headers, timeout: 20_000 },
+    );
+
+    if (typeof data?.text !== 'string') {
+      throw new Error('Unexpected transcription response');
+    }
+    return data.text.trim();
   }
 }

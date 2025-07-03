@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { AppEventsService } from 'src/hindeara-platform/app-events/app-events.service';
 import { CreateAppEventDto } from 'src/hindeara-platform/app-events/dto/create-app-event.dto';
 import { MiniLessonsService } from 'src/apps/alfa-app/mini-lessons/mini-lessons.service';
@@ -26,6 +26,7 @@ type LessonContext = Readonly<{
   isFirstRun: boolean;
   locale: string;
   isLatestAppEventValid: boolean;
+  transcription: string | null;
 }>;
 
 @Injectable()
@@ -105,6 +106,18 @@ export class AlfaAppInterfaceService {
         'No latestUserEvent found. This should not have happened.',
       );
     }
+    let transcription: string | null = null;
+    try {
+      transcription = await this.chatgptService.transcribeAudio(
+        latestUserEvent.recording,
+        locale,
+      );
+    } catch (err) {
+      /* Do not crash the flow – just log for later inspection */
+      new Logger(AlfaAppInterfaceService.name).warn(
+        `STT failed for user ${userId}: ${(err as Error).message}`,
+      );
+    }
 
     // If there is a valid lesson then use it's state otherwise create a new
     // lesson.
@@ -134,6 +147,7 @@ export class AlfaAppInterfaceService {
       isFirstRun: !latestAppEvent,
       locale,
       isLatestAppEventValid,
+      transcription,
     } as const;
   }
 
