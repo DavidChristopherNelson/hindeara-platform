@@ -18,11 +18,6 @@ import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { PhonemesService } from '../phonemes/phonemes.service';
 import { UiDataDto } from './dto/ui-data.dto';
 import { UtilsService } from 'src/common/utils.service';
-import * as DL from 'talisman/metrics/damerau-levenshtein';
-
-const damerauLevenshtein: (a: string, b: string) => number =
-  (DL as unknown as (a: string, b: string) => number) ||
-  (DL as { default: (a: string, b: string) => number }).default;
 
 type LessonContext = Readonly<{
   userId: number;
@@ -213,23 +208,14 @@ export class AlfaAppInterfaceService {
     const t = this.cleanForCompare(target);
     const s = this.cleanForCompare(student);
 
-    // ──────────────────────────────────────────────────────────────
-    // 1. “obvious” positives → exact, prefix, whole-cluster contain
-    // ──────────────────────────────────────────────────────────────
     const obvious =
       s === t || // exact
       s.startsWith(t) || // prefix (e.g. क  →  कल, कब…)
       new RegExp(`\\b${t}\\b`, 'u').test(s); // isolated cluster
 
     if (t.length === 1) {
-      // Single grapheme target: ONLY accept the obvious matches.
       return obvious;
     }
-
-    // ──────────────────────────────────────────────────────────────
-    // 2. Multi-letter target → allow one Damerau-Levenshtein edit
-    //    e.g. कलम  →  कलाम  (insertion of ‘ा’)
-    // ──────────────────────────────────────────────────────────────
 
     return s === t;
   }
