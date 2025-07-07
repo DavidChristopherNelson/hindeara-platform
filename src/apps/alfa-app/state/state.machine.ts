@@ -57,7 +57,7 @@ export const lessonMachine = setup({
     image: {
       meta: {
         prompt:
-          'Please gently tell the student they got the previous answer wrong. Please briefly encourage the student. The student can see a image on a screen. Please ask the student what the image is of.',
+          'Please briefly encourage the student. The student can see a image on a screen. Please ask the student what the image is of.',
       },
       on: {
         CORRECT_ANSWER: { target: 'letterImage' },

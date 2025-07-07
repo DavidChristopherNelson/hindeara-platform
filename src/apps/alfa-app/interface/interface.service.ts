@@ -1,3 +1,4 @@
+// src/apps/alfa-app/interface/interface.service.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { AppEventsService } from 'src/hindeara-platform/app-events/app-events.service';
 import { CreateAppEventDto } from 'src/hindeara-platform/app-events/dto/create-app-event.dto';
@@ -17,6 +18,11 @@ import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { PhonemesService } from '../phonemes/phonemes.service';
 import { UiDataDto } from './dto/ui-data.dto';
 import { UtilsService } from 'src/common/utils.service';
+import * as DL from 'talisman/metrics/damerau-levenshtein';
+
+const damerauLevenshtein: (a: string, b: string) => number =
+  (DL as unknown as (a: string, b: string) => number) ||
+  (DL as { default: (a: string, b: string) => number }).default;
 
 type LessonContext = Readonly<{
   userId: number;
@@ -75,6 +81,7 @@ export class AlfaAppInterfaceService {
         Please generate a unique response.
         ${await this.giveHint(ctx.lessonActor)}
         Your response must only contain the actual words you want to communicate to the student **and must not include any emojis or emoticons**.
+        Your response must be less than 15 words. 
       `,
       locale: ctx.locale,
     });
@@ -169,22 +176,62 @@ export class AlfaAppInterfaceService {
     if (!ctx.isLatestAppEventValid) return { type: 'START_OF_LESSON' };
     if (!ctx.latestAppEvent) return { type: 'START_OF_LESSON' };
     if (!ctx.latestUserEvent) return { type: 'START_OF_LESSON' };
+
+    const target = await this.getAnswer(ctx.lessonActor);
+    const studentAnswer = ctx.transcript ?? '';
+
+    /* ---------- local fuzzy pass for single letters ---------- */
+    if (this.isLooseMatch(target, studentAnswer)) {
+      return { type: 'CORRECT_ANSWER' };
+    }
     const prompt = `
-      Target token: "${await this.getAnswer(ctx.lessonActor)}".
-      Student's answer: "${ctx.transcript}".
+      Target token: "${target}".
+      Student's answer: "${studentAnswer}".
       Is the student's answer correct?
       `;
     const answer = await this.chatgptService.sendMessage({
       userPrompt: prompt,
       roleContent:
-        'You grade with exactness but ignore surrounding punctuation. \
-        A student answer is correct iff, after lower-casing and stripping punctuation, \
-        it contains the exact target token (or group of tokens) as a separate token (or group of tokens).',
+        "A student's answer is correct if it contains the exact target token \
+        or only differs from the target token by a little bit.",
       model: 'gpt-4o',
       tool: 'boolean',
       locale: ctx.locale,
     });
     return answer ? { type: 'CORRECT_ANSWER' } : { type: 'INCORRECT_ANSWER' };
+  }
+
+  private cleanForCompare(str: string): string {
+    return str
+      .normalize('NFC')
+      .replace(/[^\p{L}\p{M}]+/gu, '') // drop punctuation/space
+      .toLowerCase();
+  }
+
+  @LogMethod()
+  private isLooseMatch(target: string, student: string): boolean {
+    const t = this.cleanForCompare(target);
+    const s = this.cleanForCompare(student);
+
+    // ──────────────────────────────────────────────────────────────
+    // 1. “obvious” positives → exact, prefix, whole-cluster contain
+    // ──────────────────────────────────────────────────────────────
+    const obvious =
+      s === t || // exact
+      s.startsWith(t) || // prefix (e.g. क  →  कल, कब…)
+      new RegExp(`\\b${t}\\b`, 'u').test(s); // isolated cluster
+
+    if (t.length === 1) {
+      // Single grapheme target: ONLY accept the obvious matches.
+      return obvious;
+    }
+
+    // ──────────────────────────────────────────────────────────────
+    // 2. Multi-letter target → allow one Damerau-Levenshtein edit
+    //    e.g. कलम  →  कलाम  (insertion of ‘ा’)
+    // ──────────────────────────────────────────────────────────────
+
+    return s === t;
   }
 
   @LogMethod()
@@ -196,7 +243,7 @@ export class AlfaAppInterfaceService {
     const letter = word[snap.context.index];
     const phoneme = await this.phonemesService.findByLetter(letter);
     if (!phoneme) throw new Error('Unable to find phoneme.');
-    const image = phoneme.example_image.replace(/\.[^.]+$/, '');
+    const exampleNoun = phoneme.example_noun;
 
     switch (snap.value) {
       case 'word':
@@ -204,7 +251,7 @@ export class AlfaAppInterfaceService {
       case 'letter':
         return letter;
       case 'image':
-        return image;
+        return exampleNoun;
       case 'letterImage':
         return letter;
       default:
