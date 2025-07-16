@@ -49,8 +49,11 @@ export class AlfaAppInterfaceService {
     const ctx = await this.buildContext(userId);
 
     // Calculate new state
-    const answerStatus = await this.evaluateAnswer(ctx);
-    ctx.lessonActor.send(answerStatus);
+    if (ctx.isLatestAppEventValid) {
+      const correctAnswer = await this.getAnswer(ctx.lessonActor);
+      const studentAnswer = ctx.transcript ?? '';
+      ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
+    }
 
     // Generate return data
     const state = ctx.lessonActor.getSnapshot().value;
@@ -71,7 +74,6 @@ export class AlfaAppInterfaceService {
       userPrompt: `
         For context this was the previous question that the student was asked: ${ctx.transcript}. 
         And this is the student's previous response: ${ctx.transcript}. 
-        The student's previous response is ${JSON.stringify(answerStatus)}.
         ${getPrompt(ctx.lessonActor)}
         Please generate a unique response.
         ${await this.giveHint(ctx.lessonActor)}
@@ -158,66 +160,6 @@ export class AlfaAppInterfaceService {
       isLatestAppEventValid,
       transcript,
     } as const;
-  }
-
-  @LogMethod()
-  private async evaluateAnswer(
-    ctx: LessonContext,
-  ): Promise<
-    | { type: 'CORRECT_ANSWER' }
-    | { type: 'INCORRECT_ANSWER' }
-    | { type: 'START_OF_LESSON' }
-  > {
-    if (!ctx.isLatestAppEventValid) return { type: 'START_OF_LESSON' };
-    if (!ctx.latestAppEvent) return { type: 'START_OF_LESSON' };
-    if (!ctx.latestUserEvent) return { type: 'START_OF_LESSON' };
-
-    const target = await this.getAnswer(ctx.lessonActor);
-    const studentAnswer = ctx.transcript ?? '';
-
-    /* ---------- local fuzzy pass for single letters ---------- */
-    if (this.isLooseMatch(target, studentAnswer)) {
-      return { type: 'CORRECT_ANSWER' };
-    }
-    const prompt = `
-      Target token: "${target}".
-      Student's answer: "${studentAnswer}".
-      Is the student's answer correct?
-      `;
-    const answer = await this.chatgptService.sendMessage({
-      userPrompt: prompt,
-      roleContent:
-        "A student's answer is correct if it contains the exact target token \
-        or only differs from the target token by a little bit.",
-      model: 'gpt-4o',
-      tool: 'boolean',
-      locale: ctx.locale,
-    });
-    return answer ? { type: 'CORRECT_ANSWER' } : { type: 'INCORRECT_ANSWER' };
-  }
-
-  private cleanForCompare(str: string): string {
-    return str
-      .normalize('NFC')
-      .replace(/[^\p{L}\p{M}]+/gu, '') // drop punctuation/space
-      .toLowerCase();
-  }
-
-  @LogMethod()
-  private isLooseMatch(target: string, student: string): boolean {
-    const t = this.cleanForCompare(target);
-    const s = this.cleanForCompare(student);
-
-    const obvious =
-      s === t || // exact
-      s.startsWith(t) || // prefix (e.g. क  →  कल, कब…)
-      new RegExp(`\\b${t}\\b`, 'u').test(s); // isolated cluster
-
-    if (t.length === 1) {
-      return obvious;
-    }
-
-    return s === t;
   }
 
   @LogMethod()
