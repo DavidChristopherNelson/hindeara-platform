@@ -30,7 +30,7 @@ FAMILIES.forEach((fam, i) =>
 const sameFamily = (a: string, b: string) =>
   CONSONANT_TO_FAMILY.get(a) === CONSONANT_TO_FAMILY.get(b);
 
-type MarkArgs = { target: string; studentAnswer: string };
+type MarkArgs = { correctAnswer: string; studentAnswer: string };
 
 /* ───────── utility class ───────── */
 class EvaluateAnswer {
@@ -48,61 +48,64 @@ class EvaluateAnswer {
   /* public APIs --------------------------------------------------- */
 
   @LogMethod()
-  static markWord({ target, studentAnswer }: MarkArgs): boolean {
+  static markWord({ correctAnswer, studentAnswer }: MarkArgs): boolean {
     return studentAnswer
       .trim()
       .split(/\s+/)
-      .some((w) => w === target);
+      .some((w) => w === correctAnswer);
   }
 
   /* alias */
   @LogMethod()
-  static markImage({ target, studentAnswer }: MarkArgs): boolean {
-    return this.markWord(args);
+  static markImage({ correctAnswer, studentAnswer }: MarkArgs): boolean {
+    return this.markWord({ correctAnswer, studentAnswer });
   }
 
   @LogMethod()
-  static markLetter({ target, studentAnswer }: MarkArgs): boolean {
+  static markLetter({ correctAnswer, studentAnswer }: MarkArgs): boolean {
     const words = studentAnswer.trim().split(/\s+/);
-    const cCount = this.consonantCount(target);
+    const cCount = this.consonantCount(correctAnswer);
 
     return words.some((w) =>
       cCount === 1
-        ? this.markPhoneme(target, w)
+        ? this.markPhoneme(correctAnswer, w)
         : cCount === 2
-          ? this.markConjunct(target, w)
+          ? this.markConjunct(correctAnswer, w)
           : false,
     );
   }
 
-  private static markPhoneme(target: string, word: string): boolean {
-    if (word === target) return true;
+  private static markPhoneme(correctAnswer: string, word: string): boolean {
+    if (word === correctAnswer) return true;
 
-    if (sameFamily(word[0], target[0])) {
-      if (word.slice(1) === target.slice(1)) return true;
-      if (word.slice(1) === LONG_A && target.slice(1) === '') return true;
+    if (sameFamily(word[0], correctAnswer[0])) {
+      if (word.slice(1) === correctAnswer.slice(1)) return true;
+      if (word.slice(1) === LONG_A && correctAnswer.slice(1) === '') return true;
     }
     return false;
   }
 
-  private static markConjunct(target: string, word: string): boolean {
-    return word === target;
+  private static markConjunct(correctAnswer: string, word: string): boolean {
+    return word === correctAnswer;
   }
 
   @LogMethod()
-  static detectIncorrectEndMatra({ target, studentAnswer }: MarkArgs): boolean {
+  static detectIncorrectEndMatra({
+    correctAnswer,
+    studentAnswer,
+  }: MarkArgs): boolean {
     return studentAnswer
       .trim()
       .split(/\s+/)
-      .some((w) => w === target + LONG_A);
+      .some((w) => w === correctAnswer + LONG_A);
   }
 
   @LogMethod()
   static detectIncorrectMiddleMatra({
-    target,
+    correctAnswer,
     studentAnswer,
   }: MarkArgs): boolean {
-    const cleanT = target.normalize('NFC');
+    const cleanT = correctAnswer.normalize('NFC');
     const cleanS = studentAnswer.normalize('NFC');
 
     if (this.consonantCount(cleanT) !== 4) return false;
@@ -124,6 +127,7 @@ class EvaluateAnswer {
   }
 }
 
+export type { MarkArgs };
 export const markWord = (args: MarkArgs) => EvaluateAnswer.markWord(args);
 export const markImage = (args: MarkArgs) => EvaluateAnswer.markImage(args);
 export const markLetter = (args: MarkArgs) => EvaluateAnswer.markLetter(args);
