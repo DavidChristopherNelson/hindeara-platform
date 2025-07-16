@@ -1,13 +1,22 @@
 // src/apps/alfa-app/state/state.machine.ts
-import { ActorRefFrom, assign, setup, SnapshotFrom } from 'xstate';
+import { ActorRefFrom, and, assign, setup, SnapshotFrom } from 'xstate';
+import {
+  markWord,
+  markLetter,
+  markImage,
+  MarkArgs,
+} from './evaluate-answer.utils';
+
+type AnswerFn = (args: MarkArgs) => boolean;
 
 export const lessonMachine = setup({
   types: {
     context: {} as { word: string; index: number },
-    events: {} as
-      | { type: 'CORRECT_ANSWER' }
-      | { type: 'INCORRECT_ANSWER' }
-      | { type: 'START_OF_LESSON' },
+    events: {} as {
+      type: 'ANSWER';
+      correctAnswer: string;
+      studentAnswer: string;
+    },
   },
   actions: {
     incrementIndex: assign({
@@ -19,6 +28,17 @@ export const lessonMachine = setup({
   },
   guards: {
     isLastLetter: ({ context }) => context.index === context.word.length - 1,
+    checkAnswer: ({ event }, params: { fn: AnswerFn }) => {
+      if (!('correctAnswer' in event) || !('studentAnswer' in event)) {
+        throw new Error(
+          'checkAnswer guard requires both correctAnswer and studentAnswer on the event',
+        );
+      }
+      return params.fn({
+        correctAnswer: event.correctAnswer,
+        studentAnswer: event.studentAnswer,
+      });
+    },
   },
 }).createMachine({
   id: 'lesson',
@@ -35,9 +55,13 @@ export const lessonMachine = setup({
           'Please ask the student to sound out the word that they can see on the screen. (Do not name or describe the word yourself.)',
       },
       on: {
-        CORRECT_ANSWER: { target: 'complete' },
-        INCORRECT_ANSWER: { target: 'letter' },
-        START_OF_LESSON: { target: 'word' },
+        ANSWER: [
+          {
+            guard: { type: 'checkAnswer', params: { fn: markWord } },
+            target: 'complete',
+          },
+          { target: 'letter' },
+        ],
       },
     },
 
@@ -47,11 +71,22 @@ export const lessonMachine = setup({
           'Please also ask the student to sound out the letter that they can see on the screen. Do not say any letter in your response.',
       },
       on: {
-        CORRECT_ANSWER: [
-          { guard: 'isLastLetter', target: 'word', actions: 'resetIndex' },
-          { target: 'letter', actions: 'incrementIndex' },
+        ANSWER: [
+          {
+            guard: and([
+              'isLastLetter',
+              { type: 'checkAnswer', params: { fn: markLetter } },
+            ]),
+            target: 'word',
+            actions: 'resetIndex',
+          },
+          {
+            guard: { type: 'checkAnswer', params: { fn: markLetter } },
+            target: 'letter',
+            actions: 'incrementIndex',
+          },
+          { target: 'image' },
         ],
-        INCORRECT_ANSWER: { target: 'image' },
       },
     },
 
@@ -61,8 +96,13 @@ export const lessonMachine = setup({
           'Please briefly encourage the student. The student can see a image on a screen. Please ask the student what the image is of.',
       },
       on: {
-        CORRECT_ANSWER: { target: 'letterImage' },
-        INCORRECT_ANSWER: { target: 'image' },
+        ANSWER: [
+          {
+            guard: { type: 'checkAnswer', params: { fn: markImage } },
+            target: 'letterImage',
+          },
+          { target: 'image' },
+        ],
       },
     },
 
@@ -71,11 +111,22 @@ export const lessonMachine = setup({
         prompt: `The student can see a image on a screen. The student has just successfully identified the image. Please ask the student what the first sound of the object represented in the image.`,
       },
       on: {
-        CORRECT_ANSWER: [
-          { guard: 'isLastLetter', target: 'word', actions: 'resetIndex' },
-          { target: 'letter', actions: 'incrementIndex' },
+        ANSWER: [
+          {
+            guard: and([
+              'isLastLetter',
+              { type: 'checkAnswer', params: { fn: markLetter } },
+            ]),
+            target: 'word',
+            actions: 'resetIndex',
+          },
+          {
+            guard: { type: 'checkAnswer', params: { fn: markLetter } },
+            target: 'letter',
+            actions: 'incrementIndex',
+          },
+          { target: 'letterImage' },
         ],
-        INCORRECT_ANSWER: { target: 'letterImage' },
       },
     },
 
