@@ -80,7 +80,8 @@ class EvaluateAnswer {
 
     if (sameFamily(word[0], correctAnswer[0])) {
       if (word.slice(1) === correctAnswer.slice(1)) return true;
-      if (word.slice(1) === LONG_A && correctAnswer.slice(1) === '') return true;
+      if (word.slice(1) === LONG_A && correctAnswer.slice(1) === '')
+        return true;
     }
     return false;
   }
