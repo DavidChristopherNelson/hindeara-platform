@@ -1,3 +1,4 @@
+// src/apps/alfa-app/state/state.machine.ts
 import { ActorRefFrom, assign, setup, SnapshotFrom } from 'xstate';
 
 export const lessonMachine = setup({
