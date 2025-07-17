@@ -10,24 +10,52 @@ import {
 type AnswerFn = (args: MarkArgs) => boolean;
 
 export const lessonMachine = setup({
+  /*───────────────────────────*
+   *           TYPES           *
+   *───────────────────────────*/
   types: {
-    context: {} as { word: string; index: number },
+    context: {} as {
+      word: string;
+      index: number;
+      wordErrors: number;
+      imageErrors: number;
+      letterImageErrors: number;
+    },
     events: {} as {
       type: 'ANSWER';
       correctAnswer: string;
       studentAnswer: string;
     },
   },
+
+  /*───────────────────────────*
+   *          ACTIONS          *
+   *───────────────────────────*/
   actions: {
     incrementIndex: assign({
       index: ({ context }) => context.index + 1,
     }),
-    resetIndex: assign({
-      index: () => 0,
+    resetIndex: assign({ index: () => 0 }),
+    incrementWordErrors: assign({
+      wordErrors: ({ context }) => context.wordErrors + 1,
     }),
+    resetWordErrors: assign({ wordErrors: () => 0 }),
+    incrementImageErrors: assign({
+      imageErrors: ({ context }) => context.imageErrors + 1,
+    }),
+    resetImageErrors: assign({ imageErrors: () => 0 }),
+    incrementLetterImageErrors: assign({
+      letterImageErrors: ({ context }) => context.letterImageErrors + 1,
+    }),
+    resetLetterImageErrors: assign({ letterImageErrors: () => 0 }),
   },
+
+  /*───────────────────────────*
+   *          GUARDS           *
+   *───────────────────────────*/
   guards: {
     isLastLetter: ({ context }) => context.index === context.word.length - 1,
+
     checkAnswer: ({ event }, params: { fn: AnswerFn }) => {
       if (!('correctAnswer' in event) || !('studentAnswer' in event)) {
         throw new Error(
@@ -39,6 +67,12 @@ export const lessonMachine = setup({
         studentAnswer: event.studentAnswer,
       });
     },
+
+    /** third consecutive incorrect response (any index) */
+    thirdIncorrect: ({ context }) => {
+      const { wordErrors, imageErrors, letterImageErrors } = context;
+      return Math.max(wordErrors, imageErrors, letterImageErrors) >= 2;
+    },
   },
 }).createMachine({
   id: 'lesson',
@@ -46,8 +80,14 @@ export const lessonMachine = setup({
   context: ({ input }) => ({
     word: (input as { word?: string } | undefined)?.word ?? 'hat',
     index: 0,
+    wordErrors: 0,
+    imageErrors: 0,
+    letterImageErrors: 0,
   }),
 
+  /*───────────────────────────*
+   *          STATES           *
+   *───────────────────────────*/
   states: {
     word: {
       meta: {
@@ -60,7 +100,12 @@ export const lessonMachine = setup({
             guard: { type: 'checkAnswer', params: { fn: markWord } },
             target: 'complete',
           },
-          { target: 'letter' },
+          {
+            guard: 'thirdIncorrect',
+            target: 'complete',
+            actions: 'resetWordErrors',
+          },
+          { target: 'letter', actions: 'incrementWordErrors' },
         ],
       },
     },
@@ -78,12 +123,12 @@ export const lessonMachine = setup({
               { type: 'checkAnswer', params: { fn: markLetter } },
             ]),
             target: 'word',
-            actions: 'resetIndex',
+            actions: ['resetIndex', 'resetLetterImageErrors'],
           },
           {
             guard: { type: 'checkAnswer', params: { fn: markLetter } },
             target: 'letter',
-            actions: 'incrementIndex',
+            actions: ['incrementIndex', 'resetLetterImageErrors'],
           },
           { target: 'image' },
         ],
@@ -101,39 +146,65 @@ export const lessonMachine = setup({
             guard: { type: 'checkAnswer', params: { fn: markImage } },
             target: 'letterImage',
           },
-          { target: 'image' },
+          {
+            guard: 'thirdIncorrect',
+            target: 'letterImage',
+            actions: 'resetImageErrors',
+          },
+          { target: 'image', actions: 'incrementImageErrors' },
         ],
       },
     },
 
     letterImage: {
       meta: {
-        prompt: `The student can see a image on a screen. The student has just successfully identified the image. Please ask the student what the first sound of the object represented in the image.`,
+        prompt:
+          'The student can see a image on a screen. The student has just successfully identified the image. Please ask the student what the first sound of the object represented in the image.',
       },
       on: {
         ANSWER: [
+          /* correct & last letter → next word */
           {
             guard: and([
               'isLastLetter',
               { type: 'checkAnswer', params: { fn: markLetter } },
             ]),
             target: 'word',
-            actions: 'resetIndex',
+            actions: ['resetIndex', 'resetLetterImageErrors'],
           },
+          /* correct → next letter */
           {
             guard: { type: 'checkAnswer', params: { fn: markLetter } },
             target: 'letter',
-            actions: 'incrementIndex',
+            actions: ['incrementIndex', 'resetLetterImageErrors'],
           },
-          { target: 'letterImage' },
+          /* third incorrect & last letter → still advance to word */
+          {
+            guard: and(['isLastLetter', 'thirdIncorrect']),
+            target: 'word',
+            actions: ['resetIndex', 'resetLetterImageErrors'],
+          },
+          /* third incorrect → advance to next letter */
+          {
+            guard: 'thirdIncorrect',
+            target: 'letter',
+            actions: ['incrementIndex', 'resetLetterImageErrors'],
+          },
+          /* first or second incorrect → stay, increment error count */
+          {
+            target: 'letterImage',
+            actions: 'incrementLetterImageErrors',
+          },
         ],
       },
     },
 
+    /* ───────── COMPLETE ──────── */
     complete: {
       type: 'final',
       meta: {
-        prompt: `The student successfully read a word. Please congratulate them.`,
+        prompt:
+          'The student successfully read a word. Please congratulate them.',
       },
     },
   },
@@ -150,7 +221,6 @@ export const getIndex = (actor: LessonActor) =>
 export const getPrompt = (actor: LessonActor): string => {
   const snap = actor.getSnapshot();
   const meta = snap.getMeta() as Record<string, { prompt?: string }>;
-
   const key = `lesson.${snap.value as string}`;
   return meta[key]?.prompt ?? '';
 };
