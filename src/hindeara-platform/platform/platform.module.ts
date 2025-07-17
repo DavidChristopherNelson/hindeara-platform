@@ -11,6 +11,7 @@ import { AlfaAppInterfaceModule } from 'src/apps/alfa-app/interface/interface.mo
 import { UsersModule } from '../users/users.module';
 import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
 import { CommonModule } from 'src/common/common.module';
+import { StateModule } from 'src/apps/alfa-app/state/state.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CommonModule } from 'src/common/common.module';
     UsersModule,
     ChatGPTModule,
     CommonModule,
+    StateModule,
   ],
   controllers: [PlatformController],
   providers: [PlatformService],

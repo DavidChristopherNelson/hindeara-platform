@@ -45,14 +45,34 @@ class EvaluateAnswer {
     return c;
   }
 
+  private static clean(str: string): string {
+    return str
+      .normalize('NFC')
+      .trim()
+      .replace(/[^\p{L}\p{M}]/gu, '')
+      .toLocaleLowerCase();
+  }
+
   /* public APIs --------------------------------------------------- */
 
   @LogMethod()
   static markWord({ correctAnswer, studentAnswer }: MarkArgs): boolean {
-    return studentAnswer
-      .trim()
-      .split(/\s+/)
-      .some((w) => w === correctAnswer);
+    const cleanedCorrectAnswer = this.clean(correctAnswer);
+    const splitStudentAnswer = studentAnswer.split(/\s+/);
+    return splitStudentAnswer.some((w) => {
+      const cleanedW = this.clean(w);
+      if (cleanedW === cleanedCorrectAnswer) return true;
+
+      // Schwa deletion: ignore trailing long ā (ा) in correctAnswer
+      if (
+        cleanedCorrectAnswer.endsWith(LONG_A) &&
+        cleanedW === cleanedCorrectAnswer.slice(0, -1)
+      ) {
+        return true;
+      }
+
+      return false;
+    });
   }
 
   /* alias */
@@ -63,18 +83,30 @@ class EvaluateAnswer {
 
   @LogMethod()
   static markLetter({ correctAnswer, studentAnswer }: MarkArgs): boolean {
+    const cleanedCorrectAnswer = this.clean(correctAnswer);
     const words = studentAnswer.trim().split(/\s+/);
-    const cCount = this.consonantCount(correctAnswer);
+    const cCount = this.consonantCount(cleanedCorrectAnswer);
+    console.log('cleanedCorrectAnswer: ', cleanedCorrectAnswer);
+    console.log('words: ', words);
+    console.log('cCount: ', cCount);
 
-    return words.some((w) =>
-      cCount === 1
-        ? this.markPhoneme(correctAnswer, w)
-        : cCount === 2
-          ? this.markConjunct(correctAnswer, w)
-          : false,
-    );
+    return words.some((w) => {
+      const cleaned = this.clean(w);
+      console.log('cleaned: ', cleaned);
+      if (cCount === 1) {
+        console.log('inside cCount === 1 branch');
+        return this.markPhoneme(cleanedCorrectAnswer, cleaned);
+      } else if (cCount === 2) {
+        console.log('inside cCount === 2 branch');
+        return this.markConjunct(cleanedCorrectAnswer, cleaned);
+      } else {
+        console.log('inside else branch');
+        return false;
+      }
+    });
   }
 
+  @LogMethod()
   private static markPhoneme(correctAnswer: string, word: string): boolean {
     if (word === correctAnswer) return true;
 
@@ -86,6 +118,7 @@ class EvaluateAnswer {
     return false;
   }
 
+  @LogMethod()
   private static markConjunct(correctAnswer: string, word: string): boolean {
     return word === correctAnswer;
   }
