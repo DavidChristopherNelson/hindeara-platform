@@ -6,6 +6,7 @@ import {
   markImage,
   MarkArgs,
 } from './evaluate-answer.utils';
+import { identifyWrongCharacters } from './identify-wrong-characters.utils';
 
 type AnswerFn = (args: MarkArgs) => boolean;
 
@@ -16,6 +17,7 @@ export const lessonMachine = setup({
   types: {
     context: {} as {
       word: string;
+      wrongCharacters: string[];
       index: number;
       wordErrors: number;
       imageErrors: number;
@@ -32,6 +34,13 @@ export const lessonMachine = setup({
    *          ACTIONS          *
    *───────────────────────────*/
   actions: {
+    identifyWrongCharacters: assign({
+      wrongCharacters: ({ event }) =>
+        identifyWrongCharacters({
+          correct: event.correctAnswer,
+          student: event.studentAnswer,
+        }),
+    }),
     incrementIndex: assign({
       index: ({ context }) => context.index + 1,
     }),
@@ -54,7 +63,8 @@ export const lessonMachine = setup({
    *          GUARDS           *
    *───────────────────────────*/
   guards: {
-    isLastLetter: ({ context }) => context.index === context.word.length - 1,
+    isLastLetter: ({ context }) =>
+      context.index >= context.wrongCharacters.length - 1,
 
     checkAnswer: ({ event }, params: { fn: AnswerFn }) => {
       if (!('correctAnswer' in event) || !('studentAnswer' in event)) {
@@ -79,6 +89,7 @@ export const lessonMachine = setup({
   initial: 'word',
   context: ({ input }) => ({
     word: (input as { word?: string } | undefined)?.word ?? 'hat',
+    wrongCharacters: ['a'],
     index: 0,
     wordErrors: 0,
     imageErrors: 0,
@@ -105,7 +116,10 @@ export const lessonMachine = setup({
             target: 'complete',
             actions: 'resetWordErrors',
           },
-          { target: 'letter', actions: 'incrementWordErrors' },
+          {
+            target: 'letter',
+            actions: ['identifyWrongCharacters', 'incrementWordErrors'],
+          },
         ],
       },
     },
@@ -214,6 +228,9 @@ export type LessonSnapshot = SnapshotFrom<typeof lessonMachine>;
 type LessonActor = ActorRefFrom<typeof lessonMachine>;
 
 export const getWord = (actor: LessonActor) => actor.getSnapshot().context.word;
+
+export const getWrongCharacters = (actor: LessonActor) =>
+  actor.getSnapshot().context.wrongCharacters;
 
 export const getIndex = (actor: LessonActor) =>
   actor.getSnapshot().context.index;

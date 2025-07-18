@@ -8,6 +8,7 @@ import {
   getIndex,
   getPrompt,
   getWord,
+  getWrongCharacters,
   lessonMachine,
 } from '../state/state.machine';
 import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
@@ -58,7 +59,8 @@ export class AlfaAppInterfaceService {
     // Generate return data
     const state = ctx.lessonActor.getSnapshot().value;
     const word: string = getWord(ctx.lessonActor);
-    const letter: string = word[getIndex(ctx.lessonActor)];
+    const wrongCharacters: string[] = getWrongCharacters(ctx.lessonActor);
+    const letter: string = wrongCharacters[getIndex(ctx.lessonActor)];
     const phoneme = await this.phonemesService.findByLetter(letter);
     if (!phoneme) throw new Error('Unable to find phoneme.');
     const picture: string = phoneme.example_image;
@@ -72,8 +74,7 @@ export class AlfaAppInterfaceService {
 
     const recording = await this.chatgptService.sendMessage({
       userPrompt: `
-        For context this was the previous question that the student was asked: ${ctx.transcript}. 
-        And this is the student's previous response: ${ctx.transcript}. 
+        For context this was the student's previous response: ${ctx.transcript}. 
         ${getPrompt(ctx.lessonActor)}
         Please generate a unique response.
         ${await this.giveHint(ctx.lessonActor)}
@@ -167,8 +168,9 @@ export class AlfaAppInterfaceService {
     actor: ActorRefFrom<typeof lessonMachine>,
   ): Promise<string> {
     const snap = actor.getSnapshot();
-    const word = snap.context.word;
-    const letter = word[snap.context.index];
+    const word: string = getWord(actor);
+    const wrongCharacters: string[] = getWrongCharacters(actor);
+    const letter: string = wrongCharacters[getIndex(actor)];
     const phoneme = await this.phonemesService.findByLetter(letter);
     if (!phoneme) throw new Error('Unable to find phoneme.');
     const exampleNoun = phoneme.example_noun;

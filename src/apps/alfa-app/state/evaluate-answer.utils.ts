@@ -2,7 +2,9 @@
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 /* ───────── constants ───────── */
-const CONSONANT_SET = new Set('कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह'.split(''));
+const CONSONANT_SET = new Set(
+  'कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहabcdefghijklmnopqrstuvwxyz'.split(''),
+);
 
 const VOWEL_MATRA_SET = new Set(
   'ा ि ी ु ू ृ ॄ े ै ो ौ ॢ ॣ'.replace(/\s+/g, '').split(''),
