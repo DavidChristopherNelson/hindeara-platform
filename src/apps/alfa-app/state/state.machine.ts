@@ -5,6 +5,8 @@ import {
   markLetter,
   markImage,
   MarkArgs,
+  detectIncorrectEndMatra,
+  detectIncorrectMiddleMatra,
 } from './evaluate-answer.utils';
 import { identifyWrongCharacters } from './identify-wrong-characters.utils';
 
@@ -83,6 +85,29 @@ export const lessonMachine = setup({
       const { wordErrors, imageErrors, letterImageErrors } = context;
       return Math.max(wordErrors, imageErrors, letterImageErrors) >= 2;
     },
+
+    incorrectEndMatra: ({ event }) => {
+      return detectIncorrectEndMatra({
+        correctAnswer: event.correctAnswer,
+        studentAnswer: event.studentAnswer,
+      });
+    },
+
+    incorrectMiddleMatra: ({ event }) => {
+      return detectIncorrectMiddleMatra({
+        correctAnswer: event.correctAnswer,
+        studentAnswer: event.studentAnswer,
+      });
+    },
+
+    // This is to catch cases like correctAnswer="cat" and studentAnswer="cate"
+    detectInsertion: ({ event }) => {
+      const wrongChars = identifyWrongCharacters({
+        correctAnswer: event.correctAnswer,
+        studentAnswer: event.studentAnswer,
+      });
+      return wrongChars.length === 0;
+    },
   },
 }).createMachine({
   id: 'lesson',
@@ -115,6 +140,21 @@ export const lessonMachine = setup({
             guard: 'thirdIncorrect',
             target: 'complete',
             actions: 'resetWordErrors',
+          },
+          {
+            guard: 'incorrectEndMatra',
+            target: 'word',
+            actions: 'incrementWordErrors',
+          },
+          {
+            guard: 'incorrectMiddleMatra',
+            target: 'word',
+            actions: 'incrementWordErrors',
+          },
+          {
+            guard: 'detectInsertion',
+            target: 'word',
+            actions: 'incrementWordErrors',
           },
           {
             target: 'letter',
