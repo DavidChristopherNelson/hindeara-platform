@@ -24,6 +24,7 @@ export const lessonMachine = setup({
       wordErrors: number;
       imageErrors: number;
       letterImageErrors: number;
+      hint: string;
     },
     events: {} as {
       type: 'ANSWER';
@@ -59,6 +60,22 @@ export const lessonMachine = setup({
       letterImageErrors: ({ context }) => context.letterImageErrors + 1,
     }),
     resetLetterImageErrors: assign({ letterImageErrors: () => 0 }),
+    giveEndMatraHint: assign({
+      hint: ({ context }) => {
+        const hintOne =
+          'Tell the student to try again, just join the letters a little faster. ';
+        const hintTwo =
+          'Tell the student not to pronounce the ‘a’ sound at the end of the word. ';
+        if (context.hint === hintOne) {
+          return hintTwo;
+        }
+        return hintOne;
+      },
+    }),
+    giveMiddleMatraHint: assign({
+      hint: () =>
+        'Ask the student to join the first two letters together, then join the last two letters together and then finally join the whole word together. ',
+    }),
   },
 
   /*───────────────────────────*
@@ -119,6 +136,7 @@ export const lessonMachine = setup({
     wordErrors: 0,
     imageErrors: 0,
     letterImageErrors: 0,
+    hint: '',
   }),
 
   /*───────────────────────────*
@@ -139,17 +157,16 @@ export const lessonMachine = setup({
           {
             guard: 'thirdIncorrect',
             target: 'complete',
-            actions: 'resetWordErrors',
           },
           {
             guard: 'incorrectEndMatra',
             target: 'word',
-            actions: 'incrementWordErrors',
+            actions: ['giveEndMatraHint', 'incrementWordErrors'],
           },
           {
             guard: 'incorrectMiddleMatra',
             target: 'word',
-            actions: 'incrementWordErrors',
+            actions: ['giveMiddleMatraHint', 'incrementWordErrors'],
           },
           {
             guard: 'detectInsertion',
@@ -279,5 +296,6 @@ export const getPrompt = (actor: LessonActor): string => {
   const snap = actor.getSnapshot();
   const meta = snap.getMeta() as Record<string, { prompt?: string }>;
   const key = `lesson.${snap.value as string}`;
-  return meta[key]?.prompt ?? '';
+  const hint = snap.context.hint;
+  return `${meta[key]?.prompt ?? ''} ${hint}`;
 };
