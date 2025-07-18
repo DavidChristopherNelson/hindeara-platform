@@ -9,6 +9,7 @@ import {
   detectIncorrectEndMatra,
   detectIncorrectMiddleMatra,
 } from './evaluate-answer.utils';
+import { identifyWrongCharacters } from './identify-wrong-characters.utils';
 
 @ApiTags('evaluate')
 @Controller('evaluate')
@@ -66,5 +67,13 @@ export class EvaluateController {
   @LogMethod()
   detectMiddleMatra(@Body() body: EvaluateDto): boolean {
     return detectIncorrectMiddleMatra(body);
+  }
+
+  @Post('identify-wrong-characters')
+  @ApiBody({ type: EvaluateDto })
+  @ApiResponse({ status: 200, type: [String] })
+  @LogMethod()
+  identifyWrongCharacters(@Body() body: EvaluateDto): string[] {
+    return identifyWrongCharacters(body);
   }
 }

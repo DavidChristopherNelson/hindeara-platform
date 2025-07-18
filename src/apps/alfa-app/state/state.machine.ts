@@ -37,8 +37,8 @@ export const lessonMachine = setup({
     identifyWrongCharacters: assign({
       wrongCharacters: ({ event }) =>
         identifyWrongCharacters({
-          correct: event.correctAnswer,
-          student: event.studentAnswer,
+          correctAnswer: event.correctAnswer,
+          studentAnswer: event.studentAnswer,
         }),
     }),
     incrementIndex: assign({

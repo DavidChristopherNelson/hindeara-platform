@@ -184,20 +184,23 @@ const levenshteinWithOps = ({
  *  WRAPPER CLASS WITH DECORATORS                                   *
  *───────────────────────────────────────────────────────────────────*/
 interface IdentifyArgs {
-  correct: string;
-  student: string;
+  correctAnswer: string;
+  studentAnswer: string;
 }
 
 class IdentifyWrongChars {
   @LogMethod()
-  static identifyWrongCharacters({ correct, student }: IdentifyArgs): string[] {
-    const studentWords = student
+  static identifyWrongCharacters({
+    correctAnswer,
+    studentAnswer,
+  }: IdentifyArgs): string[] {
+    const studentWords = studentAnswer
       .trim()
       .split(/\s+/)
       .map((w) => toWord(clean(w)));
     if (studentWords.length === 0) return [];
 
-    const correctWord = toWord(clean(correct));
+    const correctWord = toWord(clean(correctAnswer));
 
     let bestWrong: string[] = [];
     let bestDist = Infinity;
