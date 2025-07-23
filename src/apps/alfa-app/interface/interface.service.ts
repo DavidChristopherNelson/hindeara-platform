@@ -64,7 +64,7 @@ export class AlfaAppInterfaceService {
     const phoneme = await this.phonemesService.findByLetter(letter);
     if (!phoneme) throw new Error('Unable to find phoneme.');
     const picture: string = phoneme.example_image;
-    const deployCheck: string = '1';
+    const deployCheck: string = 'Deploy Check: 2';
     const uiData: UiDataDto = {
       word,
       letter,
