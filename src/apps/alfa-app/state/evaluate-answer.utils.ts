@@ -61,6 +61,9 @@ class EvaluateAnswer {
   static markWord({ correctAnswer, studentAnswer }: MarkArgs): boolean {
     const cleanedCorrectAnswer = this.clean(correctAnswer);
     const splitStudentAnswer = studentAnswer.split(/\s+/);
+
+    const isEquivalent = (a: string, b: string) => a === b || sameFamily(a, b);
+
     return splitStudentAnswer.some((w) => {
       const cleanedW = this.clean(w);
       if (cleanedW === cleanedCorrectAnswer) return true;
@@ -70,6 +73,14 @@ class EvaluateAnswer {
         cleanedCorrectAnswer.endsWith(LONG_A) &&
         cleanedW === cleanedCorrectAnswer.slice(0, -1)
       ) {
+        return true;
+      }
+
+      // Match words that have characters in the same family in the same position.
+      if (w.length == cleanedCorrectAnswer.length) {
+        for (let i = 0; i < w.length; i++) {
+          if (!isEquivalent(w[i], cleanedCorrectAnswer[i])) return false;
+        }
         return true;
       }
 
