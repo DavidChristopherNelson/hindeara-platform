@@ -19,4 +19,7 @@ export class UiDataDto {
 
   @ApiProperty({ example: ['त', 'ू'] })
   wrongCharacters: string[];
+
+  @ApiProperty({ example: ['त', 'ू'] })
+  deployCheck: string;
 }
