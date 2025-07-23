@@ -16,4 +16,7 @@ export class UiDataDto {
 
   @ApiProperty({ example: 'It is a cat!' })
   transcript: string | null;
+
+  @ApiProperty({ example: ['त', 'ू'] })
+  wrongCharacters: string[];
 }

@@ -70,6 +70,7 @@ export class AlfaAppInterfaceService {
       picture,
       state,
       transcript: ctx.transcript,
+      wrongCharacters,
     };
 
     const recording = await this.chatgptService.sendMessage({
