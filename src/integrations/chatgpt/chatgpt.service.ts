@@ -48,7 +48,7 @@ export class ChatGPTService {
   @LogMethod()
   async sendMessage({
     userPrompt,
-    roleContent = 'You are a helpful assistant that speaks in informal language like a child does. The student is the same age as you.',
+    roleContent = 'You are a helpful assistant that speaks in informal language like a child does. The student is the same age as you. Avoid saying \'तू\'',
     model = 'gpt-4o',
     tool = 'string',
     locale = 'en',

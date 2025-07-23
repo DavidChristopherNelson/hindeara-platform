@@ -79,7 +79,7 @@ export class AlfaAppInterfaceService {
         Please generate a unique response.
         ${await this.giveHint(ctx.lessonActor)}
         Your response must only contain the actual words you want to communicate to the student **and must not include any emojis or emoticons**.
-        Your response must be less than 15 words. 
+        Your response must be less than 20 words. 
       `,
       locale: ctx.locale,
     });
