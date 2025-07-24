@@ -13,6 +13,7 @@ export class CreateUserEventDto {
   @IsString()
   locale: string;
 
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   transcription?: string;
