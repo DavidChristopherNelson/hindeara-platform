@@ -23,4 +23,8 @@ export class UserEventDto {
   @Expose()
   @Type(() => Number)
   userId!: number;
+
+  @ApiProperty({ required: false })
+  @Expose()
+  transcription?: string;
 }

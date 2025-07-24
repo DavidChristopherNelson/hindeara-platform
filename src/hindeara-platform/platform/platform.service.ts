@@ -1,3 +1,4 @@
+// src/hindeara-platform/platform/platform.service.ts
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/hindeara-platform/users/users.service';
 import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
@@ -11,6 +12,7 @@ import { App } from '../apps/entities/app.entity';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import { CreateUserEventDto } from '../user-events/dto/create-user-event.dto';
 import { UtilsService } from 'src/common/utils.service';
+import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 
 @Injectable()
 export class PlatformService {
@@ -21,16 +23,28 @@ export class PlatformService {
     private readonly appsService: AppsService,
     private readonly alfaAppInterface: AlfaAppInterfaceService,
     private readonly utilsService: UtilsService,
+    private readonly chatgpt: ChatGPTService,
   ) {}
 
   @LogMethod()
   async processUserInput(
     user: User,
-    recording: string,
+    recordingBase64: string,
     locale: string,
   ): Promise<AppEvent> {
+    // Stream transcription of audio
+    const audioBuffer = Buffer.from(recordingBase64, 'base64');
+    const transcription = await this.chatgpt.transcribeAudio(
+      audioBuffer,
+      locale,
+    );
+
     // create user event
-    const createUserEventDto: CreateUserEventDto = { recording, locale };
+    const createUserEventDto: CreateUserEventDto = {
+      recording: recordingBase64,
+      locale,
+      transcription,
+    };
     await this.userEventsService.create(createUserEventDto, user);
 
     // find and run current app
