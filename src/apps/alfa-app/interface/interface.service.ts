@@ -1,5 +1,5 @@
 // src/apps/alfa-app/interface/interface.service.ts
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AppEventsService } from 'src/hindeara-platform/app-events/app-events.service';
 import { CreateAppEventDto } from 'src/hindeara-platform/app-events/dto/create-app-event.dto';
 import { MiniLessonsService } from 'src/apps/alfa-app/mini-lessons/mini-lessons.service';
@@ -22,13 +22,14 @@ import { UtilsService } from 'src/common/utils.service';
 
 type LessonContext = Readonly<{
   userId: number;
-  latestUserEvent: UserEvent | null;
+  latestUserEvent: UserEvent;
+  secondLatestUserEvent?: UserEvent;
   latestAppEvent: AppEvent | undefined;
+  secondLatestAppEvent?: AppEvent | undefined;
   lessonActor: ActorRefFrom<typeof lessonMachine>;
   isFirstRun: boolean;
   locale: string;
   isLatestAppEventValid: boolean;
-  transcript: string | null;
 }>;
 
 @Injectable()
@@ -52,7 +53,7 @@ export class AlfaAppInterfaceService {
     // Calculate new state
     if (ctx.isLatestAppEventValid) {
       const correctAnswer = await this.getAnswer(ctx.lessonActor);
-      const studentAnswer = ctx.transcript ?? '';
+      const studentAnswer = ctx.latestUserEvent.transcription ?? '';
       ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
     }
 
@@ -70,14 +71,18 @@ export class AlfaAppInterfaceService {
       letter,
       picture,
       state,
-      transcript: ctx.transcript,
+      transcript: ctx.latestUserEvent.transcription ?? null,
       wrongCharacters,
       deployCheck,
     };
 
     const recording = await this.chatgptService.sendMessage({
       userPrompt: `
-        For context this was the student's previous response: ${ctx.transcript}. 
+        For context here is the recent previous exchange between the app and the student
+        App: ${ctx.secondLatestAppEvent?.recording ?? 'No previous app recording'}. 
+        Student: ${ctx.secondLatestUserEvent?.transcription ?? 'No previous student transcription'}. 
+        App: ${ctx.latestAppEvent?.recording ?? 'No latest app recording'}. 
+        Student: ${ctx.latestUserEvent?.transcription ?? 'No latest student transcription'}. 
         ${getPrompt(ctx.lessonActor)}
         Please generate a unique response.
         ${await this.giveHint(ctx.lessonActor)}
@@ -106,31 +111,22 @@ export class AlfaAppInterfaceService {
 
   @LogMethod()
   private async buildContext(userId: number): Promise<LessonContext> {
-    const [latestUserEvent, [latestAppEvent, secondLatest], locale] =
-      await Promise.all([
-        this.userEventsService.findMostRecentByUserId(userId),
-        this.appEventsService.findMostRecentNByAppIdAndUserId(
-          this.appId,
-          userId,
-          2,
-        ),
-        this.utilsService.currentLocale({ userId }),
-      ]);
+    const [
+      [latestUserEvent, secondLatestUserEvent],
+      [latestAppEvent, secondLatestAppEvent],
+      locale,
+    ] = await Promise.all([
+      this.userEventsService.findMostRecentNByUserId(userId, 2),
+      this.appEventsService.findMostRecentNByAppIdAndUserId(
+        this.appId,
+        userId,
+        2,
+      ),
+      this.utilsService.currentLocale({ userId }),
+    ]);
     if (!latestUserEvent) {
       throw new Error(
         'No latestUserEvent found. This should not have happened.',
-      );
-    }
-    let transcript: string | null = null;
-    try {
-      transcript = await this.chatgptService.transcribeAudio(
-        latestUserEvent.recording,
-        locale,
-      );
-    } catch (err) {
-      /* Do not crash the flow – just log for later inspection */
-      new Logger(AlfaAppInterfaceService.name).warn(
-        `STT failed for user ${userId}: ${(err as Error).message}`,
       );
     }
 
@@ -142,7 +138,7 @@ export class AlfaAppInterfaceService {
     if (isLatestAppEventValid) {
       const latestMiniLesson =
         await this.miniLessonsService.findLatestMiniLesson(
-          secondLatest,
+          secondLatestAppEvent,
           userId,
         );
       lessonActor = createActor(lessonMachine, {
@@ -157,12 +153,13 @@ export class AlfaAppInterfaceService {
     return {
       userId,
       latestUserEvent,
+      secondLatestUserEvent,
       latestAppEvent,
+      secondLatestAppEvent,
       lessonActor,
       isFirstRun: !latestAppEvent,
       locale,
       isLatestAppEventValid,
-      transcript,
     } as const;
   }
 

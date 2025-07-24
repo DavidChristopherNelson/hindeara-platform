@@ -1,3 +1,4 @@
+// src/hindeara-platform/user-events/user-events.service.ts
 import { Injectable } from '@nestjs/common';
 import { CreateUserEventDto } from './dto/create-user-event.dto';
 import { UserEvent } from './entities/user-event.entity';
@@ -41,6 +42,19 @@ export class UserEventsService {
     return this.userEventRepository.findOne({
       where: { user: { id: userId } },
       order: { createdAt: 'DESC' },
+    });
+  }
+
+  @LogMethod()
+  async findMostRecentNByUserId(
+    userId: number,
+    n: number,
+  ): Promise<UserEvent[]> {
+    return this.userEventRepository.find({
+      where: { user: { id: userId } },
+      order: { createdAt: 'DESC' },
+      take: n,
+      relations: ['user'], // eager-load user if you need it
     });
   }
 }
