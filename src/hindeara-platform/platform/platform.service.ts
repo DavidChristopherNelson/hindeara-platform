@@ -32,14 +32,12 @@ export class PlatformService {
     recordingBase64: string,
     locale: string,
   ): Promise<AppEvent> {
-    // Stream transcription of audio
     const audioBuffer = Buffer.from(recordingBase64, 'base64');
-    const transcription = await this.chatgpt.transcribeAudio(
-      audioBuffer,
-      locale,
-    );
+    const transcription =
+      audioBuffer.length === 0
+        ? ''
+        : await this.chatgpt.transcribeAudio(audioBuffer, locale);
 
-    // create user event
     const createUserEventDto: CreateUserEventDto = {
       recording: recordingBase64,
       locale,
@@ -47,7 +45,6 @@ export class PlatformService {
     };
     await this.userEventsService.create(createUserEventDto, user);
 
-    // find and run current app
     const validAppEvent = await this.utilsService.findMostRecentValidAppEvent({
       user,
     });
@@ -58,26 +55,21 @@ export class PlatformService {
       currentApp,
     );
 
-    // create app event
-    const appEvent = await this.appEventsService.create(
+    return this.appEventsService.create(
       createAppEventDto,
       locale,
       user,
       currentApp,
     );
-
-    return appEvent;
   }
 
   @LogMethod()
   async runApp(user: User, app: App): Promise<CreateAppEventDto> {
     switch (app.http_path) {
       case 'alfa-app': {
-        const createAppEventDto = await this.alfaAppInterface.run(user.id);
-        if (!createAppEventDto) {
-          throw new Error(`App not found: ${app.http_path}`);
-        }
-        return createAppEventDto;
+        const dto = await this.alfaAppInterface.run(user.id);
+        if (!dto) throw new Error(`App not found: ${app.http_path}`);
+        return dto;
       }
       default:
         throw new Error(`App not found: ${app.http_path}`);
