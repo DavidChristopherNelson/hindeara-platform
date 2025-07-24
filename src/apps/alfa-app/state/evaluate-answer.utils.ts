@@ -23,14 +23,16 @@ const FAMILIES: string[][] = [
   ['ब', 'भ'],
   ['श', 'ष', 'स'],
   ['र', 'ड़', 'ढ़'],
+  ['य', 'ए', 'ऐ'],
+  ['ओ', 'औ'],
 ];
 
-const CONSONANT_TO_FAMILY = new Map<string, number>();
+const CHARACTER_TO_FAMILY = new Map<string, number>();
 FAMILIES.forEach((fam, i) =>
-  fam.forEach((ch) => CONSONANT_TO_FAMILY.set(ch, i)),
+  fam.forEach((ch) => CHARACTER_TO_FAMILY.set(ch, i)),
 );
 const sameFamily = (a: string, b: string) =>
-  CONSONANT_TO_FAMILY.get(a) === CONSONANT_TO_FAMILY.get(b);
+  CHARACTER_TO_FAMILY.get(a) === CHARACTER_TO_FAMILY.get(b);
 
 type MarkArgs = { correctAnswer: string; studentAnswer: string };
 
