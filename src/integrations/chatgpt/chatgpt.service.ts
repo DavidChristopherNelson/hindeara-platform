@@ -54,7 +54,7 @@ export class ChatGPTService {
   /** Per-attempt timeout equals client timeout for clarity */
   private readonly openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    timeout: ATTEMPT_TIMEOUT_MS,
+    timeout: ATTEMPT_TIMEOUT_MS * MAX_RETRIES + 1,
   });
   private readonly log = new Logger(ChatGPTService.name);
 
