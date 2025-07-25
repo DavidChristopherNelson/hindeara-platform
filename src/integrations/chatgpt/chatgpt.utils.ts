@@ -1,3 +1,4 @@
+// src/integrations/chatgpt/chatgpt.utils.ts
 import type { ChatCompletion } from 'openai/resources/chat/completions';
 import {
   PlainStringResponseSchema,
@@ -25,13 +26,6 @@ export function localeFallback(locale: string): string {
     : 'Something went wrong. Please try again.';
 }
 
-/** Prompt shown when recorded clip is <0.1 s */
-export function recordTooShortMsg(locale: string): string {
-  return locale === 'hi'
-    ? 'रिकॉर्ड बटन थोड़ी देर तक दबाएँ; आपकी आवाज़ नहीं सुनाई दी।'
-    : "Please press the record button for a bit longer — I couldn't hear you.";
-}
-
 /*───────────────────────────────*
  *  Response parsers
  *───────────────────────────────*/
@@ -39,8 +33,10 @@ export function parseBooleanResponse(data: ChatCompletion): boolean {
   if (!ToolCallBooleanResponseSchema.safeParse(data).success) {
     throw new Error(`Schema mismatch - data: ${JSON.stringify(data)}`);
   }
+
   const rawArgs = data.choices[0].message.tool_calls?.[0]?.function?.arguments;
   if (!rawArgs) throw new Error('Missing tool arguments');
+
   return (JSON.parse(rawArgs) as { response: boolean }).response;
 }
 
