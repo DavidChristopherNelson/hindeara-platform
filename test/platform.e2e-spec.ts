@@ -38,7 +38,6 @@ describe('PlatformController (e2e)', () => {
       .overrideProvider(ChatGPTService)
       .useValue({
         sendMessage: jest.fn().mockResolvedValue('mock-reply'),
-        getStringFromAI: jest.fn().mockResolvedValue('mock-reply'),
         getBooleanFromAI: jest.fn().mockResolvedValue(true),
         transcribeAudio: jest.fn().mockResolvedValue('mock-transcription'),
       })
