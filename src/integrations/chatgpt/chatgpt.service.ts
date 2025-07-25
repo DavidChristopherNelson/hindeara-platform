@@ -1,4 +1,3 @@
-// src/integrations/chatgpt/chatgpt.service.ts
 import OpenAI, { toFile } from 'openai';
 import type { ChatCompletion } from 'openai/resources/chat/completions';
 import { Injectable, Logger } from '@nestjs/common';
@@ -6,6 +5,7 @@ import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import {
   localeFallback,
   isTimeout,
+  recordTooShortMsg,
   parseBooleanResponse,
   parseStringResponse,
 } from './chatgpt.utils';
@@ -14,7 +14,13 @@ import {
  *  Retry / timeout config
  *───────────────────────────────*/
 const MAX_RETRIES = 3;
-const ATTEMPT_TIMEOUT_MS = 3_000; // 3 s per attempt
+const ATTEMPT_TIMEOUT_MS = 3000;
+const SDK_TIMEOUT_MS = MAX_RETRIES * ATTEMPT_TIMEOUT_MS + 1000;
+
+/*───────────────────────────────*
+ *  Guard for <0.1 s clips (~2 400 B)
+ *───────────────────────────────*/
+const MIN_AUDIO_BYTES = 5000;
 
 /* ──────────────────────────────────────────────────────────────
  *  OpenAI function-call tool definitions
@@ -51,10 +57,9 @@ type ToolName = 'string' | 'boolean';
  * ──────────────────────────────────────────────────────────────*/
 @Injectable()
 export class ChatGPTService {
-  /** Per-attempt timeout equals client timeout for clarity */
   private readonly openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    timeout: ATTEMPT_TIMEOUT_MS * MAX_RETRIES + 1,
+    timeout: SDK_TIMEOUT_MS,
   });
   private readonly log = new Logger(ChatGPTService.name);
 
@@ -107,6 +112,14 @@ export class ChatGPTService {
     locale: string,
     model = 'gpt-4o-transcribe',
   ): Promise<string> {
+    /* ---- guard: clip too short → skip OpenAI call -------------- */
+    if (audio.byteLength < MIN_AUDIO_BYTES) {
+      this.log.warn(
+        `Audio buffer ${audio.byteLength} B < min ${MIN_AUDIO_BYTES} B – prompt user`,
+      );
+      return recordTooShortMsg(locale);
+    }
+
     try {
       const { text } = await this.openai.audio.transcriptions.create({
         file: await toFile(audio, 'audio.webm'),
@@ -143,7 +156,7 @@ export class ChatGPTService {
       return parseBooleanResponse(data);
     } catch (err) {
       if (isTimeout(err)) {
-        this.log.warn('Completion timed out – falling back to `false`');
+        this.log.warn('Completion timed out - falling back to false');
         return false;
       }
       throw err;
@@ -160,14 +173,16 @@ export class ChatGPTService {
       return parseStringResponse(data);
     } catch (err) {
       if (isTimeout(err)) {
-        this.log.warn('Completion timed out – returning fallback text');
+        this.log.warn('Completion timed out - returning fallback text');
         return localeFallback(locale);
       }
       throw err;
     }
   }
 
-  /** Wrapper so the rest of the service stays unchanged */
+  /* ============================================================
+   *  Low-level OpenAI call with retry + per-attempt timeout
+   * ============================================================*/
   @LogMethod()
   private async callOpenAI(
     payload: Record<string, unknown>,
@@ -177,12 +192,12 @@ export class ChatGPTService {
       const timer = setTimeout(() => controller.abort(), ATTEMPT_TIMEOUT_MS);
 
       try {
-        const completion = await this.openai.chat.completions.create(
+        const data = await this.openai.chat.completions.create(
           payload as never,
           { signal: controller.signal },
         );
         clearTimeout(timer);
-        return { data: completion };
+        return { data };
       } catch (err) {
         clearTimeout(timer);
 
@@ -193,7 +208,7 @@ export class ChatGPTService {
         }
 
         this.log.warn(
-          `OpenAI timeout (attempt ${attempt}/${MAX_RETRIES}) – retrying`,
+          `OpenAI timeout (attempt ${attempt}/${MAX_RETRIES}) - retrying`,
         );
       }
     }
