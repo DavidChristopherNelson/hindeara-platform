@@ -43,7 +43,10 @@ type ToolName = 'string' | 'boolean';
  * ──────────────────────────────────────────────────────────────*/
 @Injectable()
 export class ChatGPTService {
-  private readonly openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  private readonly openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    timeout: 10_000, // SDK will abort after 10 s
+  });
   private readonly log = new Logger(ChatGPTService.name);
 
   /* ============================================================
@@ -88,7 +91,7 @@ export class ChatGPTService {
       case 'boolean':
         return this.getBooleanFromAI(payload);
       case 'string':
-        return this.getStringFromAI(payload);
+        return this.getStringFromAI(payload, locale);
       default:
         throw new Error('Invalid AI call.');
     }
@@ -103,18 +106,29 @@ export class ChatGPTService {
     locale: string,
     model = 'gpt-4o-transcribe',
   ): Promise<string> {
-    /* `toFile` converts Buffer → File-like object that satisfies Uploadable */
-    const { text } = await this.openai.audio.transcriptions.create({
-      file: await toFile(audio, 'audio.webm'),
-      model,
-      language: locale,
-      response_format: 'json',
-    });
+    try {
+      const { text } = await this.openai.audio.transcriptions.create({
+        file: await toFile(audio, 'audio.webm'),
+        model,
+        language: locale,
+        response_format: 'json',
+      });
 
-    if (typeof text !== 'string') {
-      throw new Error('Unexpected transcription response');
+      if (typeof text !== 'string') {
+        throw new Error('Unexpected transcription response');
+      }
+      return text.trim();
+    } catch (err) {
+      if (this.isTimeout(err)) {
+        this.log.warn('Transcription timed out - returning empty string');
+        if (locale === 'hi') {
+          return 'कुछ गलत हो गया है। दोबारा कोशिश करें।';
+        } else {
+          return 'Something went wrong. Please try again.';
+        }
+      }
+      throw err;
     }
-    return text.trim();
   }
 
   /* ============================================================
@@ -129,38 +143,58 @@ export class ChatGPTService {
       type: 'function',
       function: { name: 'boolean' },
     };
+    try {
+      const response = await this.callOpenAI(payload);
+      if (!ToolCallBooleanResponseSchema.safeParse(response.data).success) {
+        throw new Error(
+          `OpenAI response does not match ToolCallBooleanResponseSchema. data: ${JSON.stringify(
+            response.data,
+          )}`,
+        );
+      }
 
-    const response = await this.callOpenAI(payload);
-    if (!ToolCallBooleanResponseSchema.safeParse(response.data).success) {
-      throw new Error(
-        `OpenAI response does not match ToolCallBooleanResponseSchema. data: ${JSON.stringify(
-          response.data,
-        )}`,
-      );
+      const message = response.data.choices[0].message;
+      const rawArgs = message.tool_calls?.[0]?.function?.arguments;
+      if (!rawArgs) {
+        throw new Error('OpenAI did not return expected tool arguments');
+      }
+      const parsed = JSON.parse(rawArgs) as { response: boolean };
+      return parsed.response;
+    } catch (err) {
+      if (this.isTimeout(err)) {
+        this.log.warn('Completion timed out - falling back to `false`');
+        return false; // default
+      }
+      throw err;
     }
-
-    const message = response.data.choices[0].message;
-    const rawArgs = message.tool_calls?.[0]?.function?.arguments;
-    if (!rawArgs) {
-      throw new Error('OpenAI did not return expected tool arguments');
-    }
-    const parsed = JSON.parse(rawArgs) as { response: boolean };
-    return parsed.response;
   }
 
   @LogMethod()
   private async getStringFromAI(
     payload: Record<string, unknown>,
+    locale: string,
   ): Promise<string> {
-    const response = await this.callOpenAI(payload);
-    if (!PlainStringResponseSchema.safeParse(response).success) {
-      throw new Error('Unexpected response structure from OpenAI');
+    try {
+      const response = await this.callOpenAI(payload);
+      if (!PlainStringResponseSchema.safeParse(response).success) {
+        throw new Error('Unexpected response structure from OpenAI');
+      }
+      const content = response.data.choices[0].message.content;
+      if (content === null) {
+        throw new Error('OpenAI returned null content');
+      }
+      return content;
+    } catch (err) {
+      if (this.isTimeout(err)) {
+        this.log.warn('Completion timed out - returning empty string');
+        if (locale === 'hi') {
+          return 'कुछ गलत हो गया है। दोबारा कोशिश करें।';
+        } else {
+          return 'Something went wrong. Please try again.';
+        }
+      }
+      throw err;
     }
-    const content = response.data.choices[0].message.content;
-    if (content === null) {
-      throw new Error('OpenAI returned null content');
-    }
-    return content;
   }
 
   /** Wrapper so rest of service can stay unchanged */
@@ -178,5 +212,20 @@ export class ChatGPTService {
         err instanceof Error ? err.message : 'unknown OpenAI SDK error';
       throw new Error(`OpenAI request failed: ${message}`);
     }
+  }
+
+  /* ============================================================
+   *  Helpers
+   * ============================================================*/
+  private isTimeout(err: unknown): boolean {
+    if (err && typeof err === 'object') {
+      const e = err as { name?: string; message?: string };
+      return (
+        (!!e.name && e.name.toLowerCase().includes('timeout')) ||
+        (!!e.message && e.message.toLowerCase().includes('timeout')) ||
+        (!!e.name && e.name.toLowerCase().includes('abort'))
+      );
+    }
+    return false;
   }
 }
