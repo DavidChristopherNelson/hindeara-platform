@@ -4,9 +4,11 @@ import type { ChatCompletion } from 'openai/resources/chat/completions';
 import { Injectable, Logger } from '@nestjs/common';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import {
-  PlainStringResponseSchema,
-  ToolCallBooleanResponseSchema,
-} from './chatgpt.schema';
+  localeFallback,
+  isTimeout,
+  parseBooleanResponse,
+  parseStringResponse,
+} from './chatgpt.utils';
 
 /* ──────────────────────────────────────────────────────────────
  *  OpenAI function-call tool definitions
@@ -45,7 +47,7 @@ type ToolName = 'string' | 'boolean';
 export class ChatGPTService {
   private readonly openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    timeout: 10_000, // SDK will abort after 10 s
+    timeout: 10_000,
   });
   private readonly log = new Logger(ChatGPTService.name);
 
@@ -74,27 +76,19 @@ export class ChatGPTService {
       ],
     };
 
-    /* Force language of response when expecting plain text -------- */
     if (tool === 'string') {
-      const setResponseLanguage =
-        locale === 'hi'
-          ? 'सभी उत्तर हिंदी (hi-IN) में देवनागरी लिपि का उपयोग करके दें। अंग्रेज़ी या रोमन लिपि का प्रयोग न करें।'
-          : 'Provide all answers in English (en-US) using the Roman script.';
       (payload.messages as unknown[]).unshift({
         role: 'system',
-        content: setResponseLanguage,
+        content:
+          locale === 'hi'
+            ? 'सभी उत्तर हिंदी (hi-IN) में देवनागरी लिपि का उपयोग करके दें। अंग्रेज़ी या रोमन लिपि का प्रयोग न करें।'
+            : 'Provide all answers in English (en-US) using the Roman script.',
       });
     }
 
-    /* Route to correct helper ------------------------------------- */
-    switch (tool) {
-      case 'boolean':
-        return this.getBooleanFromAI(payload);
-      case 'string':
-        return this.getStringFromAI(payload, locale);
-      default:
-        throw new Error('Invalid AI call.');
-    }
+    return tool === 'boolean'
+      ? this.getBooleanFromAI(payload)
+      : this.getStringFromAI(payload, locale);
   }
 
   /* ============================================================
@@ -114,18 +108,12 @@ export class ChatGPTService {
         response_format: 'json',
       });
 
-      if (typeof text !== 'string') {
-        throw new Error('Unexpected transcription response');
-      }
+      if (typeof text !== 'string') throw new Error('Unexpected response');
       return text.trim();
     } catch (err) {
-      if (this.isTimeout(err)) {
-        this.log.warn('Transcription timed out - returning empty string');
-        if (locale === 'hi') {
-          return 'कुछ गलत हो गया है। दोबारा कोशिश करें।';
-        } else {
-          return 'Something went wrong. Please try again.';
-        }
+      if (isTimeout(err)) {
+        this.log.warn('Transcription timed out – returning fallback text');
+        return localeFallback(locale);
       }
       throw err;
     }
@@ -138,32 +126,18 @@ export class ChatGPTService {
   private async getBooleanFromAI(
     payload: Record<string, unknown>,
   ): Promise<boolean> {
-    payload.tools = tools;
-    payload.tool_choice = {
-      type: 'function',
-      function: { name: 'boolean' },
-    };
-    try {
-      const response = await this.callOpenAI(payload);
-      if (!ToolCallBooleanResponseSchema.safeParse(response.data).success) {
-        throw new Error(
-          `OpenAI response does not match ToolCallBooleanResponseSchema. data: ${JSON.stringify(
-            response.data,
-          )}`,
-        );
-      }
+    Object.assign(payload, {
+      tools,
+      tool_choice: { type: 'function', function: { name: 'boolean' } },
+    });
 
-      const message = response.data.choices[0].message;
-      const rawArgs = message.tool_calls?.[0]?.function?.arguments;
-      if (!rawArgs) {
-        throw new Error('OpenAI did not return expected tool arguments');
-      }
-      const parsed = JSON.parse(rawArgs) as { response: boolean };
-      return parsed.response;
+    try {
+      const { data } = await this.callOpenAI(payload);
+      return parseBooleanResponse(data);
     } catch (err) {
-      if (this.isTimeout(err)) {
-        this.log.warn('Completion timed out - falling back to `false`');
-        return false; // default
+      if (isTimeout(err)) {
+        this.log.warn('Completion timed out – falling back to `false`');
+        return false;
       }
       throw err;
     }
@@ -175,23 +149,12 @@ export class ChatGPTService {
     locale: string,
   ): Promise<string> {
     try {
-      const response = await this.callOpenAI(payload);
-      if (!PlainStringResponseSchema.safeParse(response).success) {
-        throw new Error('Unexpected response structure from OpenAI');
-      }
-      const content = response.data.choices[0].message.content;
-      if (content === null) {
-        throw new Error('OpenAI returned null content');
-      }
-      return content;
+      const { data } = await this.callOpenAI(payload);
+      return parseStringResponse(data);
     } catch (err) {
-      if (this.isTimeout(err)) {
-        this.log.warn('Completion timed out - returning empty string');
-        if (locale === 'hi') {
-          return 'कुछ गलत हो गया है। दोबारा कोशिश करें।';
-        } else {
-          return 'Something went wrong. Please try again.';
-        }
+      if (isTimeout(err)) {
+        this.log.warn('Completion timed out – returning fallback text');
+        return localeFallback(locale);
       }
       throw err;
     }
@@ -204,7 +167,7 @@ export class ChatGPTService {
   ): Promise<{ data: ChatCompletion }> {
     try {
       const completion = await this.openai.chat.completions.create(
-        payload as never, // casting keeps call-site unchanged
+        payload as never,
       );
       return { data: completion };
     } catch (err) {
@@ -212,20 +175,5 @@ export class ChatGPTService {
         err instanceof Error ? err.message : 'unknown OpenAI SDK error';
       throw new Error(`OpenAI request failed: ${message}`);
     }
-  }
-
-  /* ============================================================
-   *  Helpers
-   * ============================================================*/
-  private isTimeout(err: unknown): boolean {
-    if (err && typeof err === 'object') {
-      const e = err as { name?: string; message?: string };
-      return (
-        (!!e.name && e.name.toLowerCase().includes('timeout')) ||
-        (!!e.message && e.message.toLowerCase().includes('timeout')) ||
-        (!!e.name && e.name.toLowerCase().includes('abort'))
-      );
-    }
-    return false;
   }
 }
