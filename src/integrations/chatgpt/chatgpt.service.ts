@@ -10,6 +10,12 @@ import {
   parseStringResponse,
 } from './chatgpt.utils';
 
+/*───────────────────────────────*
+ *  Retry / timeout config
+ *───────────────────────────────*/
+const MAX_RETRIES = 3;
+const ATTEMPT_TIMEOUT_MS = 3_000; // 3 s per attempt
+
 /* ──────────────────────────────────────────────────────────────
  *  OpenAI function-call tool definitions
  * ──────────────────────────────────────────────────────────────*/
@@ -45,9 +51,10 @@ type ToolName = 'string' | 'boolean';
  * ──────────────────────────────────────────────────────────────*/
 @Injectable()
 export class ChatGPTService {
+  /** Per-attempt timeout equals client timeout for clarity */
   private readonly openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    timeout: 10_000,
+    timeout: ATTEMPT_TIMEOUT_MS,
   });
   private readonly log = new Logger(ChatGPTService.name);
 
@@ -160,20 +167,37 @@ export class ChatGPTService {
     }
   }
 
-  /** Wrapper so rest of service can stay unchanged */
+  /** Wrapper so the rest of the service stays unchanged */
   @LogMethod()
   private async callOpenAI(
     payload: Record<string, unknown>,
   ): Promise<{ data: ChatCompletion }> {
-    try {
-      const completion = await this.openai.chat.completions.create(
-        payload as never,
-      );
-      return { data: completion };
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'unknown OpenAI SDK error';
-      throw new Error(`OpenAI request failed: ${message}`);
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), ATTEMPT_TIMEOUT_MS);
+
+      try {
+        const completion = await this.openai.chat.completions.create(
+          payload as never,
+          { signal: controller.signal },
+        );
+        clearTimeout(timer);
+        return { data: completion };
+      } catch (err) {
+        clearTimeout(timer);
+
+        if (!isTimeout(err) || attempt === MAX_RETRIES) {
+          const message =
+            err instanceof Error ? err.message : 'unknown OpenAI SDK error';
+          throw new Error(`OpenAI request failed: ${message}`);
+        }
+
+        this.log.warn(
+          `OpenAI timeout (attempt ${attempt}/${MAX_RETRIES}) – retrying`,
+        );
+      }
     }
+
+    throw new Error('Retry loop exited unexpectedly');
   }
 }
