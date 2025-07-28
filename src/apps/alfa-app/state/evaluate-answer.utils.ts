@@ -79,9 +79,9 @@ class EvaluateAnswer {
       }
 
       // Match words that have characters in the same family in the same position.
-      if (w.length == cleanedCorrectAnswer.length) {
-        for (let i = 0; i < w.length; i++) {
-          if (!isEquivalent(w[i], cleanedCorrectAnswer[i])) return false;
+      if (cleanedW.length == cleanedCorrectAnswer.length) {
+        for (let i = 0; i < cleanedW.length; i++) {
+          if (!isEquivalent(cleanedW[i], cleanedCorrectAnswer[i])) return false;
         }
         return true;
       }
