@@ -135,7 +135,7 @@ export const lessonMachine = setup({
   initial: 'word',
   context: ({ input }) => ({
     word: (input as { word?: string } | undefined)?.word ?? 'hat',
-    wrongCharacters: ['a'],
+    wrongCharacters: [],
     wordErrors: 0,
     imageErrors: 0,
     letterImageErrors: 0,

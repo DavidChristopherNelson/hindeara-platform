@@ -6,10 +6,10 @@ export class UiDataDto {
   word: string;
 
   @ApiProperty({ example: 'a' })
-  letter: string;
+  letter?: string;
 
   @ApiProperty({ example: 'apple.png' })
-  picture: string;
+  picture?: string;
 
   @ApiProperty({ example: 'letter' })
   state: string;

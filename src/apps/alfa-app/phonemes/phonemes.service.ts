@@ -41,6 +41,12 @@ export class PhonemesService {
   }
 
   @LogMethod()
+  async getImage(letter: string): Promise<string | undefined> {
+    const phoneme = await this.findByLetter(letter);
+    return phoneme?.example_image ?? undefined;
+  }
+
+  @LogMethod()
   async update(
     id: number,
     updatePhonemeDto: UpdatePhonemeDto,

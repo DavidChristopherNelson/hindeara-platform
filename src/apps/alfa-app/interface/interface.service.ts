@@ -60,15 +60,16 @@ export class AlfaAppInterfaceService {
     const state = ctx.lessonActor.getSnapshot().value;
     const word: string = getWord(ctx.lessonActor);
     const wrongCharacters: string[] = getWrongCharacters(ctx.lessonActor);
-    const letter: string = wrongCharacters[0];
-    const phoneme = await this.phonemesService.findByLetter(letter);
-    if (!phoneme) throw new Error('Unable to find phoneme.');
-    const picture: string = phoneme.example_image;
-    const deployCheck: string = 'Deploy Check: 4';
+    const deployCheck: string = 'Deploy Check: 5';
+    const phonemeId = wrongCharacters[0]
+      ? (await this.phonemesService.findByLetter(wrongCharacters[0]))?.id
+      : undefined;
     const uiData: UiDataDto = {
       word,
-      letter,
-      picture,
+      letter: wrongCharacters[0],
+      picture: wrongCharacters[0]
+        ? await this.phonemesService.getImage(wrongCharacters[0])
+        : undefined,
       state,
       transcript: ctx.latestUserEvent.transcription ?? null,
       wrongCharacters,
@@ -98,8 +99,7 @@ export class AlfaAppInterfaceService {
       word,
       locale: ctx.locale,
       state: ctx.lessonActor.getPersistedSnapshot(),
-      phonemeId:
-        state === 'letter' || state === 'letterImage' ? phoneme.id : undefined,
+      phonemeId,
     });
     return {
       recording: recording.toString(),
