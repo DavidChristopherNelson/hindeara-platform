@@ -41,7 +41,10 @@ export class PhonemesService {
   }
 
   @LogMethod()
-  async getImage(letter: string): Promise<string | undefined> {
+  async getImage(letter: string | undefined): Promise<string | undefined> {
+    if (!letter) {
+      return undefined;
+    }
     const phoneme = await this.findByLetter(letter);
     return phoneme?.example_image ?? undefined;
   }

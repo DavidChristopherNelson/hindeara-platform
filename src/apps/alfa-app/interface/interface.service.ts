@@ -8,6 +8,7 @@ import {
   getPrompt,
   getWord,
   getWrongCharacters,
+  getAnswer,
   lessonMachine,
 } from '../state/state.machine';
 import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
@@ -51,7 +52,13 @@ export class AlfaAppInterfaceService {
 
     // Calculate new state
     if (ctx.isLatestAppEventValid) {
-      const correctAnswer = await this.getAnswer(ctx.lessonActor);
+      let correctAnswer = getAnswer(ctx.lessonActor);
+      if (ctx.lessonActor.getSnapshot().value === 'image') {
+        correctAnswer = await this.phonemesService.getImage(correctAnswer);
+      }
+      if (!correctAnswer) {
+        throw new Error('Cannot find the correct answer.');
+      }
       const studentAnswer = ctx.latestUserEvent.transcription ?? '';
       ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
     }
@@ -85,7 +92,6 @@ export class AlfaAppInterfaceService {
         Student: ${ctx.latestUserEvent?.transcription ?? 'No latest student transcription'}. 
         ${getPrompt(ctx.lessonActor)}
         Please generate a unique response.
-        ${await this.giveHint(ctx.lessonActor)}
         Your response must only contain the actual words you want to communicate to the student **and must not include any emojis or emoticons**.
         Your response must be less than 20 words. 
       `,
@@ -160,46 +166,6 @@ export class AlfaAppInterfaceService {
       locale,
       isLatestAppEventValid,
     } as const;
-  }
-
-  @LogMethod()
-  private async getAnswer(
-    actor: ActorRefFrom<typeof lessonMachine>,
-  ): Promise<string> {
-    const snap = actor.getSnapshot();
-    const word: string = getWord(actor);
-    const wrongCharacters: string[] = getWrongCharacters(actor);
-    const letter: string = wrongCharacters[0];
-    const phoneme = await this.phonemesService.findByLetter(letter);
-    if (!phoneme) throw new Error('Unable to find phoneme.');
-    const exampleNoun = phoneme.example_noun;
-
-    switch (snap.value) {
-      case 'word':
-        return word;
-      case 'letter':
-        return letter;
-      case 'image':
-        return exampleNoun;
-      case 'letterImage':
-        return letter;
-      default:
-        return '';
-    }
-  }
-
-  @LogMethod()
-  private async giveHint(
-    actor: ActorRefFrom<typeof lessonMachine>,
-  ): Promise<string> {
-    const snap = actor.getSnapshot();
-    const answer = await this.getAnswer(actor);
-    switch (snap.value) {
-      case 'image':
-        return `Please give a hint 50% of the time. The answer is "${answer}". Do not include the string "${answer}" in your response.`;
-      default:
-        return '';
-    }
   }
 
   @LogMethod()

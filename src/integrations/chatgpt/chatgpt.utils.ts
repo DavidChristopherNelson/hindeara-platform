@@ -9,15 +9,10 @@ import {
  *  Generic helpers
  *───────────────────────────────*/
 export function isTimeout(err: unknown): boolean {
-  if (err && typeof err === 'object') {
-    const e = err as { name?: string; message?: string };
-    return (
-      (!!e.name && e.name.toLowerCase().includes('timeout')) ||
-      (!!e.message && e.message.toLowerCase().includes('timeout')) ||
-      (!!e.name && e.name.toLowerCase().includes('abort'))
-    );
-  }
-  return false;
+  if (!err || typeof err !== 'object') return false;
+
+  const name = (err as { name?: string }).name;
+  return name === 'AbortError' || name === 'APIUserAbortError';
 }
 
 export function localeFallback(locale: string): string {

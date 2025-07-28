@@ -24,6 +24,7 @@ export const lessonMachine = setup({
       imageErrors: number;
       letterImageErrors: number;
       hint: string;
+      answer: string | undefined;
       previousAnswerStatus: boolean | null;
     },
     events: {} as {
@@ -61,7 +62,7 @@ export const lessonMachine = setup({
         const hintOne =
           'Tell the student to try again, just join the letters a little faster. ';
         const hintTwo =
-          'Tell the student not to pronounce the ‘a’ sound at the end of the word. ';
+          "Tell the student not to pronounce the 'a' sound at the end of the word. ";
         if (context.hint === hintOne) {
           return hintTwo;
         }
@@ -140,6 +141,7 @@ export const lessonMachine = setup({
     imageErrors: 0,
     letterImageErrors: 0,
     hint: '',
+    answer: (input as { word?: string } | undefined)?.word ?? 'hat',
     previousAnswerStatus: null,
   }),
 
@@ -152,6 +154,9 @@ export const lessonMachine = setup({
         prompt:
           'Please ask the student to sound out the word that they can see on the screen. (Do not name or describe the word yourself.) No image is currently being shown.',
       },
+      entry: assign({
+        answer: ({ context }) => context.word,
+      }),
       on: {
         ANSWER: [
           {
@@ -204,6 +209,9 @@ export const lessonMachine = setup({
         prompt:
           'Please also ask the student to sound out the letter that they can see on the screen. Do not say any letter in your response.',
       },
+      entry: assign({
+        answer: ({ context }) => context.wrongCharacters[0],
+      }),
       on: {
         ANSWER: [
           {
@@ -237,6 +245,9 @@ export const lessonMachine = setup({
         prompt:
           'Please briefly encourage the student. The student can see a image on a screen. Please ask the student what the image is of.',
       },
+      entry: assign({
+        answer: ({ context }) => context.wrongCharacters[0],
+      }),
       on: {
         ANSWER: [
           {
@@ -262,6 +273,9 @@ export const lessonMachine = setup({
         prompt:
           'The student can see a image on a screen. The student has just successfully identified the image. Please ask the student what the first sound of the object represented in the image.',
       },
+      entry: assign({
+        answer: ({ context }) => context.wrongCharacters[0],
+      }),
       on: {
         ANSWER: [
           /* correct & last letter → next word */
@@ -322,6 +336,9 @@ export const lessonMachine = setup({
         prompt:
           'The student finished the lesson. If they got the last answer correct please congratulate them. If they got the last answer wrong say something like let us try another word.',
       },
+      entry: assign({
+        answer: () => undefined,
+      }),
     },
   },
 });
@@ -333,6 +350,9 @@ export const getWord = (actor: LessonActor) => actor.getSnapshot().context.word;
 
 export const getWrongCharacters = (actor: LessonActor) =>
   actor.getSnapshot().context.wrongCharacters;
+
+export const getAnswer = (actor: LessonActor) =>
+  actor.getSnapshot().context.answer;
 
 export const getPrompt = (actor: LessonActor): string => {
   const snap = actor.getSnapshot();

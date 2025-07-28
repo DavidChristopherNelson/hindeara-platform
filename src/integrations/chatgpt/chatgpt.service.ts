@@ -13,8 +13,8 @@ import {
  *  Retry / timeout config
  *───────────────────────────────*/
 const MAX_RETRIES = 3;
-const ATTEMPT_TIMEOUT_MS = 3_000; // 3 s per attempt
-const SDK_TIMEOUT_MS = MAX_RETRIES * ATTEMPT_TIMEOUT_MS + 1_000; // 10 s total
+const ATTEMPT_TIMEOUT_MS = 10_000;
+const SDK_TIMEOUT_MS = MAX_RETRIES * ATTEMPT_TIMEOUT_MS + 1_000;
 
 /*───────────────────────────────*
  *  Guard for <0.1 s clips (~2 400 B)
@@ -131,7 +131,7 @@ export class ChatGPTService {
       return text.trim();
     } catch (err) {
       if (isTimeout(err)) {
-        this.log.warn('Transcription timed out – returning fallback text');
+        this.log.warn('Transcription timed out - returning fallback text');
         return localeFallback(locale);
       }
       throw err;
@@ -172,7 +172,7 @@ export class ChatGPTService {
       return parseStringResponse(data);
     } catch (err) {
       if (isTimeout(err)) {
-        this.log.warn('Completion timed out – returning fallback text');
+        this.log.warn('Completion timed out - returning fallback text');
         return localeFallback(locale);
       }
       throw err;
@@ -206,7 +206,7 @@ export class ChatGPTService {
         }
 
         this.log.warn(
-          `OpenAI timeout (attempt ${attempt}/${MAX_RETRIES}) – retrying`,
+          `OpenAI timeout (attempt ${attempt}/${MAX_RETRIES}) - retrying`,
         );
       }
     }
