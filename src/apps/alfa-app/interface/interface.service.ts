@@ -194,9 +194,10 @@ export class AlfaAppInterfaceService {
     actor: ActorRefFrom<typeof lessonMachine>,
   ): Promise<string> {
     const snap = actor.getSnapshot();
+    const answer = await this.getAnswer(actor);
     switch (snap.value) {
       case 'image':
-        return `Please give a hint 50% of the time. The answer is "${await this.getAnswer(actor)}". Do not include the string "${await this.getAnswer(actor)}" in your response.`;
+        return `Please give a hint 50% of the time. The answer is "${answer}". Do not include the string "${answer}" in your response.`;
       default:
         return '';
     }

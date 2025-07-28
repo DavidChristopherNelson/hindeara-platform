@@ -25,6 +25,7 @@ export const lessonMachine = setup({
       imageErrors: number;
       letterImageErrors: number;
       hint: string;
+      previousAnswerStatus: boolean | null;
     },
     events: {} as {
       type: 'ANSWER';
@@ -75,6 +76,12 @@ export const lessonMachine = setup({
     giveMiddleMatraHint: assign({
       hint: () =>
         'Ask the student to join the first two letters together, then join the last two letters together and then finally join the whole word together. ',
+    }),
+    previousAnswerCorrect: assign({
+      previousAnswerStatus: () => true,
+    }),
+    previousAnswerIncorrect: assign({
+      previousAnswerStatus: () => false,
     }),
   },
 
@@ -137,6 +144,7 @@ export const lessonMachine = setup({
     imageErrors: 0,
     letterImageErrors: 0,
     hint: '',
+    previousAnswerStatus: null,
   }),
 
   /*───────────────────────────*
@@ -153,29 +161,43 @@ export const lessonMachine = setup({
           {
             guard: { type: 'checkAnswer', params: { fn: markWord } },
             target: 'complete',
+            actions: 'previousAnswerCorrect',
           },
           {
             guard: 'thirdIncorrect',
             target: 'complete',
+            actions: 'previousAnswerIncorrect',
           },
           {
             guard: 'incorrectEndMatra',
             target: 'word',
-            actions: ['giveEndMatraHint', 'incrementWordErrors'],
+            actions: [
+              'giveEndMatraHint',
+              'incrementWordErrors',
+              'previousAnswerIncorrect',
+            ],
           },
           {
             guard: 'incorrectMiddleMatra',
             target: 'word',
-            actions: ['giveMiddleMatraHint', 'incrementWordErrors'],
+            actions: [
+              'giveMiddleMatraHint',
+              'incrementWordErrors',
+              'previousAnswerIncorrect',
+            ],
           },
           {
             guard: 'detectInsertion',
             target: 'word',
-            actions: 'incrementWordErrors',
+            actions: ['incrementWordErrors', 'previousAnswerIncorrect'],
           },
           {
             target: 'letter',
-            actions: ['identifyWrongCharacters', 'incrementWordErrors'],
+            actions: [
+              'identifyWrongCharacters',
+              'incrementWordErrors',
+              'previousAnswerIncorrect',
+            ],
           },
         ],
       },
@@ -194,14 +216,22 @@ export const lessonMachine = setup({
               { type: 'checkAnswer', params: { fn: markLetter } },
             ]),
             target: 'word',
-            actions: ['resetIndex', 'resetLetterImageErrors'],
+            actions: [
+              'resetIndex',
+              'resetLetterImageErrors',
+              'previousAnswerCorrect',
+            ],
           },
           {
             guard: { type: 'checkAnswer', params: { fn: markLetter } },
             target: 'letter',
-            actions: ['incrementIndex', 'resetLetterImageErrors'],
+            actions: [
+              'incrementIndex',
+              'resetLetterImageErrors',
+              'previousAnswerCorrect',
+            ],
           },
-          { target: 'image' },
+          { target: 'image', actions: 'previousAnswerIncorrect' },
         ],
       },
     },
@@ -216,13 +246,17 @@ export const lessonMachine = setup({
           {
             guard: { type: 'checkAnswer', params: { fn: markImage } },
             target: 'letterImage',
+            actions: 'previousAnswerCorrect',
           },
           {
             guard: 'thirdIncorrect',
             target: 'letterImage',
-            actions: 'resetImageErrors',
+            actions: ['resetImageErrors', 'previousAnswerIncorrect'],
           },
-          { target: 'image', actions: 'incrementImageErrors' },
+          {
+            target: 'image',
+            actions: ['incrementImageErrors', 'previousAnswerIncorrect'],
+          },
         ],
       },
     },
@@ -241,30 +275,46 @@ export const lessonMachine = setup({
               { type: 'checkAnswer', params: { fn: markLetter } },
             ]),
             target: 'word',
-            actions: ['resetIndex', 'resetLetterImageErrors'],
+            actions: [
+              'resetIndex',
+              'resetLetterImageErrors',
+              'previousAnswerCorrect',
+            ],
           },
           /* correct → next letter */
           {
             guard: { type: 'checkAnswer', params: { fn: markLetter } },
             target: 'letter',
-            actions: ['incrementIndex', 'resetLetterImageErrors'],
+            actions: [
+              'incrementIndex',
+              'resetLetterImageErrors',
+              'previousAnswerCorrect',
+            ],
           },
           /* third incorrect & last letter → still advance to word */
           {
             guard: and(['isLastLetter', 'thirdIncorrect']),
             target: 'word',
-            actions: ['resetIndex', 'resetLetterImageErrors'],
+            actions: [
+              'resetIndex',
+              'resetLetterImageErrors',
+              'previousAnswerIncorrect',
+            ],
           },
           /* third incorrect → advance to next letter */
           {
             guard: 'thirdIncorrect',
             target: 'letter',
-            actions: ['incrementIndex', 'resetLetterImageErrors'],
+            actions: [
+              'incrementIndex',
+              'resetLetterImageErrors',
+              'previousAnswerIncorrect',
+            ],
           },
           /* first or second incorrect → stay, increment error count */
           {
             target: 'letterImage',
-            actions: 'incrementLetterImageErrors',
+            actions: ['incrementLetterImageErrors', 'previousAnswerIncorrect'],
           },
         ],
       },
@@ -275,7 +325,7 @@ export const lessonMachine = setup({
       type: 'final',
       meta: {
         prompt:
-          'The student successfully read a word. Please congratulate them.',
+          'The student finished the lesson. If they got the last answer correct please congratulate them. If they got the last answer wrong say something like let us try another word.',
       },
     },
   },
@@ -297,5 +347,12 @@ export const getPrompt = (actor: LessonActor): string => {
   const meta = snap.getMeta() as Record<string, { prompt?: string }>;
   const key = `lesson.${snap.value as string}`;
   const hint = snap.context.hint;
-  return `${meta[key]?.prompt ?? ''} ${hint}`;
+  const previousAnswer = `${
+    snap.context.previousAnswerStatus === null
+      ? ''
+      : snap.context.previousAnswerStatus
+        ? 'The student got the previous answer correct.'
+        : 'The student got the previous answer incorrect.'
+  }`;
+  return `${previousAnswer} ${meta[key]?.prompt ?? ''} ${hint}`;
 };
