@@ -5,7 +5,6 @@ import { CreateAppEventDto } from 'src/hindeara-platform/app-events/dto/create-a
 import { MiniLessonsService } from 'src/apps/alfa-app/mini-lessons/mini-lessons.service';
 import { ActorRefFrom, createActor } from 'xstate';
 import {
-  getIndex,
   getPrompt,
   getWord,
   getWrongCharacters,
@@ -61,7 +60,7 @@ export class AlfaAppInterfaceService {
     const state = ctx.lessonActor.getSnapshot().value;
     const word: string = getWord(ctx.lessonActor);
     const wrongCharacters: string[] = getWrongCharacters(ctx.lessonActor);
-    const letter: string = wrongCharacters[getIndex(ctx.lessonActor)];
+    const letter: string = wrongCharacters[0];
     const phoneme = await this.phonemesService.findByLetter(letter);
     if (!phoneme) throw new Error('Unable to find phoneme.');
     const picture: string = phoneme.example_image;
@@ -170,7 +169,7 @@ export class AlfaAppInterfaceService {
     const snap = actor.getSnapshot();
     const word: string = getWord(actor);
     const wrongCharacters: string[] = getWrongCharacters(actor);
-    const letter: string = wrongCharacters[getIndex(actor)];
+    const letter: string = wrongCharacters[0];
     const phoneme = await this.phonemesService.findByLetter(letter);
     if (!phoneme) throw new Error('Unable to find phoneme.');
     const exampleNoun = phoneme.example_noun;

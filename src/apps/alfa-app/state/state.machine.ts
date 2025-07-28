@@ -20,7 +20,6 @@ export const lessonMachine = setup({
     context: {} as {
       word: string;
       wrongCharacters: string[];
-      index: number;
       wordErrors: number;
       imageErrors: number;
       letterImageErrors: number;
@@ -45,10 +44,6 @@ export const lessonMachine = setup({
           studentAnswer: event.studentAnswer,
         }),
     }),
-    incrementIndex: assign({
-      index: ({ context }) => context.index + 1,
-    }),
-    resetIndex: assign({ index: () => 0 }),
     incrementWordErrors: assign({
       wordErrors: ({ context }) => context.wordErrors + 1,
     }),
@@ -83,14 +78,16 @@ export const lessonMachine = setup({
     previousAnswerIncorrect: assign({
       previousAnswerStatus: () => false,
     }),
+    dropFirstWrongCharacter: assign({
+      wrongCharacters: ({ context }) => context.wrongCharacters.slice(1),
+    }),
   },
 
   /*───────────────────────────*
    *          GUARDS           *
    *───────────────────────────*/
   guards: {
-    isLastLetter: ({ context }) =>
-      context.index >= context.wrongCharacters.length - 1,
+    isLastLetter: ({ context }) => context.wrongCharacters.length <= 1,
 
     checkAnswer: ({ event }, params: { fn: AnswerFn }) => {
       if (!('correctAnswer' in event) || !('studentAnswer' in event)) {
@@ -139,7 +136,6 @@ export const lessonMachine = setup({
   context: ({ input }) => ({
     word: (input as { word?: string } | undefined)?.word ?? 'hat',
     wrongCharacters: ['a'],
-    index: 0,
     wordErrors: 0,
     imageErrors: 0,
     letterImageErrors: 0,
@@ -217,18 +213,18 @@ export const lessonMachine = setup({
             ]),
             target: 'word',
             actions: [
-              'resetIndex',
               'resetLetterImageErrors',
               'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
             ],
           },
           {
             guard: { type: 'checkAnswer', params: { fn: markLetter } },
             target: 'letter',
             actions: [
-              'incrementIndex',
               'resetLetterImageErrors',
               'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
             ],
           },
           { target: 'image', actions: 'previousAnswerIncorrect' },
@@ -276,9 +272,9 @@ export const lessonMachine = setup({
             ]),
             target: 'word',
             actions: [
-              'resetIndex',
               'resetLetterImageErrors',
               'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
             ],
           },
           /* correct → next letter */
@@ -286,9 +282,9 @@ export const lessonMachine = setup({
             guard: { type: 'checkAnswer', params: { fn: markLetter } },
             target: 'letter',
             actions: [
-              'incrementIndex',
               'resetLetterImageErrors',
               'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
             ],
           },
           /* third incorrect & last letter → still advance to word */
@@ -296,9 +292,9 @@ export const lessonMachine = setup({
             guard: and(['isLastLetter', 'thirdIncorrect']),
             target: 'word',
             actions: [
-              'resetIndex',
               'resetLetterImageErrors',
               'previousAnswerIncorrect',
+              'dropFirstWrongCharacter',
             ],
           },
           /* third incorrect → advance to next letter */
@@ -306,12 +302,11 @@ export const lessonMachine = setup({
             guard: 'thirdIncorrect',
             target: 'letter',
             actions: [
-              'incrementIndex',
               'resetLetterImageErrors',
               'previousAnswerIncorrect',
+              'dropFirstWrongCharacter',
             ],
           },
-          /* first or second incorrect → stay, increment error count */
           {
             target: 'letterImage',
             actions: ['incrementLetterImageErrors', 'previousAnswerIncorrect'],
@@ -338,9 +333,6 @@ export const getWord = (actor: LessonActor) => actor.getSnapshot().context.word;
 
 export const getWrongCharacters = (actor: LessonActor) =>
   actor.getSnapshot().context.wrongCharacters;
-
-export const getIndex = (actor: LessonActor) =>
-  actor.getSnapshot().context.index;
 
 export const getPrompt = (actor: LessonActor): string => {
   const snap = actor.getSnapshot();
