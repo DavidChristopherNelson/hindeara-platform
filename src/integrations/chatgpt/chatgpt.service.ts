@@ -201,9 +201,8 @@ export class ChatGPTService {
         clearTimeout(timer);
 
         if (!isTimeout(err) || attempt === MAX_RETRIES) {
-          const message =
-            err instanceof Error ? err.message : 'unknown OpenAI SDK error';
-          throw new Error(`OpenAI request failed: ${message}`);
+          console.error('OpenAI error (raw):', err);
+          throw err;
         }
 
         this.log.warn(
