@@ -146,7 +146,7 @@ export const lessonMachine = setup({
     word: {
       meta: {
         prompt:
-          'Please ask the student to sound out the word that they can see on the screen. (Do not name or describe the word yourself.)',
+          'Please ask the student to sound out the word that they can see on the screen. (Do not name or describe the word yourself.) No image is currently being shown.',
       },
       on: {
         ANSWER: [
