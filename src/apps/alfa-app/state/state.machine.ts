@@ -108,6 +108,11 @@ export const lessonMachine = setup({
       return Math.max(wordErrors, imageErrors, letterImageErrors) >= 2;
     },
 
+    fourthIncorrect: ({ context }) => {
+      const { wordErrors, imageErrors, letterImageErrors } = context;
+      return Math.max(wordErrors, imageErrors, letterImageErrors) >= 3;
+    },
+
     incorrectEndMatra: ({ event }) => {
       return detectIncorrectEndMatra({
         correctAnswer: event.correctAnswer,
@@ -165,7 +170,7 @@ export const lessonMachine = setup({
             actions: 'previousAnswerCorrect',
           },
           {
-            guard: 'thirdIncorrect',
+            guard: 'fourthIncorrect',
             target: 'complete',
             actions: 'previousAnswerIncorrect',
           },
