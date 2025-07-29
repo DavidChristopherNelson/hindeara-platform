@@ -123,6 +123,7 @@ class EvaluateAnswer {
 
   @LogMethod()
   private static markPhoneme(correctAnswer: string, word: string): boolean {
+    if (!word || !correctAnswer) return false;
     if (word === correctAnswer) return true;
 
     if (sameFamily(word[0], correctAnswer[0])) {
