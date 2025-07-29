@@ -86,10 +86,6 @@ export class AlfaAppInterfaceService {
     const recording = await this.chatgptService.sendMessage({
       userPrompt: `
         For context here is the recent previous exchange between the app and the student
-        App: ${ctx.secondLatestAppEvent?.recording ?? 'No previous app recording'}. 
-        Student: ${ctx.secondLatestUserEvent?.transcription ?? 'No previous student transcription'}. 
-        App: ${ctx.latestAppEvent?.recording ?? 'No latest app recording'}. 
-        Student: ${ctx.latestUserEvent?.transcription ?? 'No latest student transcription'}. 
         ${getPrompt(ctx.lessonActor)}
         Please generate a unique response.
         Your response must only contain the actual words you want to communicate to the student **and must not include any emojis or emoticons**.
