@@ -54,7 +54,7 @@ export class AlfaAppInterfaceService {
     if (ctx.isLatestAppEventValid) {
       let correctAnswer = getAnswer(ctx.lessonActor);
       if (ctx.lessonActor.getSnapshot().value === 'image') {
-        correctAnswer = await this.phonemesService.getImage(correctAnswer);
+        correctAnswer = await this.phonemesService.getNoun(correctAnswer);
       }
       if (!correctAnswer) {
         throw new Error('Cannot find the correct answer.');

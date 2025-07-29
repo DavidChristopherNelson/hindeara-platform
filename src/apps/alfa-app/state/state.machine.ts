@@ -229,6 +229,7 @@ export const lessonMachine = setup({
           {
             guard: { type: 'checkAnswer', params: { fn: markLetter } },
             target: 'letter',
+            reenter: true,
             actions: [
               'resetLetterImageErrors',
               'previousAnswerCorrect',

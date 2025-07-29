@@ -50,6 +50,15 @@ export class PhonemesService {
   }
 
   @LogMethod()
+  async getNoun(letter: string | undefined): Promise<string | undefined> {
+    if (!letter) {
+      return undefined;
+    }
+    const phoneme = await this.findByLetter(letter);
+    return phoneme?.example_noun ?? undefined;
+  }
+
+  @LogMethod()
   async update(
     id: number,
     updatePhonemeDto: UpdatePhonemeDto,
