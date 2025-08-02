@@ -17,8 +17,8 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
-      'https://hindeara-frontend.vercel.app',
-      'https://hindeara-platform-production.up.railway.app',
+      'https://www.deep-connect.app',
+      'https://deep-connect.app',
     ],
   });
   const config = new DocumentBuilder()

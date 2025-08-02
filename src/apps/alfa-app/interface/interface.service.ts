@@ -67,7 +67,7 @@ export class AlfaAppInterfaceService {
     const state = ctx.lessonActor.getSnapshot().value;
     const word: string = getWord(ctx.lessonActor);
     const wrongCharacters: string[] = getWrongCharacters(ctx.lessonActor);
-    const deployCheck: string = 'Deploy Check: 5';
+    const deployCheck: string = 'Deploy Check: 0';
     const phonemeId = wrongCharacters[0]
       ? (await this.phonemesService.findByLetter(wrongCharacters[0]))?.id
       : undefined;
