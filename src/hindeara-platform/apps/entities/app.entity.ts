@@ -12,7 +12,7 @@ export class App {
   @Column()
   is_active: boolean;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
   @OneToMany(() => AppEvent, (appEvent) => appEvent.app)

@@ -90,10 +90,20 @@ export class AppEventsService {
       .getRawMany<RawAppEventWithIds>();
 
     // very cheap in-memory map: 0|1 → boolean
-    return rawRows.map(({ event_isComplete, ...rest }) => ({
+    const returnValue = rawRows.map(({ event_isComplete, ...rest }) => ({
       ...rest,
       event_isComplete: Boolean(event_isComplete),
     }));
+
+    // Hack: the filter is acting like <= instead of < so I have to filter it out here instead.
+    if (
+      filter.since &&
+      returnValue[0]?.event_createdAt.getTime() === filter.since.getTime()
+    ) {
+      return [];
+    }
+
+    return returnValue;
   }
 
   @LogMethod()

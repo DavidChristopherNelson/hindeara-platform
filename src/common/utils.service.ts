@@ -55,7 +55,7 @@ export class UtilsService {
     if (!user) throw new Error('Unable to find user.');
     const locale = await this.currentLocale({ user });
     // Todo: convert this into a global variable.
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60_000).toISOString();
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60_000);
 
     const candidates = await this.appEventsService.findAll({
       userId: user.id,
@@ -80,11 +80,10 @@ export class UtilsService {
     const locale = await this.currentLocale({ user: appEvent.user });
     if (locale !== appEvent.locale) return null;
     if (appEvent.isComplete) return null;
-
     const invalidatingAppEvents = await this.appEventsService.findAll({
       userId: appEvent.user.id,
       appId: appEvent.app.id,
-      since: appEvent.createdAt.toISOString(),
+      since: appEvent.createdAt,
       locale: appEvent.locale,
     });
 

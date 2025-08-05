@@ -1,3 +1,4 @@
+// src/hindeara-platform/app-events/entities/app-event.entity.ts
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import { App } from 'src/hindeara-platform/apps/entities/app.entity';
 import {
@@ -25,7 +26,7 @@ export class AppEvent {
   @Column()
   isComplete: boolean;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
   @ManyToOne(() => User, (user) => user.appEvents, {

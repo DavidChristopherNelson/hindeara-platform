@@ -13,7 +13,7 @@ export class UserEvent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'bytea' })
   recording: Buffer;
 
   @Column()
@@ -22,7 +22,7 @@ export class UserEvent {
   @Column({ nullable: true })
   transcription?: string;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
   @ManyToOne(() => User, (user) => user.userEvents, {

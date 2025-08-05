@@ -2,9 +2,9 @@ import {
   IsOptional,
   IsInt,
   IsPositive,
-  IsISO8601,
   IsString,
   MinLength,
+  IsDate,
 } from 'class-validator';
 
 /**
@@ -19,8 +19,8 @@ export class FindAllFilterDto {
 
   /** ISO-8601 date string parsed to `Date` in the service layer. */
   @IsOptional()
-  @IsISO8601()
-  since?: string;
+  @IsDate()
+  since?: Date;
 
   @IsOptional()
   @IsInt()

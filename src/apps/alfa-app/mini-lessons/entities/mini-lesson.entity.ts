@@ -32,7 +32,7 @@ export class MiniLesson {
   })
   state: Snapshot<unknown>;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
   @Column({ nullable: true })

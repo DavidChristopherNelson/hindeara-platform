@@ -146,6 +146,7 @@ export class AlfaAppInterfaceService {
         snapshot: latestMiniLesson.state,
       }).start();
     } else {
+      console.log('create a new lesson');
       lessonActor = createActor(lessonMachine, {
         input: { word: await this.generateWord(userId, locale) },
       }).start();

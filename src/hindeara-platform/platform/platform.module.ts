@@ -6,6 +6,7 @@ import { PlatformService } from './platform.service';
 import { AppsModule } from '../apps/apps.module';
 import { UserEventsModule } from '../user-events/user-events.module';
 import { AppEventsModule } from '../app-events/app-events.module';
+import { dataSourceOptions } from 'src/database/data-source';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AlfaAppInterfaceModule } from 'src/apps/alfa-app/interface/interface.module';
 import { UsersModule } from '../users/users.module';
@@ -16,11 +17,8 @@ import { StateModule } from 'src/apps/alfa-app/state/state.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: ':memory:',
-      autoLoadEntities: true,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      useFactory: () => ({ ...dataSourceOptions }),
     }),
     AppsModule,
     UserEventsModule,
