@@ -17,7 +17,7 @@ export class UserDto {
 
   @ApiProperty({ example: '+911234567890' })
   @Expose()
-  phoneNumber: string;
+  phoneNumber!: string;
 
   @ApiProperty()
   @Expose()
