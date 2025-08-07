@@ -30,6 +30,8 @@ describe('PlatformController (e2e)', () => {
   let phonemesService: PhonemesService;
 
   let createdUser: User;
+  let testApp: App;
+  let createdInThisTest = false;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -61,51 +63,65 @@ describe('PlatformController (e2e)', () => {
       getRepositoryToken(MiniLesson),
     );
 
-    // Capture the HTTP server as a proper Server type
     server = nestApp.getHttpServer() as unknown as Server;
 
-    // Create a user for testing
-    createdUser = await userRepo.save(
-      userRepo.create({
-        phoneNumber: `e2e-${Date.now()}`,
-      }),
-    );
+    /* ── reuse or create test user ─────────────────────────────── */
+    const TEST_PHONE = '+919999999999';
+    createdUser =
+      (await userRepo.findOne({ where: { phoneNumber: TEST_PHONE } })) ??
+      (await userRepo.save(userRepo.create({ phoneNumber: TEST_PHONE })));
+    createdInThisTest = !createdUser.createdAt;
+    /* ──────────────────────────────────────────────────────────── */
 
-    // ---- SEED ----
     phonemesService = nestApp.get(PhonemesService);
     await phonemesService.seedEnglishAlphabet();
     await phonemesService.seedHindiAlphabet();
 
-    // Create an app for testing
-    await appRepo.save(
-      appRepo.create({
-        http_path: 'alfa-app',
-        is_active: true,
-      }),
-    );
+    /* reuse or create app row (idempotent) */
+    testApp =
+      (await appRepo.findOne({ where: { http_path: 'alfa-app' } })) ??
+      (await appRepo.save(
+        appRepo.create({ http_path: 'alfa-app', is_active: true }),
+      ));
   });
 
   afterEach(async () => {
+    /* clean resources made during the test */
+    await miniLessonRepo.delete({ userId: createdUser.id });
+    await userEventRepo.delete({ user: { id: createdUser.id } });
+    await appEventRepo.delete({ user: { id: createdUser.id } });
+
+    /* delete the user row only if *this* test created it */
+    if (createdInThisTest) await userRepo.delete(createdUser.id);
+
+    /* delete app row only if no other events reference it anymore */
+    const remainingAppEvents = await appEventRepo.count({
+      where: { app: { id: testApp.id } },
+    });
+    if (remainingAppEvents === 0) await appRepo.delete(testApp.id);
+
     await nestApp.close();
   });
 
-  it('POST /users/:userId/processUserInput should create all necessary records', async () => {
+  it('POST /processUserInput should create all necessary records', async () => {
     const dummyText = 'test-recording';
     const base64Payload = Buffer.from(dummyText, 'utf8').toString('base64');
 
     const res = await request(server)
-      .post(`/users/${createdUser.id}/processUserInput`)
+      .post('/processUserInput')
       .set('Accept-Language', 'en')
-      .send({ recording: base64Payload })
+      .send({
+        recording: base64Payload,
+        phoneNumber: createdUser.phoneNumber,
+      })
       .expect(201);
 
-    // Verify response structure
+    // Response structure
     expect(res.body).toHaveProperty('recording');
     expect(res.body).toHaveProperty('uiData');
     expect(res.body).toHaveProperty('userId');
     expect(res.body).toHaveProperty('appId');
 
-    // Check the resources
     const userEvents = await userEventRepo.find({
       where: { user: { id: createdUser.id } },
     });

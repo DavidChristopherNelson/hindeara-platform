@@ -1,16 +1,7 @@
-import {
-  Body,
-  Controller,
-  Param,
-  ParseIntPipe,
-  Post,
-  Headers,
-} from '@nestjs/common';
+import { Body, Controller, Post, Headers } from '@nestjs/common';
 import { PlatformService } from './platform.service';
 import { ProcessUserInputDto } from './dto/process-user-input.dto';
 import { ProcessUserInputResponseDto } from './dto/process-user-input-response.dto';
-import { User } from 'src/hindeara-platform/users/entities/user.entity';
-import { UserByIdPipe } from 'src/hindeara-platform/users/pipes/user-by-id.pipe';
 import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
@@ -19,7 +10,7 @@ import { LogMethod } from 'src/common/decorators/log-method.decorator';
 export class PlatformController {
   constructor(private readonly platformService: PlatformService) {}
 
-  @Post('/users/:userId/processUserInput')
+  @Post('/processUserInput')
   @ApiParam({
     name: 'userId',
     type: Number,
@@ -35,11 +26,14 @@ export class PlatformController {
   @LogMethod()
   async processUserInput(
     @Headers('accept-language') locale: string,
-    @Param('userId', ParseIntPipe, UserByIdPipe) user: User,
     @Body() dto: ProcessUserInputDto,
   ): Promise<ProcessUserInputResponseDto> {
     return ProcessUserInputResponseDto.fromAppEvent(
-      await this.platformService.processUserInput(user, dto.recording, locale),
+      await this.platformService.processUserInput(
+        dto.phoneNumber,
+        dto.recording,
+        locale,
+      ),
     );
   }
 }

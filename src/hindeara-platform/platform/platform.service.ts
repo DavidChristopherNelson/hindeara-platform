@@ -1,5 +1,5 @@
 // src/hindeara-platform/platform/platform.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/hindeara-platform/users/users.service';
 import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
 import { AppEventsService } from 'src/hindeara-platform/app-events/app-events.service';
@@ -28,15 +28,15 @@ export class PlatformService {
 
   @LogMethod()
   async processUserInput(
-    user: User,
+    phoneNumber: string,
     recordingBase64: string,
     locale: string,
   ): Promise<AppEvent> {
-    const audioBuffer = Buffer.from(recordingBase64, 'base64');
-    const transcription =
-      audioBuffer.length === 0
-        ? ''
-        : await this.chatgpt.transcribeAudio(audioBuffer, locale);
+    const [user, transcription] = await this.dataProcessing(
+      phoneNumber,
+      recordingBase64,
+      locale,
+    );
 
     const createUserEventDto: CreateUserEventDto = {
       recording: recordingBase64,
@@ -74,5 +74,28 @@ export class PlatformService {
       default:
         throw new Error(`App not found: ${app.http_path}`);
     }
+  }
+
+  @LogMethod()
+  private async dataProcessing(
+    phoneNumber: string,
+    recordingBase64: string,
+    locale: string,
+  ): Promise<[User, string]> {
+    // Get the user from the phone number
+    const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
+    if (!user) {
+      throw new NotFoundException(
+        `No user corresponds with this phone number: ${phoneNumber}.`,
+      );
+    }
+    // Process the recording to get the transcription
+    const audioBuffer = Buffer.from(recordingBase64, 'base64');
+    const transcription =
+      audioBuffer.length === 0
+        ? ''
+        : await this.chatgpt.transcribeAudio(audioBuffer, locale);
+    // Return data
+    return [user, transcription];
   }
 }
