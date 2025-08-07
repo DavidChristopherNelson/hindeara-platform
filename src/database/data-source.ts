@@ -1,3 +1,4 @@
+// src/database/data-source.ts
 import { DataSource, DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
