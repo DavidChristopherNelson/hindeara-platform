@@ -16,6 +16,10 @@ export class UsersService {
 
   @LogMethod()
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const existing = await this.userRepository.findOne({
+      where: { phoneNumber: createUserDto.phoneNumber },
+    });
+    if (existing) return existing;
     const user = this.userRepository.create(createUserDto);
     return this.userRepository.save(user);
   }
