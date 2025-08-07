@@ -36,7 +36,7 @@ async function bootstrap() {
   await phonemesService.seedHindiAlphabet();
 
   const usersService = app.get(UsersService);
-  await usersService.create({});
+  await usersService.create({ phoneNumber: '+911234567890' });
 
   await app.listen(process.env.PORT ?? 3001);
 }

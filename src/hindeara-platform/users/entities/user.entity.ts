@@ -8,6 +8,9 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({})
+  phoneNumber: string;
+
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 

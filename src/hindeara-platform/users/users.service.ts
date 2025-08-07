@@ -31,6 +31,11 @@ export class UsersService {
   }
 
   @LogMethod()
+  async findOneByPhoneNumber(phoneNumber: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { phoneNumber } });
+  }
+
+  @LogMethod()
   async update(user: User, updateUserDto: UpdateUserDto): Promise<User> {
     Object.assign(user, updateUserDto);
     return this.userRepository.save(user);

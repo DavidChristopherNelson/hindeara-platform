@@ -65,7 +65,11 @@ describe('PlatformController (e2e)', () => {
     server = nestApp.getHttpServer() as unknown as Server;
 
     // Create a user for testing
-    createdUser = await userRepo.save(userRepo.create({}));
+    createdUser = await userRepo.save(
+      userRepo.create({
+        phoneNumber: `e2e-${Date.now()}`,
+      }),
+    );
 
     // ---- SEED ----
     phonemesService = nestApp.get(PhonemesService);
