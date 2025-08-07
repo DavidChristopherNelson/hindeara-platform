@@ -35,7 +35,13 @@ $ npm install
 
 ```bash
 # development
-$ npm run start
+$ rm -rf dist
+$ npm run build
+$ docker compose down -v
+$ docker compose up -d db
+$ npm run migration:run
+$ npm run test:e2e
+$ npm run start:dev
 
 # watch mode
 $ npm run start:dev
