@@ -13,6 +13,7 @@ import { UsersModule } from '../users/users.module';
 import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
 import { CommonModule } from 'src/common/common.module';
 import { StateModule } from 'src/apps/alfa-app/state/state.module';
+import { SpeechmaticsModule } from 'src/integrations/speechmatics/speechmatics.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { StateModule } from 'src/apps/alfa-app/state/state.module';
     AlfaAppInterfaceModule,
     UsersModule,
     ChatGPTModule,
+    SpeechmaticsModule,
     CommonModule,
     StateModule,
   ],

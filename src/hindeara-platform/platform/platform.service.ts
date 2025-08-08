@@ -13,6 +13,7 @@ import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import { CreateUserEventDto } from '../user-events/dto/create-user-event.dto';
 import { UtilsService } from 'src/common/utils.service';
 import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
+import { SpeechmaticsService } from 'src/integrations/speechmatics/speechmatics.service';
 
 @Injectable()
 export class PlatformService {
@@ -24,6 +25,7 @@ export class PlatformService {
     private readonly alfaAppInterface: AlfaAppInterfaceService,
     private readonly utilsService: UtilsService,
     private readonly chatgpt: ChatGPTService,
+    private readonly speechmatics: SpeechmaticsService,
   ) {}
 
   @LogMethod()
@@ -89,12 +91,17 @@ export class PlatformService {
         `No user corresponds with this phone number: ${phoneNumber}.`,
       );
     }
+
     // Process the recording to get the transcription
     const audioBuffer = Buffer.from(recordingBase64, 'base64');
-    const transcription =
-      audioBuffer.length === 0
-        ? ''
-        : await this.chatgpt.transcribeAudio(audioBuffer, locale);
+    if (audioBuffer.length === 0) return [user, ''];
+
+    const [gptText, smText] = await Promise.all([
+      this.chatgpt.transcribeAudio(audioBuffer, locale),
+      this.speechmatics.transcribeAudio(audioBuffer, locale),
+    ]);
+    const transcription = [gptText, smText].filter(Boolean).join(' ').trim();
+
     // Return data
     return [user, transcription];
   }

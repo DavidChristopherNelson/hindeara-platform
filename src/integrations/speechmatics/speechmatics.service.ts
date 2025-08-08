@@ -1,8 +1,6 @@
+// src/integrations/speechmatics/speechmatics.service.ts
 /* eslint-disable
-  @typescript-eslint/no-unsafe-assignment,
   @typescript-eslint/no-unsafe-call,
-  @typescript-eslint/no-unsafe-member-access,
-  @typescript-eslint/no-unsafe-argument
 */
 /*───────────────────────────────────────────────────────────────
  *  src/integrations/speechmatics/speechmatics.service.ts
@@ -38,6 +36,20 @@ const isAddTranscript = (d: unknown): d is AddTranscriptMsg =>
 const isErrorMsg = (d: unknown): d is ErrorMsg =>
   !!d && (d as Record<string, unknown>).message === 'Error';
 
+/*──────────────*
+ *  Extra cast
+ *──────────────*/
+// our own view of the JS-only SDK
+type SpeechmaticsClient = {
+  addEventListener(
+    type: 'receiveMessage',
+    listener: (evt: MessageEvent) => void,
+  ): void;
+  start(jwt: string, cfg: unknown): Promise<void>;
+  sendAudio(buf: Buffer): Promise<void>;
+  end(): Promise<void>;
+};
+
 /*──────────────────────*
  *  Service
  *──────────────────────*/
@@ -55,7 +67,7 @@ export class SpeechmaticsService {
     }
 
     /* 2. Client */
-    const client = new RealtimeClient();
+    const client = new RealtimeClient() as unknown as SpeechmaticsClient;
     let transcript = '';
 
     /* 3. Handle events */
@@ -78,9 +90,7 @@ export class SpeechmaticsService {
     })) as string;
 
     /* 5. Start session */
-    await (
-      client as unknown as { start(jwt: string, cfg: unknown): Promise<void> }
-    ).start(jwt, {
+    await client.start(jwt, {
       transcription_config: {
         language: locale || 'en',
         operating_point: 'enhanced',
