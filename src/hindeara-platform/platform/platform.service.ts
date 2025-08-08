@@ -96,17 +96,36 @@ export class PlatformService {
     const audioBuffer = Buffer.from(recordingBase64, 'base64');
     if (audioBuffer.length === 0) return [user, ''];
 
+    // Measure execution time for both transcription services
+    const gptStartTime = Date.now();
+    const smStartTime = Date.now();
+
     const [gptRes, smRes] = await Promise.allSettled([
-      this.chatgpt.transcribeAudio(audioBuffer, locale),
-      this.speechmatics.transcribeAudio(audioBuffer, locale),
+      this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
+        const gptEndTime = Date.now();
+        const gptDuration = (gptEndTime - gptStartTime) / 1000; // Convert to seconds
+        return { result, duration: gptDuration };
+      }),
+      this.speechmatics.transcribeAudio(audioBuffer, locale).then((result) => {
+        const smEndTime = Date.now();
+        const smDuration = (smEndTime - smStartTime) / 1000; // Convert to seconds
+        return { result, duration: smDuration };
+      }),
     ]);
 
     const gptText =
-      gptRes.status === 'fulfilled' ? `GTP: ${gptRes.value} : ` : '';
+      gptRes.status === 'fulfilled'
+        ? `GTP: ${gptRes.value.result} - ${gptRes.value.duration.toFixed(3)}s`
+        : '';
+
     let smText = '';
-    if (smRes.status === 'fulfilled') smText = `Speechmatics: ${smRes.value}`;
-    if (smRes.status === 'rejected') smText = 'Speechmatics failed';
-    const transcription = [gptText, smText].filter(Boolean).join(' ').trim();
+    if (smRes.status === 'fulfilled') {
+      smText = `Speechmatics: ${smRes.value.result} - ${smRes.value.duration.toFixed(3)}s`;
+    } else if (smRes.status === 'rejected') {
+      smText = 'Speechmatics failed';
+    }
+
+    const transcription = [gptText, smText].filter(Boolean).join('\n').trim();
 
     // Return data
     return [user, transcription];
