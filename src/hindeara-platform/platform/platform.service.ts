@@ -96,10 +96,15 @@ export class PlatformService {
     const audioBuffer = Buffer.from(recordingBase64, 'base64');
     if (audioBuffer.length === 0) return [user, ''];
 
-    const [gptText, smText] = await Promise.all([
+    const [gptRes, smRes] = await Promise.allSettled([
       this.chatgpt.transcribeAudio(audioBuffer, locale),
       this.speechmatics.transcribeAudio(audioBuffer, locale),
     ]);
+
+    const gptText = gptRes.status === 'fulfilled' ? gptRes.value : '';
+    let smText = '';
+    if (smRes.status === 'fulfilled') smText = smRes.value;
+    if (smRes.status === 'rejected') smText = 'Speechmatics failed';
     const transcription = [gptText, smText].filter(Boolean).join(' ').trim();
 
     // Return data
