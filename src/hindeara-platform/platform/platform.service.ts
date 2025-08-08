@@ -14,6 +14,7 @@ import { CreateUserEventDto } from '../user-events/dto/create-user-event.dto';
 import { UtilsService } from 'src/common/utils.service';
 import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { SpeechmaticsService } from 'src/integrations/speechmatics/speechmatics.service';
+import { GoogleService } from 'src/integrations/google/google.service';
 
 @Injectable()
 export class PlatformService {
@@ -26,6 +27,7 @@ export class PlatformService {
     private readonly utilsService: UtilsService,
     private readonly chatgpt: ChatGPTService,
     private readonly speechmatics: SpeechmaticsService,
+    private readonly google: GoogleService,
   ) {}
 
   @LogMethod()
@@ -96,11 +98,12 @@ export class PlatformService {
     const audioBuffer = Buffer.from(recordingBase64, 'base64');
     if (audioBuffer.length === 0) return [user, ''];
 
-    // Measure execution time for both transcription services
+    // Measure execution time for all transcription services
     const gptStartTime = Date.now();
     const smStartTime = Date.now();
+    const googleStartTime = Date.now();
 
-    const [gptRes, smRes] = await Promise.allSettled([
+    const [gptRes, smRes, googleRes] = await Promise.allSettled([
       this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
         const gptEndTime = Date.now();
         const gptDuration = (gptEndTime - gptStartTime) / 1000; // Convert to seconds
@@ -110,6 +113,11 @@ export class PlatformService {
         const smEndTime = Date.now();
         const smDuration = (smEndTime - smStartTime) / 1000; // Convert to seconds
         return { result, duration: smDuration };
+      }),
+      this.google.transcribeAudio(audioBuffer, locale).then((result) => {
+        const googleEndTime = Date.now();
+        const googleDuration = (googleEndTime - googleStartTime) / 1000; // Convert to seconds
+        return { result, duration: googleDuration };
       }),
     ]);
 
@@ -125,7 +133,14 @@ export class PlatformService {
       smText = 'Speechmatics failed';
     }
 
-    const transcription = [gptText, smText].filter(Boolean).join('\n').trim();
+    let googleText = '';
+    if (googleRes.status === 'fulfilled') {
+      googleText = `Google: ${googleRes.value.result} - ${googleRes.value.duration.toFixed(3)}s`;
+    } else if (googleRes.status === 'rejected') {
+      googleText = 'Google failed';
+    }
+
+    const transcription = [gptText, smText, googleText].filter(Boolean).join('\n').trim();
 
     // Return data
     return [user, transcription];

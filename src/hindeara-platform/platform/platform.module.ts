@@ -14,6 +14,7 @@ import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
 import { CommonModule } from 'src/common/common.module';
 import { StateModule } from 'src/apps/alfa-app/state/state.module';
 import { SpeechmaticsModule } from 'src/integrations/speechmatics/speechmatics.module';
+import { GoogleModule } from 'src/integrations/google/google.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SpeechmaticsModule } from 'src/integrations/speechmatics/speechmatics.m
     UsersModule,
     ChatGPTModule,
     SpeechmaticsModule,
+    GoogleModule,
     CommonModule,
     StateModule,
   ],

@@ -63,6 +63,9 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 #   -g typescript-fetch \
 #   -o generated-api
 
+# service-account keys
+keys/
+
 # Programmer Quality of Life Files
 sandbox.*
 show-structure.py
