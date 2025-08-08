@@ -11,52 +11,29 @@ import 'dotenv/config';
 import { Injectable, Logger } from '@nestjs/common';
 import { createSpeechmaticsJWT } from '@speechmatics/auth';
 import { RealtimeClient } from '@speechmatics/real-time-client';
-import * as fs from 'fs/promises';
-import * as path from 'path';
-import { tmpdir } from 'os';
-import { randomUUID } from 'crypto';
-import { execFile as _execFile } from 'child_process';
-import { promisify } from 'util';
-import * as ffmpegStatic from 'ffmpeg-static';
-const execFile = promisify(_execFile);
-const ffmpegPath =
-  typeof ffmpegStatic === 'string'
-    ? (ffmpegStatic as unknown as string)
-    : (ffmpegStatic as { default?: string }).default || '';
+import https from 'node:https';                              // ✨ NEW
+import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 /*──────────────────────*
  *  Types & type-guards
  *──────────────────────*/
-interface WordAlt {
-  content: string;
-}
-interface TranscriptResult {
-  type: 'word' | 'punctuation';
-  alternatives: WordAlt[];
-}
-interface AddTranscriptMsg {
-  message: 'AddTranscript';
-  results: TranscriptResult[];
-}
-interface ErrorMsg {
-  message: 'Error';
-  [k: string]: unknown;
-}
-type ReceiveMsg = AddTranscriptMsg | ErrorMsg;
+interface WordAlt { content: string }
+interface TranscriptResult { type: 'word' | 'punctuation'; alternatives: WordAlt[] }
+interface AddTranscriptMsg { message: 'AddTranscript'; results: TranscriptResult[] }
+interface EndMsg { message: 'EndOfTranscript' }
+interface ErrorMsg { message: 'Error'; [k: string]: unknown }
+type ReceiveMsg = AddTranscriptMsg | EndMsg | ErrorMsg;
 
 const isAddTranscript = (d: unknown): d is AddTranscriptMsg =>
   !!d && (d as Record<string, unknown>).message === 'AddTranscript';
 const isErrorMsg = (d: unknown): d is ErrorMsg =>
   !!d && (d as Record<string, unknown>).message === 'Error';
 
-/*──────────────*
+/*──────────────────────*
  *  Minimal SDK view
- *──────────────*/
+ *──────────────────────*/
 type SpeechmaticsClient = {
-  addEventListener(
-    type: 'receiveMessage',
-    listener: (evt: MessageEvent) => void,
-  ): void;
+  addEventListener(type: 'receiveMessage', l: (e: MessageEvent) => void): void;
   start(jwt: string, cfg: unknown): Promise<void>;
   sendAudio(buf: Buffer): Promise<void>;
   stopRecognition(opts?: { noTimeout?: boolean }): Promise<void>;
@@ -68,77 +45,61 @@ type SpeechmaticsClient = {
 @Injectable()
 export class SpeechmaticsService {
   private readonly logger = new Logger(SpeechmaticsService.name);
+  private static readonly STREAM_URL = 'https://media-ice.musicradio.com/LBCUKMP3';
 
-  /** Transcribe < 60 s of audio and return plain text */
-  async transcribeAudio(audio: Buffer, locale: string): Promise<string> {
-    /* 1. Check env */
+  /** Transcribe ~2 s of the LBC UK MP3 stream */
+  @LogMethod()
+  async transcribeAudio(_: Buffer, locale: string): Promise<string> {
+    /* 1. API-key check */
     const apiKey = process.env.SPEECHMATICS_API_KEY;
-    if (!apiKey) {
-      this.logger.error('SPEECHMATICS_API_KEY missing');
-      throw new Error('Missing Speechmatics API key');
-    }
+    if (!apiKey) throw new Error('Missing Speechmatics API key');
 
-    /* 2. 🔄 Decode input → mono 16-kHz PCM (s16le) */
-    const inPath = path.join(tmpdir(), `${randomUUID()}.ogg`);
-    const outPath = path.join(tmpdir(), `${randomUUID()}.pcm`);
-    await fs.writeFile(inPath, audio);
-    await execFile(ffmpegPath, [
-      '-y',
-      '-i',
-      inPath,
-      '-ac',
-      '1',
-      '-ar',
-      '16000',
-      '-f',
-      's16le',
-      '-acodec',
-      'pcm_s16le',
-      outPath,
-    ]);
-    const pcmBuf = await fs.readFile(outPath);
-    void fs.unlink(inPath).catch(() => {});
-    void fs.unlink(outPath).catch(() => {});
-
-    /* 3. Client */
+    /* 2. Client & transcript collector */
     const client = new RealtimeClient() as unknown as SpeechmaticsClient;
-    let transcript = '';
-
-    client.addEventListener('receiveMessage', (evt: MessageEvent) => {
-      const data = evt.data as unknown as ReceiveMsg;
-      if (isAddTranscript(data)) {
-        for (const r of data.results)
-          transcript += `${r.alternatives[0].content} `;
-      } else if (isErrorMsg(data)) {
-        this.logger.error(`Speechmatics error: ${JSON.stringify(data)}`);
-      }
+    let text = '';
+    const transcriptDone = new Promise<string>((resolve, reject) => {
+      client.addEventListener('receiveMessage', ({ data }: MessageEvent) => {
+        const msg = data as ReceiveMsg;
+        if (isAddTranscript(msg)) {
+          for (const r of msg.results) {
+            if (r.type === 'word') text += ' ';
+            text += r.alternatives[0].content;
+          }
+        } else if ((msg as EndMsg).message === 'EndOfTranscript') resolve(text.trim());
+        else if (isErrorMsg(msg)) reject(new Error(JSON.stringify(msg)));
+      });
     });
 
-    /* 4. Short-lived JWT */
+    /* 3. JWT & start session (MP3 autodetect) */
     const jwt = (await createSpeechmaticsJWT({
       type: 'rt',
       apiKey,
       ttl: 60,
     })) as string;
-
-    /* 5. Start session — audio_format must be top-level */
     await client.start(jwt, {
-      audio_format: {
-        type: 'raw',
-        encoding: 'pcm_s16le',
-        sample_rate: 16000,
-      },
       transcription_config: {
-        language: locale || 'en',
+        language: locale || 'hi',
         operating_point: 'enhanced',
         max_delay: 1.0,
       },
     });
 
-    /* 6. Stream PCM & close */
-    await client.sendAudio(pcmBuf);
-    await client.stopRecognition({ noTimeout: true });
+    /* 4. Stream exactly 2 s of audio, then stop */
+    await new Promise<void>((resolve, reject) => {
+      const req = https.get(SpeechmaticsService.STREAM_URL, (res) => {
+        res.on('data', (chunk) => void client.sendAudio(chunk as Buffer));
+        setTimeout(() => {
+          client
+            .stopRecognition({ noTimeout: true })
+            .then(resolve)
+            .catch(reject);
+          req.destroy();
+        }, 2_000);
+      });
+      req.on('error', reject);
+    });
 
-    return transcript.trim();
+    /* 5. Return transcript once EndOfTranscript received */
+    return transcriptDone;
   }
 }
