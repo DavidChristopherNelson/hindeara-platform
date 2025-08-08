@@ -1,105 +1,245 @@
-/* eslint-disable
-  @typescript-eslint/no-unsafe-assignment,
-  @typescript-eslint/no-unsafe-call,
-  @typescript-eslint/no-unsafe-member-access,
-  @typescript-eslint/no-unsafe-argument
-*/
-/*───────────────────────────────────────────────────────────────
- *  src/integrations/speechmatics/speechmatics.service.ts
- *───────────────────────────────────────────────────────────────*/
-import 'dotenv/config';
+// src/integrations/speechmatics/speechmatics.service.ts
 import { Injectable, Logger } from '@nestjs/common';
-import { createSpeechmaticsJWT } from '@speechmatics/auth';
+import { ConfigService } from '@nestjs/config';
 import { RealtimeClient } from '@speechmatics/real-time-client';
-import https from 'node:https';                              // ✨ NEW
-import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { createSpeechmaticsJWT } from '@speechmatics/auth';
 
-/*──────────────────────*
- *  Types & type-guards
- *──────────────────────*/
-interface WordAlt { content: string }
-interface TranscriptResult { type: 'word' | 'punctuation'; alternatives: WordAlt[] }
-interface AddTranscriptMsg { message: 'AddTranscript'; results: TranscriptResult[] }
-interface EndMsg { message: 'EndOfTranscript' }
-interface ErrorMsg { message: 'Error'; [k: string]: unknown }
-type ReceiveMsg = AddTranscriptMsg | EndMsg | ErrorMsg;
-
-const isAddTranscript = (d: unknown): d is AddTranscriptMsg =>
-  !!d && (d as Record<string, unknown>).message === 'AddTranscript';
-const isErrorMsg = (d: unknown): d is ErrorMsg =>
-  !!d && (d as Record<string, unknown>).message === 'Error';
-
-/*──────────────────────*
- *  Minimal SDK view
- *──────────────────────*/
-type SpeechmaticsClient = {
-  addEventListener(type: 'receiveMessage', l: (e: MessageEvent) => void): void;
-  start(jwt: string, cfg: unknown): Promise<void>;
-  sendAudio(buf: Buffer): Promise<void>;
-  stopRecognition(opts?: { noTimeout?: boolean }): Promise<void>;
-};
-
-/*──────────────────────*
- *  Service
- *──────────────────────*/
 @Injectable()
 export class SpeechmaticsService {
   private readonly logger = new Logger(SpeechmaticsService.name);
-  private static readonly STREAM_URL = 'https://media-ice.musicradio.com/LBCUKMP3';
+  private readonly apiKey: string | undefined;
 
-  /** Transcribe ~2 s of the LBC UK MP3 stream */
-  @LogMethod()
-  async transcribeAudio(_: Buffer, locale: string): Promise<string> {
-    /* 1. API-key check */
-    const apiKey = process.env.SPEECHMATICS_API_KEY;
-    if (!apiKey) throw new Error('Missing Speechmatics API key');
+  constructor(private readonly configService: ConfigService) {
+    this.apiKey = this.configService.get<string>('SPEECHMATICS_API_KEY');
+    if (!this.apiKey) {
+      this.logger.warn('SPEECHMATICS_API_KEY not configured');
+    }
+  }
 
-    /* 2. Client & transcript collector */
-    const client = new RealtimeClient() as unknown as SpeechmaticsClient;
-    let text = '';
-    const transcriptDone = new Promise<string>((resolve, reject) => {
-      client.addEventListener('receiveMessage', ({ data }: MessageEvent) => {
-        const msg = data as ReceiveMsg;
-        if (isAddTranscript(msg)) {
-          for (const r of msg.results) {
-            if (r.type === 'word') text += ' ';
-            text += r.alternatives[0].content;
+  async transcribeAudio(audioBuffer: Buffer, locale: string): Promise<string> {
+    this.logger.log(
+      `Starting SpeechMatics transcription for locale: ${locale}`,
+    );
+    this.logger.log(`Audio buffer size: ${audioBuffer.length} bytes`);
+
+    if (!this.apiKey) {
+      this.logger.error('SpeechMatics API key not configured');
+      throw new Error('SpeechMatics API key not configured');
+    }
+
+    try {
+      this.logger.log('Creating SpeechMatics JWT token...');
+      const token = await createSpeechmaticsJWT({
+        type: 'rt',
+        apiKey: this.apiKey,
+      });
+      this.logger.log('JWT token created successfully');
+
+      return new Promise<string>((resolve, reject) => {
+        const transcriptions: string[] = [];
+        let isCompleted = false;
+        let client: RealtimeClient | null = null;
+
+        this.logger.log('Creating RealtimeClient...');
+        client = new RealtimeClient();
+
+        const mappedLanguage = this.mapLocaleToLanguage(locale);
+        this.logger.log(
+          `Mapped locale '${locale}' to language '${mappedLanguage}'`,
+        );
+
+        // Detect audio format and use appropriate configuration
+        const audioFormat = this.detectAudioFormat(audioBuffer);
+        this.logger.log(
+          `Detected audio format: ${JSON.stringify(audioFormat)}`,
+        );
+
+        const config = {
+          transcription_config: {
+            language: mappedLanguage,
+            enable_partials: false,
+            max_delay: 2,
+            enable_entities: false,
+            diarization: 'none' as const,
+            operating_point: 'enhanced' as const,
+          },
+          audio_format: audioFormat,
+        };
+
+        this.logger.log(
+          'SpeechMatics config:',
+          JSON.stringify(config, null, 2),
+        );
+
+        client.addEventListener('receiveMessage', (event) => {
+          const message = event.data;
+          this.logger.log(`Received message: ${message.message}`);
+
+          if (message.message === 'AddTranscript') {
+            this.logger.log('Processing AddTranscript message...');
+            // Extract transcript from results
+            const transcript = message.results
+              ?.map((result) => result.alternatives?.[0]?.content || '')
+              .filter(Boolean)
+              .join(' ');
+
+            this.logger.log(`Extracted transcript: "${transcript}"`);
+
+            if (transcript) {
+              transcriptions.push(transcript);
+              this.logger.log(
+                `Added transcript to collection. Total transcripts: ${transcriptions.length}`,
+              );
+            }
+          } else if (message.message === 'Error') {
+            this.logger.error('SpeechMatics transcription error:', message);
+            if (!isCompleted) {
+              isCompleted = true;
+              this.logger.error(
+                `Rejecting promise due to SpeechMatics error: ${message.reason}`,
+              );
+              reject(
+                new Error(
+                  `SpeechMatics transcription failed: ${message.reason}`,
+                ),
+              );
+            }
+          } else if (message.message === 'EndOfTranscript') {
+            this.logger.log('Received EndOfTranscript message');
+            if (!isCompleted) {
+              isCompleted = true;
+              const finalTranscription = transcriptions.join(' ').trim();
+              this.logger.log(`Final transcription: "${finalTranscription}"`);
+              this.logger.log(`Transcription completed successfully`);
+              resolve(finalTranscription);
+            }
+          } else {
+            this.logger.log(`Unhandled message type: ${message.message}`);
           }
-        } else if ((msg as EndMsg).message === 'EndOfTranscript') resolve(text.trim());
-        else if (isErrorMsg(msg)) reject(new Error(JSON.stringify(msg)));
+        });
+
+        this.logger.log('Starting SpeechMatics session...');
+        // Start the session
+        client
+          .start(token, config)
+          .then(() => {
+            this.logger.log('SpeechMatics session started successfully');
+            this.logger.log(
+              `Sending audio data (${audioBuffer.length} bytes)...`,
+            );
+            // Send audio data
+            client!.sendAudio(audioBuffer);
+            this.logger.log('Audio data sent successfully');
+
+            this.logger.log('Stopping recognition...');
+            // End the session
+            client!.stopRecognition();
+            this.logger.log('Recognition stopped');
+          })
+          .catch((error) => {
+            this.logger.error('SpeechMatics start error:', error);
+            if (!isCompleted) {
+              isCompleted = true;
+              this.logger.error(
+                `Rejecting promise due to start error: ${error.message}`,
+              );
+              reject(new Error(`SpeechMatics start failed: ${error.message}`));
+            }
+          });
       });
-    });
+    } catch (error) {
+      this.logger.error('SpeechMatics service error:', error);
+      throw new Error(
+        `SpeechMatics transcription failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+    }
+  }
 
-    /* 3. JWT & start session (MP3 autodetect) */
-    const jwt = (await createSpeechmaticsJWT({
-      type: 'rt',
-      apiKey,
-      ttl: 60,
-    })) as string;
-    await client.start(jwt, {
-      transcription_config: {
-        language: locale || 'hi',
-        operating_point: 'enhanced',
-        max_delay: 1.0,
-      },
-    });
+  private detectAudioFormat(audioBuffer: Buffer): any {
+    // Check if it's a WebM file (common for browser recordings)
+    if (audioBuffer.length >= 4) {
+      const header = audioBuffer.subarray(0, 4);
+      const webmHeader = Buffer.from([0x1A, 0x45, 0xDF, 0xA3]);
+      if (Buffer.compare(header, webmHeader) === 0) {
+        this.logger.log('Detected WebM audio format');
+        return {
+          type: 'file' as const,
+        };
+      }
+    }
 
-    /* 4. Stream exactly 2 s of audio, then stop */
-    await new Promise<void>((resolve, reject) => {
-      const req = https.get(SpeechmaticsService.STREAM_URL, (res) => {
-        res.on('data', (chunk) => void client.sendAudio(chunk as Buffer));
-        setTimeout(() => {
-          client
-            .stopRecognition({ noTimeout: true })
-            .then(resolve)
-            .catch(reject);
-          req.destroy();
-        }, 2_000);
-      });
-      req.on('error', reject);
-    });
+    // Check if it's an MP4 file
+    if (audioBuffer.length >= 8) {
+      const header = audioBuffer.subarray(4, 8);
+      const mp4Header = Buffer.from([0x66, 0x74, 0x79, 0x70]); // 'ftyp'
+      if (Buffer.compare(header, mp4Header) === 0) {
+        this.logger.log('Detected MP4 audio format');
+        return {
+          type: 'file' as const,
+        };
+      }
+    }
 
-    /* 5. Return transcript once EndOfTranscript received */
-    return transcriptDone;
+    // Check if it's base64 encoded (common for browser recordings)
+    const isBase64 = /^[A-Za-z0-9+/]*={0,2}$/.test(
+      audioBuffer.toString('ascii', 0, Math.min(100, audioBuffer.length)),
+    );
+    if (isBase64) {
+      this.logger.log('Detected base64 encoded audio, treating as file format');
+      return {
+        type: 'file' as const,
+      };
+    }
+
+    // Default to raw PCM with more conservative settings
+    this.logger.log('Using default raw PCM format');
+    return {
+      type: 'raw' as const,
+      encoding: 'pcm_s16le' as const, // 16-bit signed PCM instead of 32-bit float
+      sample_rate: 16000,
+    };
+  }
+
+  private mapLocaleToLanguage(locale: string): string {
+    this.logger.log(`Mapping locale: ${locale}`);
+    const localeMap: Record<string, string> = {
+      'en': 'en',
+      'en-US': 'en',
+      'en-GB': 'en',
+      'hi': 'hi',
+      'hi-IN': 'hi',
+      'ur': 'ur',
+      'ur-PK': 'ur',
+      'bn': 'bn',
+      'bn-IN': 'bn',
+      'ta': 'ta',
+      'ta-IN': 'ta',
+      'te': 'hi', // Telugu not supported, fallback to Hindi
+      'te-IN': 'hi',
+      'mr': 'mr',
+      'mr-IN': 'mr',
+      'gu': 'hi', // Gujarati not supported, fallback to Hindi
+      'gu-IN': 'hi',
+      'kn': 'hi', // Kannada not supported, fallback to Hindi
+      'kn-IN': 'hi',
+      'ml': 'hi', // Malayalam not supported, fallback to Hindi
+      'ml-IN': 'hi',
+      'pa': 'hi', // Punjabi not supported, fallback to Hindi
+      'pa-IN': 'hi',
+      'or': 'hi', // Odia not supported, fallback to Hindi
+      'or-IN': 'hi',
+      'as': 'hi', // Assamese not supported, fallback to Hindi
+      'as-IN': 'hi',
+      'ne': 'hi', // Nepali not supported, fallback to Hindi
+      'ne-NP': 'hi',
+      'si': 'hi', // Sinhala not supported, fallback to Hindi
+      'si-LK': 'hi',
+    };
+
+    const mappedLanguage = localeMap[locale] || 'hi'; // Default to Hindi instead of English
+    this.logger.log(`Mapped '${locale}' to '${mappedLanguage}'`);
+    return mappedLanguage;
   }
 }
