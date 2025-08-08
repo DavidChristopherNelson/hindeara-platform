@@ -101,9 +101,10 @@ export class PlatformService {
       this.speechmatics.transcribeAudio(audioBuffer, locale),
     ]);
 
-    const gptText = gptRes.status === 'fulfilled' ? gptRes.value : '';
+    const gptText =
+      gptRes.status === 'fulfilled' ? `GTP: ${gptRes.value} : ` : '';
     let smText = '';
-    if (smRes.status === 'fulfilled') smText = smRes.value;
+    if (smRes.status === 'fulfilled') smText = `Speechmatics: ${smRes.value}`;
     if (smRes.status === 'rejected') smText = 'Speechmatics failed';
     const transcription = [gptText, smText].filter(Boolean).join(' ').trim();
 

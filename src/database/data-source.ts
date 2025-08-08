@@ -36,7 +36,7 @@ export const dataSourceOptions: DataSourceOptions = {
   ],
   migrations: ['dist/src/database/migrations/*.{ts,js}'],
   synchronize: false, // migrations-only schema
-  logging: ['query', 'error'],
+  logging: false,
 };
 
 export default new DataSource(dataSourceOptions);

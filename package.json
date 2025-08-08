@@ -37,6 +37,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dotenv": "^16.6.1",
+    "ffmpeg-static": "^5.2.0",
     "openai": "^4.98.0",
     "pg": "^8.14.1",
     "reflect-metadata": "^0.2.2",
