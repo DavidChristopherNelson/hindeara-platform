@@ -17,6 +17,7 @@ import { SpeechmaticsService } from 'src/integrations/speechmatics/speechmatics.
 import { GoogleService } from 'src/integrations/google/google.service';
 import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
 import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
+import { AssemblyService } from 'src/integrations/assembly/assembly.service';
 
 @Injectable()
 export class PlatformService {
@@ -32,6 +33,7 @@ export class PlatformService {
     private readonly google: GoogleService,
     private readonly deepgram: DeepgramService,
     private readonly sarvam: SarvamService,
+    private readonly assembly: AssemblyService,
   ) {}
 
   @LogMethod()
@@ -107,10 +109,10 @@ export class PlatformService {
     const smStartTime = Date.now();
     const googleStartTime = Date.now();
     const deepgramStartTime = Date.now();
-    const neuralspaceStartTime = Date.now();
     const sarvamStartTime = Date.now();
+    const assemblyStartTime = Date.now();
 
-    const [gptRes, smRes, googleRes, deepgramRes, sarvamRes] =
+    const [gptRes, smRes, googleRes, deepgramRes, sarvamRes, assemblyRes] =
       await Promise.allSettled([
         this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
           const gptEndTime = Date.now();
@@ -138,6 +140,11 @@ export class PlatformService {
           const sarvamEndTime = Date.now();
           const sarvamDuration = (sarvamEndTime - sarvamStartTime) / 1000; // seconds
           return { result, duration: sarvamDuration };
+        }),
+        this.assembly.transcribeAudio(audioBuffer, locale).then((result) => {
+          const assemblyEndTime = Date.now();
+          const assemblyDuration = (assemblyEndTime - assemblyStartTime) / 1000; // seconds
+          return { result, duration: assemblyDuration };
         }),
       ]);
 
@@ -174,12 +181,20 @@ export class PlatformService {
       sarvamText = 'Sarvam failed';
     }
 
+    let assemblyText = '';
+    if (assemblyRes.status === 'fulfilled') {
+      assemblyText = `AssemblyAI: ${assemblyRes.value.result} ${assemblyRes.value.duration.toFixed(3)}s`;
+    } else if (assemblyRes.status === 'rejected') {
+      assemblyText = 'AssemblyAI failed';
+    }
+
     const transcription = [
       gptText,
       smText,
       googleText,
       deepgramText,
       sarvamText,
+      assemblyText,
     ]
       .filter(Boolean)
       .join('\n')

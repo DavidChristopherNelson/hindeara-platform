@@ -17,6 +17,7 @@ import { SpeechmaticsModule } from 'src/integrations/speechmatics/speechmatics.m
 import { GoogleModule } from 'src/integrations/google/google.module';
 import { DeepgramModule } from 'src/integrations/deepgram/deepgram.module';
 import { SarvamModule } from 'src/integrations/sarvam/sarvam.module';
+import { AssemblyModule } from 'src/integrations/assembly/assembly.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { SarvamModule } from 'src/integrations/sarvam/sarvam.module';
     GoogleModule,
     DeepgramModule,
     SarvamModule,
+    AssemblyModule,
     CommonModule,
     StateModule,
   ],
