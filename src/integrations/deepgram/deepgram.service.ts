@@ -36,19 +36,23 @@ export class DeepgramService {
       this.logger.log(`Deepgram request → ${url.toString()}`);
       this.logger.log(`Deepgram Content-Type: ${contentType}`);
 
-      const { data } = await axios.post(url.toString(), audioBuffer, {
-        headers: {
-          Authorization: `Token ${this.apiKey}`,
-          'Content-Type': contentType,
+      const { data } = await axios.post<DeepgramResponse>(
+        url.toString(),
+        audioBuffer,
+        {
+          headers: {
+            Authorization: `Token ${this.apiKey}`,
+            'Content-Type': contentType,
+          },
+          timeout: 30_000,
+          maxBodyLength: Infinity,
+          maxContentLength: Infinity,
         },
-        timeout: 30_000,
-        maxBodyLength: Infinity,
-        maxContentLength: Infinity,
-      });
+      );
 
-      const transcript: string =
-        data?.results?.channels?.[0]?.alternatives?.[0]?.transcript ?? '';
-      const cleaned = typeof transcript === 'string' ? transcript.trim() : '';
+      const transcriptSource: string | undefined =
+        data?.results?.channels?.[0]?.alternatives?.[0]?.transcript;
+      const cleaned = (transcriptSource ?? '').trim();
 
       this.logger.log(`Deepgram transcript: "${cleaned}"`);
       return cleaned;
@@ -127,4 +131,10 @@ export class DeepgramService {
   }
 }
 
-
+interface DeepgramResponse {
+  results?: {
+    channels?: Array<{
+      alternatives?: Array<{ transcript?: string }>;
+    }>;
+  };
+}

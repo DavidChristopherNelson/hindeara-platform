@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import FormData = require('form-data');
+import type FormDataType from 'form-data';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const FormData = require('form-data') as typeof FormDataType;
 
 @Injectable()
 export class SarvamService {
@@ -17,7 +19,9 @@ export class SarvamService {
   }
 
   async transcribeAudio(audioBuffer: Buffer, locale: string): Promise<string> {
-    this.logger.log(`Starting Sarvam (Saarika) transcription for locale: ${locale}`);
+    this.logger.log(
+      `Starting Sarvam (Saarika) transcription for locale: ${locale}`,
+    );
     this.logger.log(`Audio buffer size: ${audioBuffer.length} bytes`);
 
     if (!this.apiKey) {
@@ -40,9 +44,11 @@ export class SarvamService {
       form.append('model', model);
 
       const url = `${this.baseUrl}/speech-to-text`;
-      this.logger.log(`Sarvam request → ${url} (language_code='${languageCode}', model='${model}')`);
+      this.logger.log(
+        `Sarvam request → ${url} (language_code='${languageCode}', model='${model}')`,
+      );
 
-      const { data } = await axios.post(url, form, {
+      const { data } = await axios.post<SarvamSttResponse>(url, form, {
         headers: {
           // Support both header styles seen in docs/in the wild
           'api-subscription-key': this.apiKey,
@@ -55,15 +61,13 @@ export class SarvamService {
       });
 
       // Try common shapes for transcript payloads
-      const transcript: string = (
+      const transcriptSource: string | undefined =
         data?.transcript ||
         data?.text ||
         data?.output?.[0]?.transcript ||
-        data?.results?.[0]?.transcript ||
-        ''
-      )
-        .toString()
-        .trim();
+        data?.results?.[0]?.transcript;
+
+      const transcript = (transcriptSource ?? '').trim();
 
       this.logger.log(`Sarvam transcript: "${transcript}"`);
       return transcript;
@@ -151,4 +155,9 @@ export class SarvamService {
   }
 }
 
-
+interface SarvamSttResponse {
+  transcript?: string;
+  text?: string;
+  output?: Array<{ transcript?: string }>;
+  results?: Array<{ transcript?: string }>;
+}

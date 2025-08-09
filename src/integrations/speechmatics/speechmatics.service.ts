@@ -128,12 +128,12 @@ export class SpeechmaticsService {
               `Sending audio data (${audioBuffer.length} bytes)...`,
             );
             // Send audio data
-            client!.sendAudio(audioBuffer);
+            client.sendAudio(audioBuffer);
             this.logger.log('Audio data sent successfully');
 
             this.logger.log('Stopping recognition...');
             // End the session
-            client!.stopRecognition();
+            client.stopRecognition();
             this.logger.log('Recognition stopped');
           })
           .catch((error) => {
@@ -161,7 +161,7 @@ export class SpeechmaticsService {
     // Check if it's a WebM file (common for browser recordings)
     if (audioBuffer.length >= 4) {
       const header = audioBuffer.subarray(0, 4);
-      const webmHeader = Buffer.from([0x1A, 0x45, 0xDF, 0xA3]);
+      const webmHeader = Buffer.from([0x1a, 0x45, 0xdf, 0xa3]);
       if (Buffer.compare(header, webmHeader) === 0) {
         this.logger.log('Detected WebM audio format');
         return {
@@ -205,36 +205,36 @@ export class SpeechmaticsService {
   private mapLocaleToLanguage(locale: string): string {
     this.logger.log(`Mapping locale: ${locale}`);
     const localeMap: Record<string, string> = {
-      'en': 'en',
+      en: 'en',
       'en-US': 'en',
       'en-GB': 'en',
-      'hi': 'hi',
+      hi: 'hi',
       'hi-IN': 'hi',
-      'ur': 'ur',
+      ur: 'ur',
       'ur-PK': 'ur',
-      'bn': 'bn',
+      bn: 'bn',
       'bn-IN': 'bn',
-      'ta': 'ta',
+      ta: 'ta',
       'ta-IN': 'ta',
-      'te': 'hi', // Telugu not supported, fallback to Hindi
+      te: 'hi', // Telugu not supported, fallback to Hindi
       'te-IN': 'hi',
-      'mr': 'mr',
+      mr: 'mr',
       'mr-IN': 'mr',
-      'gu': 'hi', // Gujarati not supported, fallback to Hindi
+      gu: 'hi', // Gujarati not supported, fallback to Hindi
       'gu-IN': 'hi',
-      'kn': 'hi', // Kannada not supported, fallback to Hindi
+      kn: 'hi', // Kannada not supported, fallback to Hindi
       'kn-IN': 'hi',
-      'ml': 'hi', // Malayalam not supported, fallback to Hindi
+      ml: 'hi', // Malayalam not supported, fallback to Hindi
       'ml-IN': 'hi',
-      'pa': 'hi', // Punjabi not supported, fallback to Hindi
+      pa: 'hi', // Punjabi not supported, fallback to Hindi
       'pa-IN': 'hi',
-      'or': 'hi', // Odia not supported, fallback to Hindi
+      or: 'hi', // Odia not supported, fallback to Hindi
       'or-IN': 'hi',
-      'as': 'hi', // Assamese not supported, fallback to Hindi
+      as: 'hi', // Assamese not supported, fallback to Hindi
       'as-IN': 'hi',
-      'ne': 'hi', // Nepali not supported, fallback to Hindi
+      ne: 'hi', // Nepali not supported, fallback to Hindi
       'ne-NP': 'hi',
-      'si': 'hi', // Sinhala not supported, fallback to Hindi
+      si: 'hi', // Sinhala not supported, fallback to Hindi
       'si-LK': 'hi',
     };
 

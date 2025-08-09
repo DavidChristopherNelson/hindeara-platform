@@ -6,5 +6,3 @@ import { AssemblyService } from './assembly.service';
   exports: [AssemblyService],
 })
 export class AssemblyModule {}
-
-

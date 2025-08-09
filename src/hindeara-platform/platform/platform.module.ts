@@ -18,6 +18,7 @@ import { GoogleModule } from 'src/integrations/google/google.module';
 import { DeepgramModule } from 'src/integrations/deepgram/deepgram.module';
 import { SarvamModule } from 'src/integrations/sarvam/sarvam.module';
 import { AssemblyModule } from 'src/integrations/assembly/assembly.module';
+import { ReverieModule } from 'src/integrations/reverie/reverie.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AssemblyModule } from 'src/integrations/assembly/assembly.module';
     DeepgramModule,
     SarvamModule,
     AssemblyModule,
+    ReverieModule,
     CommonModule,
     StateModule,
   ],

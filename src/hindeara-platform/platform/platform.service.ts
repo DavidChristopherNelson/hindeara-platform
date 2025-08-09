@@ -18,6 +18,7 @@ import { GoogleService } from 'src/integrations/google/google.service';
 import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
 import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
 import { AssemblyService } from 'src/integrations/assembly/assembly.service';
+import { ReverieService } from 'src/integrations/reverie/reverie.service';
 
 @Injectable()
 export class PlatformService {
@@ -34,6 +35,7 @@ export class PlatformService {
     private readonly deepgram: DeepgramService,
     private readonly sarvam: SarvamService,
     private readonly assembly: AssemblyService,
+    private readonly reverie: ReverieService,
   ) {}
 
   @LogMethod()
@@ -111,42 +113,53 @@ export class PlatformService {
     const deepgramStartTime = Date.now();
     const sarvamStartTime = Date.now();
     const assemblyStartTime = Date.now();
+    const reverieStartTime = Date.now();
 
-    const [gptRes, smRes, googleRes, deepgramRes, sarvamRes, assemblyRes] =
-      await Promise.allSettled([
-        this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
-          const gptEndTime = Date.now();
-          const gptDuration = (gptEndTime - gptStartTime) / 1000; // seconds
-          return { result, duration: gptDuration };
-        }),
-        this.speechmatics
-          .transcribeAudio(audioBuffer, locale)
-          .then((result) => {
-            const smEndTime = Date.now();
-            const smDuration = (smEndTime - smStartTime) / 1000; // seconds
-            return { result, duration: smDuration };
-          }),
-        this.google.transcribeAudio(audioBuffer, locale).then((result) => {
-          const googleEndTime = Date.now();
-          const googleDuration = (googleEndTime - googleStartTime) / 1000; // seconds
-          return { result, duration: googleDuration };
-        }),
-        this.deepgram.transcribeAudio(audioBuffer, locale).then((result) => {
-          const deepgramEndTime = Date.now();
-          const deepgramDuration = (deepgramEndTime - deepgramStartTime) / 1000; // seconds
-          return { result, duration: deepgramDuration };
-        }),
-        this.sarvam.transcribeAudio(audioBuffer, locale).then((result) => {
-          const sarvamEndTime = Date.now();
-          const sarvamDuration = (sarvamEndTime - sarvamStartTime) / 1000; // seconds
-          return { result, duration: sarvamDuration };
-        }),
-        this.assembly.transcribeAudio(audioBuffer, locale).then((result) => {
-          const assemblyEndTime = Date.now();
-          const assemblyDuration = (assemblyEndTime - assemblyStartTime) / 1000; // seconds
-          return { result, duration: assemblyDuration };
-        }),
-      ]);
+    const [
+      gptRes,
+      smRes,
+      googleRes,
+      deepgramRes,
+      sarvamRes,
+      assemblyRes,
+      reverieRes,
+    ] = await Promise.allSettled([
+      this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
+        const gptEndTime = Date.now();
+        const gptDuration = (gptEndTime - gptStartTime) / 1000; // seconds
+        return { result, duration: gptDuration };
+      }),
+      this.speechmatics.transcribeAudio(audioBuffer, locale).then((result) => {
+        const smEndTime = Date.now();
+        const smDuration = (smEndTime - smStartTime) / 1000; // seconds
+        return { result, duration: smDuration };
+      }),
+      this.google.transcribeAudio(audioBuffer, locale).then((result) => {
+        const googleEndTime = Date.now();
+        const googleDuration = (googleEndTime - googleStartTime) / 1000; // seconds
+        return { result, duration: googleDuration };
+      }),
+      this.deepgram.transcribeAudio(audioBuffer, locale).then((result) => {
+        const deepgramEndTime = Date.now();
+        const deepgramDuration = (deepgramEndTime - deepgramStartTime) / 1000; // seconds
+        return { result, duration: deepgramDuration };
+      }),
+      this.sarvam.transcribeAudio(audioBuffer, locale).then((result) => {
+        const sarvamEndTime = Date.now();
+        const sarvamDuration = (sarvamEndTime - sarvamStartTime) / 1000; // seconds
+        return { result, duration: sarvamDuration };
+      }),
+      this.assembly.transcribeAudio(audioBuffer, locale).then((result) => {
+        const assemblyEndTime = Date.now();
+        const assemblyDuration = (assemblyEndTime - assemblyStartTime) / 1000; // seconds
+        return { result, duration: assemblyDuration };
+      }),
+      this.reverie.transcribeAudio(audioBuffer, locale).then((result) => {
+        const reverieEndTime = Date.now();
+        const reverieDuration = (reverieEndTime - reverieStartTime) / 1000; // seconds
+        return { result, duration: reverieDuration };
+      }),
+    ]);
 
     const gptText =
       gptRes.status === 'fulfilled'
@@ -188,6 +201,13 @@ export class PlatformService {
       assemblyText = 'AssemblyAI failed';
     }
 
+    let reverieText = '';
+    if (reverieRes.status === 'fulfilled') {
+      reverieText = `Reverie: ${reverieRes.value.result} ${reverieRes.value.duration.toFixed(3)}s`;
+    } else if (reverieRes.status === 'rejected') {
+      reverieText = 'Reverie failed';
+    }
+
     const transcription = [
       gptText,
       smText,
@@ -195,6 +215,7 @@ export class PlatformService {
       deepgramText,
       sarvamText,
       assemblyText,
+      reverieText,
     ]
       .filter(Boolean)
       .join('\n')

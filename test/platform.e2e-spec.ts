@@ -19,16 +19,23 @@ import { PhonemesService } from 'src/apps/alfa-app/phonemes/phonemes.service';
 import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { GoogleService } from 'src/integrations/google/google.service';
 import { SpeechmaticsService } from 'src/integrations/speechmatics/speechmatics.service';
+import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
+import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
+import { AssemblyService } from 'src/integrations/assembly/assembly.service';
+import { ReverieService } from 'src/integrations/reverie/reverie.service';
 import { ENGLISH_PHONEMES } from 'src/apps/alfa-app/phonemes/data/english-phonemes';
 import { HINDI_PHONEMES } from 'src/apps/alfa-app/phonemes/data/hindi-phonemes';
 import * as dotenv from 'dotenv';
 
 // Load env for tests, if needed by any modules
 dotenv.config();
+// Reduce noisy logs during e2e: only show warnings and errors
+Logger.overrideLogger(['warn', 'error']);
 
 describe('PlatformController (e2e)', () => {
   let nestApp: INestApplication;
   let server: Server;
+  let suppressLogs: jest.SpyInstance;
 
   let userRepo: Repository<User>;
   let appRepo: Repository<App>;
@@ -47,6 +54,9 @@ describe('PlatformController (e2e)', () => {
   let preExistingAppIds: Set<number>;
 
   beforeEach(async () => {
+    // Suppress noisy console.log while keeping warnings/errors visible via Nest logger
+    suppressLogs = jest.spyOn(console, 'log').mockImplementation(() => {});
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [PlatformModule, PhonemesModule],
     })
@@ -68,13 +78,36 @@ describe('PlatformController (e2e)', () => {
           .fn()
           .mockResolvedValue('speechmatics-mock-transcription'),
       })
+      .overrideProvider(DeepgramService)
+      .useValue({
+        transcribeAudio: jest
+          .fn()
+          .mockResolvedValue('deepgram-mock-transcription'),
+      })
+      .overrideProvider(SarvamService)
+      .useValue({
+        transcribeAudio: jest
+          .fn()
+          .mockResolvedValue('sarvam-mock-transcription'),
+      })
+      .overrideProvider(AssemblyService)
+      .useValue({
+        transcribeAudio: jest
+          .fn()
+          .mockResolvedValue('assembly-mock-transcription'),
+      })
+      .overrideProvider(ReverieService)
+      .useValue({
+        transcribeAudio: jest
+          .fn()
+          .mockResolvedValue('reverie-mock-transcription'),
+      })
       .compile();
 
     nestApp = moduleFixture.createNestApplication({
-      logger: new Logger('E2E'),
+      logger: ['warn', 'error'],
     });
     await nestApp.init();
-    nestApp.useLogger(['log', 'debug', 'warn', 'error', 'verbose']);
 
     userRepo = nestApp.get<Repository<User>>(getRepositoryToken(User));
     appRepo = nestApp.get<Repository<App>>(getRepositoryToken(App));
@@ -136,6 +169,8 @@ describe('PlatformController (e2e)', () => {
   });
 
   afterEach(async () => {
+    // Restore console logging
+    if (suppressLogs) suppressLogs.mockRestore();
     /* clean resources made during the test */
     await miniLessonRepo.delete({ userId: createdUser.id });
     await userEventRepo.delete({ user: { id: createdUser.id } });
