@@ -16,6 +16,7 @@ import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { SpeechmaticsService } from 'src/integrations/speechmatics/speechmatics.service';
 import { GoogleService } from 'src/integrations/google/google.service';
 import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
+import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
 
 @Injectable()
 export class PlatformService {
@@ -30,6 +31,7 @@ export class PlatformService {
     private readonly speechmatics: SpeechmaticsService,
     private readonly google: GoogleService,
     private readonly deepgram: DeepgramService,
+    private readonly sarvam: SarvamService,
   ) {}
 
   @LogMethod()
@@ -105,29 +107,39 @@ export class PlatformService {
     const smStartTime = Date.now();
     const googleStartTime = Date.now();
     const deepgramStartTime = Date.now();
+    const neuralspaceStartTime = Date.now();
+    const sarvamStartTime = Date.now();
 
-    const [gptRes, smRes, googleRes, deepgramRes] = await Promise.allSettled([
-      this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
-        const gptEndTime = Date.now();
-        const gptDuration = (gptEndTime - gptStartTime) / 1000; // Convert to seconds
-        return { result, duration: gptDuration };
-      }),
-      this.speechmatics.transcribeAudio(audioBuffer, locale).then((result) => {
-        const smEndTime = Date.now();
-        const smDuration = (smEndTime - smStartTime) / 1000; // Convert to seconds
-        return { result, duration: smDuration };
-      }),
-      this.google.transcribeAudio(audioBuffer, locale).then((result) => {
-        const googleEndTime = Date.now();
-        const googleDuration = (googleEndTime - googleStartTime) / 1000; // Convert to seconds
-        return { result, duration: googleDuration };
-      }),
-      this.deepgram.transcribeAudio(audioBuffer, locale).then((result) => {
-        const deepgramEndTime = Date.now();
-        const deepgramDuration = (deepgramEndTime - deepgramStartTime) / 1000; // Convert to seconds
-        return { result, duration: deepgramDuration };
-      }),
-    ]);
+    const [gptRes, smRes, googleRes, deepgramRes, sarvamRes] =
+      await Promise.allSettled([
+        this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
+          const gptEndTime = Date.now();
+          const gptDuration = (gptEndTime - gptStartTime) / 1000; // seconds
+          return { result, duration: gptDuration };
+        }),
+        this.speechmatics
+          .transcribeAudio(audioBuffer, locale)
+          .then((result) => {
+            const smEndTime = Date.now();
+            const smDuration = (smEndTime - smStartTime) / 1000; // seconds
+            return { result, duration: smDuration };
+          }),
+        this.google.transcribeAudio(audioBuffer, locale).then((result) => {
+          const googleEndTime = Date.now();
+          const googleDuration = (googleEndTime - googleStartTime) / 1000; // seconds
+          return { result, duration: googleDuration };
+        }),
+        this.deepgram.transcribeAudio(audioBuffer, locale).then((result) => {
+          const deepgramEndTime = Date.now();
+          const deepgramDuration = (deepgramEndTime - deepgramStartTime) / 1000; // seconds
+          return { result, duration: deepgramDuration };
+        }),
+        this.sarvam.transcribeAudio(audioBuffer, locale).then((result) => {
+          const sarvamEndTime = Date.now();
+          const sarvamDuration = (sarvamEndTime - sarvamStartTime) / 1000; // seconds
+          return { result, duration: sarvamDuration };
+        }),
+      ]);
 
     const gptText =
       gptRes.status === 'fulfilled'
@@ -155,7 +167,20 @@ export class PlatformService {
       deepgramText = 'Deepgram failed';
     }
 
-    const transcription = [gptText, smText, googleText, deepgramText]
+    let sarvamText = '';
+    if (sarvamRes.status === 'fulfilled') {
+      sarvamText = `Sarvam: ${sarvamRes.value.result} ${sarvamRes.value.duration.toFixed(3)}s`;
+    } else if (sarvamRes.status === 'rejected') {
+      sarvamText = 'Sarvam failed';
+    }
+
+    const transcription = [
+      gptText,
+      smText,
+      googleText,
+      deepgramText,
+      sarvamText,
+    ]
       .filter(Boolean)
       .join('\n')
       .trim();

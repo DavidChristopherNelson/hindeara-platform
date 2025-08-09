@@ -16,6 +16,7 @@ import { StateModule } from 'src/apps/alfa-app/state/state.module';
 import { SpeechmaticsModule } from 'src/integrations/speechmatics/speechmatics.module';
 import { GoogleModule } from 'src/integrations/google/google.module';
 import { DeepgramModule } from 'src/integrations/deepgram/deepgram.module';
+import { SarvamModule } from 'src/integrations/sarvam/sarvam.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { DeepgramModule } from 'src/integrations/deepgram/deepgram.module';
     SpeechmaticsModule,
     GoogleModule,
     DeepgramModule,
+    SarvamModule,
     CommonModule,
     StateModule,
   ],
