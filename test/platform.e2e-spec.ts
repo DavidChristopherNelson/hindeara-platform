@@ -4,11 +4,12 @@ import { INestApplication, Logger } from '@nestjs/common';
 import * as request from 'supertest';
 import { PlatformModule } from '../src/hindeara-platform/platform/platform.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from '../src/hindeara-platform/users/entities/user.entity';
 import { UserEvent } from '../src/hindeara-platform/user-events/entities/user-event.entity';
 import { AppEvent } from '../src/hindeara-platform/app-events/entities/app-event.entity';
 import { MiniLesson } from '../src/apps/alfa-app/mini-lessons/entities/mini-lesson.entity';
+import { Phoneme } from 'src/apps/alfa-app/phonemes/entities/phoneme.entity';
 import { Server } from 'http';
 import { createActor } from 'xstate';
 import { lessonMachine } from 'src/apps/alfa-app/state/state.machine';
@@ -16,6 +17,8 @@ import { App } from 'src/hindeara-platform/apps/entities/app.entity';
 import { PhonemesModule } from 'src/apps/alfa-app/phonemes/phonemes.module';
 import { PhonemesService } from 'src/apps/alfa-app/phonemes/phonemes.service';
 import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
+import { ENGLISH_PHONEMES } from 'src/apps/alfa-app/phonemes/data/english-phonemes';
+import { HINDI_PHONEMES } from 'src/apps/alfa-app/phonemes/data/hindi-phonemes';
 
 describe('PlatformController (e2e)', () => {
   let nestApp: INestApplication;
@@ -26,12 +29,16 @@ describe('PlatformController (e2e)', () => {
   let userEventRepo: Repository<UserEvent>;
   let appEventRepo: Repository<AppEvent>;
   let miniLessonRepo: Repository<MiniLesson>;
+  let phonemeRepo: Repository<Phoneme>;
 
   let phonemesService: PhonemesService;
 
   let createdUser: User;
   let testApp: App;
   let createdInThisTest = false;
+  let createdAppInThisTest = false;
+  let initialPhonemeLetters: Set<string>;
+  let preExistingAppIds: Set<number>;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -62,27 +69,52 @@ describe('PlatformController (e2e)', () => {
     miniLessonRepo = nestApp.get<Repository<MiniLesson>>(
       getRepositoryToken(MiniLesson),
     );
+    phonemeRepo = nestApp.get<Repository<Phoneme>>(getRepositoryToken(Phoneme));
 
     server = nestApp.getHttpServer() as unknown as Server;
 
+    /* snapshot existing apps so we can restore exact state later */
+    const existingAppsBefore = await appRepo.find({ select: ['id'] });
+    preExistingAppIds = new Set(existingAppsBefore.map((a) => a.id));
+
     /* ── reuse or create test user ─────────────────────────────── */
     const TEST_PHONE = '+919999999999';
-    createdUser =
-      (await userRepo.findOne({ where: { phoneNumber: TEST_PHONE } })) ??
-      (await userRepo.save(userRepo.create({ phoneNumber: TEST_PHONE })));
-    createdInThisTest = !createdUser.createdAt;
+    const existingUser = await userRepo.findOne({
+      where: { phoneNumber: TEST_PHONE },
+    });
+    if (existingUser) {
+      createdUser = existingUser;
+      createdInThisTest = false;
+    } else {
+      createdUser = await userRepo.save(
+        userRepo.create({ phoneNumber: TEST_PHONE }),
+      );
+      createdInThisTest = true;
+    }
     /* ──────────────────────────────────────────────────────────── */
 
     phonemesService = nestApp.get(PhonemesService);
+    // Track initial phoneme letters so we can revert seeding
+    const existingPhonemes = await phonemeRepo.find({ select: ['letter'] });
+    initialPhonemeLetters = new Set(
+      existingPhonemes.map((p) => p.letter.toUpperCase()),
+    );
     await phonemesService.seedEnglishAlphabet();
     await phonemesService.seedHindiAlphabet();
 
-    /* reuse or create app row (idempotent) */
-    testApp =
-      (await appRepo.findOne({ where: { http_path: 'alfa-app' } })) ??
-      (await appRepo.save(
+    /* reuse or create app row and remember if we created it */
+    const existingApp = await appRepo.findOne({
+      where: { http_path: 'alfa-app' },
+    });
+    if (existingApp) {
+      testApp = existingApp;
+      createdAppInThisTest = false;
+    } else {
+      testApp = await appRepo.save(
         appRepo.create({ http_path: 'alfa-app', is_active: true }),
-      ));
+      );
+      createdAppInThisTest = true;
+    }
   });
 
   afterEach(async () => {
@@ -94,11 +126,36 @@ describe('PlatformController (e2e)', () => {
     /* delete the user row only if *this* test created it */
     if (createdInThisTest) await userRepo.delete(createdUser.id);
 
-    /* delete app row only if no other events reference it anymore */
-    const remainingAppEvents = await appEventRepo.count({
-      where: { app: { id: testApp.id } },
+    /* delete the app row only if *this* test created it */
+    if (createdAppInThisTest) {
+      await appRepo.delete(testApp.id);
+    }
+
+    /* remove any apps created during this test run to restore exact app table */
+    const appsAfter = await appRepo.find({ select: ['id'] });
+    const createdDuringTestIds = appsAfter
+      .map((a) => a.id)
+      .filter((id) => !preExistingAppIds.has(id));
+    if (createdDuringTestIds.length > 0) {
+      await appRepo.delete({ id: In(createdDuringTestIds) });
+    }
+
+    /* revert phoneme seeding: remove only phonemes that didn't exist before */
+    const seededLetters = new Set(
+      [...ENGLISH_PHONEMES, ...HINDI_PHONEMES].map((p) =>
+        p.letter.toUpperCase(),
+      ),
+    );
+    const seededNow = await phonemeRepo.find({
+      where: { letter: In(Array.from(seededLetters)) },
+      select: ['id', 'letter'],
     });
-    if (remainingAppEvents === 0) await appRepo.delete(testApp.id);
+    const toDeleteIds = seededNow
+      .filter((p) => !initialPhonemeLetters.has(p.letter.toUpperCase()))
+      .map((p) => p.id);
+    if (toDeleteIds.length > 0) {
+      await phonemeRepo.delete({ id: In(toDeleteIds) });
+    }
 
     await nestApp.close();
   });
