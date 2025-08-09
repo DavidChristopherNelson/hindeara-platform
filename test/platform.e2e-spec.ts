@@ -17,8 +17,14 @@ import { App } from 'src/hindeara-platform/apps/entities/app.entity';
 import { PhonemesModule } from 'src/apps/alfa-app/phonemes/phonemes.module';
 import { PhonemesService } from 'src/apps/alfa-app/phonemes/phonemes.service';
 import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
+import { GoogleService } from 'src/integrations/google/google.service';
+import { SpeechmaticsService } from 'src/integrations/speechmatics/speechmatics.service';
 import { ENGLISH_PHONEMES } from 'src/apps/alfa-app/phonemes/data/english-phonemes';
 import { HINDI_PHONEMES } from 'src/apps/alfa-app/phonemes/data/hindi-phonemes';
+import * as dotenv from 'dotenv';
+
+// Load env for tests, if needed by any modules
+dotenv.config();
 
 describe('PlatformController (e2e)', () => {
   let nestApp: INestApplication;
@@ -49,6 +55,18 @@ describe('PlatformController (e2e)', () => {
         sendMessage: jest.fn().mockResolvedValue('mock-reply'),
         getBooleanFromAI: jest.fn().mockResolvedValue(true),
         transcribeAudio: jest.fn().mockResolvedValue('mock-transcription'),
+      })
+      .overrideProvider(GoogleService)
+      .useValue({
+        transcribeAudio: jest
+          .fn()
+          .mockResolvedValue('google-mock-transcription'),
+      })
+      .overrideProvider(SpeechmaticsService)
+      .useValue({
+        transcribeAudio: jest
+          .fn()
+          .mockResolvedValue('speechmatics-mock-transcription'),
       })
       .compile();
 

@@ -8,6 +8,10 @@ import { PhonemesService } from './apps/alfa-app/phonemes/phonemes.service';
 import { UsersService } from './hindeara-platform/users/users.service';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as dotenv from 'dotenv';
+
+// Load environment variables from .env before any other logic
+dotenv.config();
 
 function ensureGoogleCredentials() {
   const b64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64;
