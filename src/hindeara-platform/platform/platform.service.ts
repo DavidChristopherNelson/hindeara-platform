@@ -15,6 +15,7 @@ import { UtilsService } from 'src/common/utils.service';
 import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { SpeechmaticsService } from 'src/integrations/speechmatics/speechmatics.service';
 import { GoogleService } from 'src/integrations/google/google.service';
+import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
 
 @Injectable()
 export class PlatformService {
@@ -28,6 +29,7 @@ export class PlatformService {
     private readonly chatgpt: ChatGPTService,
     private readonly speechmatics: SpeechmaticsService,
     private readonly google: GoogleService,
+    private readonly deepgram: DeepgramService,
   ) {}
 
   @LogMethod()
@@ -102,8 +104,9 @@ export class PlatformService {
     const gptStartTime = Date.now();
     const smStartTime = Date.now();
     const googleStartTime = Date.now();
+    const deepgramStartTime = Date.now();
 
-    const [gptRes, smRes, googleRes] = await Promise.allSettled([
+    const [gptRes, smRes, googleRes, deepgramRes] = await Promise.allSettled([
       this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
         const gptEndTime = Date.now();
         const gptDuration = (gptEndTime - gptStartTime) / 1000; // Convert to seconds
@@ -118,6 +121,11 @@ export class PlatformService {
         const googleEndTime = Date.now();
         const googleDuration = (googleEndTime - googleStartTime) / 1000; // Convert to seconds
         return { result, duration: googleDuration };
+      }),
+      this.deepgram.transcribeAudio(audioBuffer, locale).then((result) => {
+        const deepgramEndTime = Date.now();
+        const deepgramDuration = (deepgramEndTime - deepgramStartTime) / 1000; // Convert to seconds
+        return { result, duration: deepgramDuration };
       }),
     ]);
 
@@ -140,7 +148,14 @@ export class PlatformService {
       googleText = 'Google failed';
     }
 
-    const transcription = [gptText, smText, googleText]
+    let deepgramText = '';
+    if (deepgramRes.status === 'fulfilled') {
+      deepgramText = `Deepgram: ${deepgramRes.value.result} ${deepgramRes.value.duration.toFixed(3)}s`;
+    } else if (deepgramRes.status === 'rejected') {
+      deepgramText = 'Deepgram failed';
+    }
+
+    const transcription = [gptText, smText, googleText, deepgramText]
       .filter(Boolean)
       .join('\n')
       .trim();
