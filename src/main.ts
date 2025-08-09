@@ -6,8 +6,25 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 import { PhonemesService } from './apps/alfa-app/phonemes/phonemes.service';
 import { UsersService } from './hindeara-platform/users/users.service';
+import * as fs from 'fs';
+import * as path from 'path';
+
+function ensureGoogleCredentials() {
+  const b64 = process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64;
+  if (!b64) return;
+  const target = path.join('/tmp', 'google-cloud-key.json');
+  try {
+    const buf = Buffer.from(b64, 'base64');
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, buf, { mode: 0o600 });
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = target;
+  } catch (e) {
+    process.stderr.write(String(e instanceof Error ? e.message : e));
+  }
+}
 
 async function bootstrap() {
+  ensureGoogleCredentials();
   const app = await NestFactory.create(PlatformModule);
 
   app.use(bodyParser.json({ limit: '25mb' }));
@@ -28,9 +45,8 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // at http://localhost:3000/api
+  SwaggerModule.setup('api', app, document);
 
-  // Seeding
   const phonemesService = app.get(PhonemesService);
   await phonemesService.seedEnglishAlphabet();
   await phonemesService.seedHindiAlphabet();

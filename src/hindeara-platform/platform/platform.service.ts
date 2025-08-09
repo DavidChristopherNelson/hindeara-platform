@@ -123,24 +123,27 @@ export class PlatformService {
 
     const gptText =
       gptRes.status === 'fulfilled'
-        ? `GTP: ${gptRes.value.result} - ${gptRes.value.duration.toFixed(3)}s`
+        ? `GTP: ${gptRes.value.result} ${gptRes.value.duration.toFixed(3)}s`
         : '';
 
     let smText = '';
     if (smRes.status === 'fulfilled') {
-      smText = `Speechmatics: ${smRes.value.result} - ${smRes.value.duration.toFixed(3)}s`;
+      smText = `Speechmatics: ${smRes.value.result} ${smRes.value.duration.toFixed(3)}s`;
     } else if (smRes.status === 'rejected') {
       smText = 'Speechmatics failed';
     }
 
     let googleText = '';
     if (googleRes.status === 'fulfilled') {
-      googleText = `Google: ${googleRes.value.result} - ${googleRes.value.duration.toFixed(3)}s`;
+      googleText = `Google: ${googleRes.value.result} ${googleRes.value.duration.toFixed(3)}s`;
     } else if (googleRes.status === 'rejected') {
       googleText = 'Google failed';
     }
 
-    const transcription = [gptText, smText, googleText].filter(Boolean).join('\n').trim();
+    const transcription = [gptText, smText, googleText]
+      .filter(Boolean)
+      .join('\n')
+      .trim();
 
     // Return data
     return [user, transcription];
