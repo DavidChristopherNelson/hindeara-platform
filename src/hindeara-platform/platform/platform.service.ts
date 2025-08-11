@@ -1,8 +1,8 @@
 // src/hindeara-platform/platform/platform.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/hindeara-platform/users/users.service';
-import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
-import { AppEventsService } from 'src/hindeara-platform/app-events/app-events.service';
+import { UserEventsService, UserEventWithIds } from 'src/hindeara-platform/user-events/user-events.service';
+import { AppEventsService, AppEventWithIds } from 'src/hindeara-platform/app-events/app-events.service';
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import { AppsService } from '../apps/apps.service';
@@ -226,7 +226,28 @@ export class PlatformService {
   }
 
   @LogMethod()
-  analyzeData(): void {
-    console.log('XXX: analyzeData has been hit');
+  async analyzeData(userId: number): Promise<void> {
+    const appEvents: AppEventWithIds[] = await this.appEventsService.findAll({
+      userId,
+      locale: 'hi',
+    });
+    for (const appEvent of appEvents) {
+      const userEvents = await this.userEventsService.findAll({
+        userId,
+        since: appEvent.event_createdAt,
+      });
+      const userEvent = userEvents[0];
+      this.analyzeEventPairs(appEvent, userEvent);
+    }
+  }
+
+  @LogMethod()
+  private analyzeEventPairs(
+    appEvent: AppEventWithIds,
+    userEvent: UserEventWithIds,
+  ): void {
+    console.log(
+      `appEvent.id: ${appEvent.event_id}, userEvent.id: ${userEvent.event_id}`,
+    );
   }
 }
