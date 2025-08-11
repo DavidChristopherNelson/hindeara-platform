@@ -36,4 +36,10 @@ export class PlatformController {
       ),
     );
   }
+
+  @Post('/analyzeData')
+  @LogMethod()
+  analyzeData(): void {
+    this.platformService.analyzeData();
+  }
 }

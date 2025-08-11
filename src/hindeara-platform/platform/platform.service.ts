@@ -163,47 +163,47 @@ export class PlatformService {
 
     const gptText =
       gptRes.status === 'fulfilled'
-        ? `GTP: ${gptRes.value.result} ${gptRes.value.duration.toFixed(3)}s`
+        ? `GTP:${gptRes.value.result}:${gptRes.value.duration.toFixed(3)}:`
         : '';
 
     let smText = '';
     if (smRes.status === 'fulfilled') {
-      smText = `Speechmatics: ${smRes.value.result} ${smRes.value.duration.toFixed(3)}s`;
+      smText = `Speechmatics:${smRes.value.result}:${smRes.value.duration.toFixed(3)}:`;
     } else if (smRes.status === 'rejected') {
       smText = 'Speechmatics failed';
     }
 
     let googleText = '';
     if (googleRes.status === 'fulfilled') {
-      googleText = `Google: ${googleRes.value.result} ${googleRes.value.duration.toFixed(3)}s`;
+      googleText = `Google:${googleRes.value.result}:${googleRes.value.duration.toFixed(3)}:`;
     } else if (googleRes.status === 'rejected') {
       googleText = 'Google failed';
     }
 
     let deepgramText = '';
     if (deepgramRes.status === 'fulfilled') {
-      deepgramText = `Deepgram: ${deepgramRes.value.result} ${deepgramRes.value.duration.toFixed(3)}s`;
+      deepgramText = `Deepgram:${deepgramRes.value.result}:${deepgramRes.value.duration.toFixed(3)}:`;
     } else if (deepgramRes.status === 'rejected') {
       deepgramText = 'Deepgram failed';
     }
 
     let sarvamText = '';
     if (sarvamRes.status === 'fulfilled') {
-      sarvamText = `Sarvam: ${sarvamRes.value.result} ${sarvamRes.value.duration.toFixed(3)}s`;
+      sarvamText = `Sarvam:${sarvamRes.value.result}:${sarvamRes.value.duration.toFixed(3)}:`;
     } else if (sarvamRes.status === 'rejected') {
       sarvamText = 'Sarvam failed';
     }
 
     let assemblyText = '';
     if (assemblyRes.status === 'fulfilled') {
-      assemblyText = `AssemblyAI: ${assemblyRes.value.result} ${assemblyRes.value.duration.toFixed(3)}s`;
+      assemblyText = `AssemblyAI:${assemblyRes.value.result}:${assemblyRes.value.duration.toFixed(3)}:`;
     } else if (assemblyRes.status === 'rejected') {
       assemblyText = 'AssemblyAI failed';
     }
 
     let reverieText = '';
     if (reverieRes.status === 'fulfilled') {
-      reverieText = `Reverie: ${reverieRes.value.result} ${reverieRes.value.duration.toFixed(3)}s`;
+      reverieText = `Reverie:${reverieRes.value.result}:${reverieRes.value.duration.toFixed(3)}:`;
     } else if (reverieRes.status === 'rejected') {
       reverieText = 'Reverie failed';
     }
@@ -223,5 +223,10 @@ export class PlatformService {
 
     // Return data
     return [user, transcription];
+  }
+
+  @LogMethod()
+  analyzeData(): void {
+    console.log('XXX: analyzeData has been hit');
   }
 }
