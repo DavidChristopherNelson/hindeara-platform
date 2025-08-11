@@ -5,6 +5,16 @@ import { ProcessUserInputResponseDto } from './dto/process-user-input-response.d
 import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
+interface extractServiceData {
+  service: string;
+  serviceAnswer: string;
+  responseTime: number;
+  correctAnswer: string;
+  computerAssessment: boolean;
+  appEventId: number;
+  state: string;
+}
+
 @ApiTags('platforms')
 @Controller()
 export class PlatformController {
@@ -39,7 +49,7 @@ export class PlatformController {
 
   @Post('/analyzeData')
   @LogMethod()
-  analyzeData(): void {
-    this.platformService.analyzeData();
+  analyzeData(): Promise<extractServiceData[]> {
+    return this.platformService.analyzeData();
   }
 }

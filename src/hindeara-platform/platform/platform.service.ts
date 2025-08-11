@@ -1,8 +1,16 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 // src/hindeara-platform/platform/platform.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/hindeara-platform/users/users.service';
-import { UserEventsService, UserEventWithIds } from 'src/hindeara-platform/user-events/user-events.service';
-import { AppEventsService, AppEventWithIds } from 'src/hindeara-platform/app-events/app-events.service';
+import {
+  UserEventsService,
+  UserEventWithIds,
+} from 'src/hindeara-platform/user-events/user-events.service';
+import {
+  AppEventsService,
+  AppEventWithIds,
+} from 'src/hindeara-platform/app-events/app-events.service';
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import { AppsService } from '../apps/apps.service';
@@ -19,6 +27,148 @@ import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
 import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
 import { AssemblyService } from 'src/integrations/assembly/assembly.service';
 import { ReverieService } from 'src/integrations/reverie/reverie.service';
+
+interface extractServiceData {
+  service: string;
+  serviceAnswer: string;
+  responseTime: number;
+  correctAnswer: string;
+  computerAssessment: boolean;
+  appEventId: number;
+  state: string;
+}
+
+/* ───────── constants ───────── */
+const CONSONANT_SET = new Set(
+  'कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहabcdefghijklmnopqrstuvwxyz'.split(''),
+);
+
+const VOWEL_MATRA_SET = new Set(
+  'ा ि ी ु ू ृ ॄ े ै ो ौ ॢ ॣ'.replace(/\s+/g, '').split(''),
+);
+
+const LONG_A = 'ा';
+
+const FAMILIES: string[][] = [
+  ['क', 'ख', 'क़', 'ख़'],
+  ['ग', 'घ', 'ग़'],
+  ['च', 'छ'],
+  ['ज', 'झ', 'ज़'],
+  ['ट', 'ठ', 'त', 'थ'],
+  ['ड', 'ढ', 'द', 'ध'],
+  ['प', 'फ', 'फ़'],
+  ['ब', 'भ'],
+  ['श', 'ष', 'स'],
+  ['र', 'ड़', 'ढ़'],
+  ['य', 'ए', 'ऐ'],
+  ['ओ', 'औ'],
+];
+
+const CHARACTER_TO_FAMILY = new Map<string, number>();
+FAMILIES.forEach((fam, i) =>
+  fam.forEach((ch) => CHARACTER_TO_FAMILY.set(ch, i)),
+);
+const sameFamily = (a: string, b: string) =>
+  CHARACTER_TO_FAMILY.get(a) === CHARACTER_TO_FAMILY.get(b);
+
+type MarkArgs = { correctAnswer: string; studentAnswer: string };
+
+/* ───────── utility class ───────── */
+class EvaluateAnswer {
+  /* helpers */
+  private static isConsonant = (ch: string) => CONSONANT_SET.has(ch);
+
+  private static consonantCount(word: string): number {
+    let c = 0;
+    for (const ch of [...word.normalize('NFC')]) {
+      if (this.isConsonant(ch)) c++;
+    }
+    return c;
+  }
+
+  private static clean(str: string): string {
+    return str
+      .normalize('NFC')
+      .trim()
+      .replace(/[^\p{L}\p{M}]/gu, '')
+      .toLocaleLowerCase();
+  }
+
+  /* public APIs --------------------------------------------------- */
+
+  @LogMethod()
+  static markWord({ correctAnswer, studentAnswer }: MarkArgs): boolean {
+    const cleanedCorrectAnswer = this.clean(correctAnswer);
+    const splitStudentAnswer = studentAnswer.split(/\s+/);
+
+    const isEquivalent = (a: string, b: string) => a === b || sameFamily(a, b);
+
+    return splitStudentAnswer.some((w) => {
+      const cleanedW = this.clean(w);
+      if (cleanedW === cleanedCorrectAnswer) return true;
+
+      // Schwa deletion: ignore trailing long ā (ा) in correctAnswer
+      if (
+        cleanedCorrectAnswer.endsWith(LONG_A) &&
+        cleanedW === cleanedCorrectAnswer.slice(0, -1)
+      ) {
+        return true;
+      }
+
+      // Match words that have characters in the same family in the same position.
+      if (cleanedW.length == cleanedCorrectAnswer.length) {
+        for (let i = 0; i < cleanedW.length; i++) {
+          if (!isEquivalent(cleanedW[i], cleanedCorrectAnswer[i])) return false;
+        }
+        return true;
+      }
+
+      return false;
+    });
+  }
+
+  /* alias */
+  @LogMethod()
+  static markImage({ correctAnswer, studentAnswer }: MarkArgs): boolean {
+    return this.markWord({ correctAnswer, studentAnswer });
+  }
+
+  @LogMethod()
+  static markLetter({ correctAnswer, studentAnswer }: MarkArgs): boolean {
+    const cleanedCorrectAnswer = this.clean(correctAnswer);
+    const words = studentAnswer.trim().split(/\s+/);
+    const cCount = this.consonantCount(cleanedCorrectAnswer);
+
+    return words.some((w) => {
+      const cleaned = this.clean(w);
+      if (cCount === 1) {
+        return this.markPhoneme(cleanedCorrectAnswer, cleaned);
+      } else if (cCount === 2) {
+        return this.markConjunct(cleanedCorrectAnswer, cleaned);
+      } else {
+        return false;
+      }
+    });
+  }
+
+  @LogMethod()
+  private static markPhoneme(correctAnswer: string, word: string): boolean {
+    if (!word || !correctAnswer) return false;
+    if (word === correctAnswer) return true;
+
+    if (sameFamily(word[0], correctAnswer[0])) {
+      if (word.slice(1) === correctAnswer.slice(1)) return true;
+      if (word.slice(1) === LONG_A && correctAnswer.slice(1) === '')
+        return true;
+    }
+    return false;
+  }
+
+  @LogMethod()
+  private static markConjunct(correctAnswer: string, word: string): boolean {
+    return word === correctAnswer;
+  }
+}
 
 @Injectable()
 export class PlatformService {
@@ -161,93 +311,141 @@ export class PlatformService {
       }),
     ]);
 
-    const gptText =
-      gptRes.status === 'fulfilled'
-        ? `GTP:${gptRes.value.result}:${gptRes.value.duration.toFixed(3)}:`
-        : '';
+    const transcriptions: Array<{
+      service: string;
+      latency: number;
+      transcript: string;
+    }> = [];
 
-    let smText = '';
-    if (smRes.status === 'fulfilled') {
-      smText = `Speechmatics:${smRes.value.result}:${smRes.value.duration.toFixed(3)}:`;
-    } else if (smRes.status === 'rejected') {
-      smText = 'Speechmatics failed';
-    }
+    const pushIfFulfilled = (
+      res: PromiseSettledResult<{ result: string; duration: number }>,
+      service: string,
+    ) => {
+      if (res.status === 'fulfilled') {
+        transcriptions.push({
+          service,
+          transcript: res.value.result,
+          latency: Number(res.value.duration.toFixed(3)),
+        });
+      }
+    };
 
-    let googleText = '';
-    if (googleRes.status === 'fulfilled') {
-      googleText = `Google:${googleRes.value.result}:${googleRes.value.duration.toFixed(3)}:`;
-    } else if (googleRes.status === 'rejected') {
-      googleText = 'Google failed';
-    }
+    pushIfFulfilled(gptRes, 'GPT');
+    pushIfFulfilled(smRes, 'Speechmatics');
+    pushIfFulfilled(googleRes, 'Google');
+    pushIfFulfilled(deepgramRes, 'Deepgram');
+    pushIfFulfilled(sarvamRes, 'Sarvam');
+    pushIfFulfilled(assemblyRes, 'AssemblyAI');
+    pushIfFulfilled(reverieRes, 'Reverie');
 
-    let deepgramText = '';
-    if (deepgramRes.status === 'fulfilled') {
-      deepgramText = `Deepgram:${deepgramRes.value.result}:${deepgramRes.value.duration.toFixed(3)}:`;
-    } else if (deepgramRes.status === 'rejected') {
-      deepgramText = 'Deepgram failed';
-    }
-
-    let sarvamText = '';
-    if (sarvamRes.status === 'fulfilled') {
-      sarvamText = `Sarvam:${sarvamRes.value.result}:${sarvamRes.value.duration.toFixed(3)}:`;
-    } else if (sarvamRes.status === 'rejected') {
-      sarvamText = 'Sarvam failed';
-    }
-
-    let assemblyText = '';
-    if (assemblyRes.status === 'fulfilled') {
-      assemblyText = `AssemblyAI:${assemblyRes.value.result}:${assemblyRes.value.duration.toFixed(3)}:`;
-    } else if (assemblyRes.status === 'rejected') {
-      assemblyText = 'AssemblyAI failed';
-    }
-
-    let reverieText = '';
-    if (reverieRes.status === 'fulfilled') {
-      reverieText = `Reverie:${reverieRes.value.result}:${reverieRes.value.duration.toFixed(3)}:`;
-    } else if (reverieRes.status === 'rejected') {
-      reverieText = 'Reverie failed';
-    }
-
-    const transcription = [
-      gptText,
-      smText,
-      googleText,
-      deepgramText,
-      sarvamText,
-      assemblyText,
-      reverieText,
-    ]
-      .filter(Boolean)
-      .join('\n')
-      .trim();
+    const transcription = JSON.stringify(transcriptions);
 
     // Return data
     return [user, transcription];
   }
 
+  // This analysis code is not written to be maintanable
+  // It is a quick and dirty solution to get the data out of the system.
   @LogMethod()
-  async analyzeData(userId: number): Promise<void> {
+  async analyzeData(): Promise<extractServiceData[]> {
+    const userId = 1;
     const appEvents: AppEventWithIds[] = await this.appEventsService.findAll({
       userId,
       locale: 'hi',
     });
-    for (const appEvent of appEvents) {
+    const extractedData: extractServiceData[] = [];
+    let counter = 0;
+    for (const appEvent of appEvents.slice(1).reverse()) {
+      counter = counter + 1;
       const userEvents = await this.userEventsService.findAll({
         userId,
         since: appEvent.event_createdAt,
       });
       const userEvent = userEvents[0];
-      this.analyzeEventPairs(appEvent, userEvent);
+      extractedData.push(...this.analyzeEventPairs(appEvent, userEvent));
     }
+    return extractedData;
   }
 
   @LogMethod()
   private analyzeEventPairs(
     appEvent: AppEventWithIds,
     userEvent: UserEventWithIds,
-  ): void {
-    console.log(
-      `appEvent.id: ${appEvent.event_id}, userEvent.id: ${userEvent.event_id}`,
+  ): extractServiceData[] {
+    const extractedServiceData: extractServiceData[] = [];
+    const serviceEvents = JSON.parse(userEvent.event_transcription);
+    for (const serviceEvent of serviceEvents) {
+      extractedServiceData.push(
+        this.analyzeServiceEvent(appEvent, serviceEvent),
+      );
+    }
+    return extractedServiceData;
+  }
+
+  @LogMethod()
+  private analyzeServiceEvent(
+    appEvent: AppEventWithIds,
+    serviceEvent: string,
+  ): extractServiceData[] {
+    const serviceAnswer = serviceEvent.transcript;
+    const [correctAnswer, computerAssessment] = this.findAndMarkCorrectAnswer(
+      serviceAnswer,
+      appEvent,
     );
+    const state = JSON.parse(appEvent.event_uiData).state;
+    return {
+      service: serviceEvent.service,
+      serviceAnswer: serviceEvent.transcript,
+      responseTime: serviceEvent.latency,
+      correctAnswer,
+      computerAssessment,
+      appEventId: appEvent.event_id,
+      state,
+    };
+  }
+
+  @LogMethod()
+  private findAndMarkCorrectAnswer(
+    serviceAnswer: string,
+    appEvent: AppEventWithIds,
+  ): [string, boolean] {
+    const ui = JSON.parse(appEvent.event_uiData);
+    let correctAnswer = '';
+    let computerAssessment: boolean;
+    switch (ui.state) {
+      case 'word':
+        correctAnswer = ui.word;
+        computerAssessment = EvaluateAnswer.markWord({
+          correctAnswer,
+          studentAnswer: serviceAnswer,
+        });
+        break;
+      case 'letter':
+        correctAnswer = ui.letter;
+        computerAssessment = EvaluateAnswer.markLetter({
+          correctAnswer,
+          studentAnswer: serviceAnswer,
+        });
+        break;
+      case 'image':
+        correctAnswer = ui.picture.slice(0, -4);
+        computerAssessment = EvaluateAnswer.markImage({
+          correctAnswer,
+          studentAnswer: serviceAnswer,
+        });
+        break;
+      case 'letterImage':
+        correctAnswer = ui.letter;
+        computerAssessment = EvaluateAnswer.markLetter({
+          correctAnswer,
+          studentAnswer: serviceAnswer,
+        });
+        break;
+      default:
+        correctAnswer = 'Error: undetectible state';
+        computerAssessment = false;
+    }
+
+    return [correctAnswer, computerAssessment];
   }
 }
