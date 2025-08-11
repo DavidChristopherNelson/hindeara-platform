@@ -6,6 +6,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { FindAllUserEventsFilter } from './dto/find-all-filter.dto';
+
+interface RawUserEventWithIds {
+  event_id: number;
+  event_recording: Buffer;
+  event_locale: string;
+  event_transcription: string | null;
+  event_createdAt: Date;
+  userId: number;
+}
+
+export type UserEventWithIds = RawUserEventWithIds;
 
 @Injectable()
 export class UserEventsService {
@@ -27,9 +39,46 @@ export class UserEventsService {
     return this.userEventRepository.save(event);
   }
 
+  /**
+   * Generalized finder mirroring AppEventsService.findAll().
+   * Filters: userId, since (strictly >), locale.
+   * Returns raw rows with userId included.
+   */
   @LogMethod()
-  async findAll(): Promise<UserEvent[]> {
-    return this.userEventRepository.find();
+  async findAll(
+    filter: FindAllUserEventsFilter = {} as FindAllUserEventsFilter,
+  ): Promise<UserEventWithIds[]> {
+    const qb = this.userEventRepository
+      .createQueryBuilder('event')
+      .leftJoin('event.user', 'user')
+      .select('event')
+      .addSelect('user.id', 'userId');
+
+    if (filter.userId !== undefined) {
+      qb.andWhere('user.id = :userId', { userId: filter.userId });
+    }
+    if (filter.since !== undefined) {
+      qb.andWhere('event.createdAt > :since', { since: filter.since });
+    }
+    if (filter.locale !== undefined) {
+      qb.andWhere('event.locale = :locale', { locale: filter.locale });
+    }
+
+    const rawRows = await qb
+      .orderBy('event.createdAt', 'DESC')
+      .getRawMany<RawUserEventWithIds>();
+
+    const returnValue: UserEventWithIds[] = rawRows.map((r) => ({ ...r }));
+
+    // Match the AppEventsService equality guard for the "since" bug/workaround
+    if (
+      filter.since &&
+      returnValue[0]?.event_createdAt.getTime() === filter.since.getTime()
+    ) {
+      return [];
+    }
+
+    return returnValue;
   }
 
   @LogMethod()

@@ -1,8 +1,9 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
-import { UserEventsService } from './user-events.service';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { UserEventsService, UserEventWithIds } from './user-events.service';
 import { UserEvent } from './entities/user-event.entity';
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { findAllFilter } from '../app-events/dto/find-all-filter.dto';
 
 @ApiTags('user-events')
 @Controller('user-events')
@@ -12,8 +13,8 @@ export class UserEventsController {
   @Get()
   @ApiResponse({ status: 200, type: [UserEvent] })
   @LogMethod()
-  async findAll(): Promise<UserEvent[]> {
-    return this.userEventsService.findAll();
+  async findAll(@Query() filter: findAllFilter): Promise<UserEventWithIds[]> {
+    return this.userEventsService.findAll(filter ?? {});
   }
 
   @Get(':id')
