@@ -25,7 +25,6 @@ import { SpeechmaticsService } from 'src/integrations/speechmatics/speechmatics.
 import { GoogleService } from 'src/integrations/google/google.service';
 import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
 import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
-import { AssemblyService } from 'src/integrations/assembly/assembly.service';
 import { ReverieService } from 'src/integrations/reverie/reverie.service';
 
 interface extractServiceData {
@@ -184,7 +183,6 @@ export class PlatformService {
     private readonly google: GoogleService,
     private readonly deepgram: DeepgramService,
     private readonly sarvam: SarvamService,
-    private readonly assembly: AssemblyService,
     private readonly reverie: ReverieService,
   ) {}
 
@@ -262,7 +260,6 @@ export class PlatformService {
     const googleStartTime = Date.now();
     const deepgramStartTime = Date.now();
     const sarvamStartTime = Date.now();
-    const assemblyStartTime = Date.now();
     const reverieStartTime = Date.now();
 
     const [
@@ -271,7 +268,6 @@ export class PlatformService {
       googleRes,
       deepgramRes,
       sarvamRes,
-      assemblyRes,
       reverieRes,
     ] = await Promise.allSettled([
       this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
@@ -298,11 +294,6 @@ export class PlatformService {
         const sarvamEndTime = Date.now();
         const sarvamDuration = (sarvamEndTime - sarvamStartTime) / 1000; // seconds
         return { result, duration: sarvamDuration };
-      }),
-      this.assembly.transcribeAudio(audioBuffer, locale).then((result) => {
-        const assemblyEndTime = Date.now();
-        const assemblyDuration = (assemblyEndTime - assemblyStartTime) / 1000; // seconds
-        return { result, duration: assemblyDuration };
       }),
       this.reverie.transcribeAudio(audioBuffer, locale).then((result) => {
         const reverieEndTime = Date.now();
@@ -335,7 +326,6 @@ export class PlatformService {
     pushIfFulfilled(googleRes, 'Google');
     pushIfFulfilled(deepgramRes, 'Deepgram');
     pushIfFulfilled(sarvamRes, 'Sarvam');
-    pushIfFulfilled(assemblyRes, 'AssemblyAI');
     pushIfFulfilled(reverieRes, 'Reverie');
 
     const transcription = JSON.stringify(transcriptions);

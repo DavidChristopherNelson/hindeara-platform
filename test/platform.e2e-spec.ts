@@ -21,7 +21,6 @@ import { GoogleService } from 'src/integrations/google/google.service';
 import { SpeechmaticsService } from 'src/integrations/speechmatics/speechmatics.service';
 import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
 import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
-import { AssemblyService } from 'src/integrations/assembly/assembly.service';
 import { ReverieService } from 'src/integrations/reverie/reverie.service';
 import { ENGLISH_PHONEMES } from 'src/apps/alfa-app/phonemes/data/english-phonemes';
 import { HINDI_PHONEMES } from 'src/apps/alfa-app/phonemes/data/hindi-phonemes';
@@ -89,12 +88,6 @@ describe('PlatformController (e2e)', () => {
         transcribeAudio: jest
           .fn()
           .mockResolvedValue('sarvam-mock-transcription'),
-      })
-      .overrideProvider(AssemblyService)
-      .useValue({
-        transcribeAudio: jest
-          .fn()
-          .mockResolvedValue('assembly-mock-transcription'),
       })
       .overrideProvider(ReverieService)
       .useValue({

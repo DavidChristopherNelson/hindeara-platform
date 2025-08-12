@@ -17,7 +17,6 @@ import { SpeechmaticsModule } from 'src/integrations/speechmatics/speechmatics.m
 import { GoogleModule } from 'src/integrations/google/google.module';
 import { DeepgramModule } from 'src/integrations/deepgram/deepgram.module';
 import { SarvamModule } from 'src/integrations/sarvam/sarvam.module';
-import { AssemblyModule } from 'src/integrations/assembly/assembly.module';
 import { ReverieModule } from 'src/integrations/reverie/reverie.module';
 
 @Module({
@@ -36,7 +35,6 @@ import { ReverieModule } from 'src/integrations/reverie/reverie.module';
     GoogleModule,
     DeepgramModule,
     SarvamModule,
-    AssemblyModule,
     ReverieModule,
     CommonModule,
     StateModule,
