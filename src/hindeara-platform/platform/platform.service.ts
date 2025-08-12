@@ -384,10 +384,7 @@ export class PlatformService {
     userEvent: UserEventWithIds,
   ): extractServiceData[] {
     const extractedServiceData: extractServiceData[] = [];
-    const parsed: unknown = JSON.parse(userEvent.event_transcription);
-    const serviceEvents = (
-      Array.isArray(parsed) ? parsed : []
-    ) as ServiceTranscription[];
+    const serviceEvents = JSON.parse(userEvent.event_transcription);
     for (const serviceEvent of serviceEvents) {
       extractedServiceData.push(
         this.analyzeServiceEvent(appEvent, serviceEvent),
@@ -399,16 +396,14 @@ export class PlatformService {
   @LogMethod()
   private analyzeServiceEvent(
     appEvent: AppEventWithIds,
-    serviceEvent: ServiceTranscription,
-  ): extractServiceData {
-    const serviceAnswer: string = serviceEvent.transcript;
+    serviceEvent: string,
+  ): extractServiceData[] {
+    const serviceAnswer = serviceEvent.transcript;
     const [correctAnswer, computerAssessment] = this.findAndMarkCorrectAnswer(
       serviceAnswer,
       appEvent,
     );
-    const uiParsed: unknown = JSON.parse(appEvent.event_uiData);
-    const ui = uiParsed as UiData;
-    const state = ui.state;
+    const state = JSON.parse(appEvent.event_uiData).state;
     return {
       service: serviceEvent.service,
       serviceAnswer: serviceEvent.transcript,
@@ -425,34 +420,33 @@ export class PlatformService {
     serviceAnswer: string,
     appEvent: AppEventWithIds,
   ): [string, boolean] {
-    const uiParsed: unknown = JSON.parse(appEvent.event_uiData);
-    const ui = uiParsed as UiData;
+    const ui = JSON.parse(appEvent.event_uiData);
     let correctAnswer = '';
     let computerAssessment: boolean;
     switch (ui.state) {
       case 'word':
-        correctAnswer = ui.word || '';
+        correctAnswer = ui.word;
         computerAssessment = EvaluateAnswer.markWord({
           correctAnswer,
           studentAnswer: serviceAnswer,
         });
         break;
       case 'letter':
-        correctAnswer = ui.letter || '';
+        correctAnswer = ui.letter;
         computerAssessment = EvaluateAnswer.markLetter({
           correctAnswer,
           studentAnswer: serviceAnswer,
         });
         break;
       case 'image':
-        correctAnswer = (ui.picture || '').slice(0, -4);
+        correctAnswer = ui.picture.slice(0, -4);
         computerAssessment = EvaluateAnswer.markImage({
           correctAnswer,
           studentAnswer: serviceAnswer,
         });
         break;
       case 'letterImage':
-        correctAnswer = ui.letter || '';
+        correctAnswer = ui.letter;
         computerAssessment = EvaluateAnswer.markLetter({
           correctAnswer,
           studentAnswer: serviceAnswer,
