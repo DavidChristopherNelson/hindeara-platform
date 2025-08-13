@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import { spawn } from 'child_process';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const ffmpegPath = require('ffmpeg-static') as string;
 
 @Injectable()
 export class AzureSttService {
@@ -27,7 +30,20 @@ export class AzureSttService {
 
     try {
       const language = this.mapLocaleToLanguage(locale);
-      const contentType = this.detectContentType(audioBuffer);
+      let contentType = this.detectContentType(audioBuffer);
+
+      // Azure REST does not accept WebM containers. Transcode to 16kHz mono PCM WAV.
+      let payload = audioBuffer;
+      if (contentType.startsWith('audio/webm') || contentType === 'audio/mp4') {
+        this.logger.log(
+          `Transcoding input (${contentType}) to 16kHz mono PCM WAV for Azure`,
+        );
+        payload = await this.transcodeToWav(audioBuffer);
+        contentType = 'audio/wav; codecs=audio/pcm';
+        this.logger.log(
+          `Transcode complete. New payload size: ${payload.length} bytes`,
+        );
+      }
 
       // REST realtime recognition endpoint (conversation mode)
       const url = new URL(
@@ -42,7 +58,7 @@ export class AzureSttService {
 
       const { data } = await axios.post<AzureRecognitionResponse>(
         url.toString(),
-        audioBuffer,
+        payload,
         {
           headers: {
             'Ocp-Apim-Subscription-Key': this.apiKey,
@@ -79,6 +95,47 @@ export class AzureSttService {
         }`,
       );
     }
+  }
+
+  private async transcodeToWav(input: Buffer): Promise<Buffer> {
+    return new Promise<Buffer>((resolve, reject) => {
+      try {
+        const ff = spawn(ffmpegPath, [
+          '-hide_banner',
+          '-loglevel',
+          'error',
+          '-i',
+          'pipe:0',
+          '-ac',
+          '1', // mono
+          '-ar',
+          '16000', // 16 kHz
+          '-f',
+          'wav',
+          '-acodec',
+          'pcm_s16le',
+          'pipe:1',
+        ]);
+
+        const chunks: Buffer[] = [];
+
+        ff.stdout.on('data', (chunk: Buffer) => chunks.push(chunk));
+        ff.stderr.on('data', (errChunk: Buffer) => {
+          // Keep stderr for debugging; do not reject immediately unless process exits non-zero
+          this.logger.debug(`[ffmpeg] ${errChunk.toString('utf8')}`);
+        });
+        ff.on('error', (err) => reject(err));
+        ff.on('close', (code) => {
+          if (code !== 0) return reject(new Error(`ffmpeg exited with code ${code}`));
+          resolve(Buffer.concat(chunks));
+        });
+
+        ff.stdin.write(input);
+        ff.stdin.end();
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   private extractTranscript(data: AzureRecognitionResponse): string {
