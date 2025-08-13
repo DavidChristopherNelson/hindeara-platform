@@ -361,7 +361,7 @@ export class PlatformService {
         userId,
         since: appEvent.event_createdAt,
       });
-      const userEvent = userEvents[0];
+      const userEvent = userEvents[userEvents.length - 1];
       extractedData.push(...this.analyzeEventPairs(appEvent, userEvent));
     }
     return extractedData;
