@@ -362,6 +362,13 @@ export class PlatformService {
     appEvent: AppEventWithIds,
     userEvent: UserEventWithIds,
   ): extractServiceData[] {
+    // ── NEW: guard against missing/empty/non‑JSON transcription ──
+    const raw = userEvent?.event_transcription;
+    if (!raw || typeof raw !== 'string' || raw.trim() === '') {
+      // nothing to analyze for this userEvent
+      return [];
+    }
+
     const extractedServiceData: extractServiceData[] = [];
     const serviceEvents = JSON.parse(userEvent.event_transcription);
     for (const serviceEvent of serviceEvents) {
