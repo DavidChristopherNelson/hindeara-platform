@@ -359,7 +359,7 @@ export class PlatformService {
   // It is a quick and dirty solution to get the data out of the system.
   @LogMethod()
   async analyzeData(): Promise<extractServiceData[]> {
-    const userId = 4;
+    const userId = 5;
     const appEvents: AppEventWithIds[] = await this.appEventsService.findAll({
       userId,
       locale: 'hi',
