@@ -5,6 +5,9 @@ def calculate_service_stats(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
+    # NEW: filter out entries where state == "image"
+    data = [entry for entry in data if entry.get("state") != "image"]
+
     stats = {}
     app_event_correct = {}  # NEW: track correctness per appEventId
 
