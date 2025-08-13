@@ -1,0 +1,7184 @@
+[
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 62,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 62,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 62,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 62,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 62,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 62,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 63,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 63,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 63,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 63,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 63,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 63,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 64,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 64,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 64,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 64,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 64,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 64,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 65,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 65,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 65,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 65,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 65,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कमल",
+    "computerAssessment": false,
+    "appEventId": 65,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 66,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 66,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 66,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 66,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 66,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 66,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 67,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 67,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 67,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 67,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 67,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 67,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 68,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 68,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 68,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 68,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 68,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 68,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 69,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 69,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 69,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 69,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 69,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 69,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 70,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 70,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 70,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 70,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 70,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 70,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "clock",
+    "computerAssessment": false,
+    "appEventId": 71,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "clock",
+    "computerAssessment": false,
+    "appEventId": 71,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "clock",
+    "computerAssessment": false,
+    "appEventId": 71,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "clock",
+    "computerAssessment": false,
+    "appEventId": 71,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "clock",
+    "computerAssessment": false,
+    "appEventId": 71,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "clock",
+    "computerAssessment": false,
+    "appEventId": 71,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 72,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 72,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 72,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 72,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 72,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "घ",
+    "computerAssessment": false,
+    "appEventId": 72,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 73,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 73,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 73,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 73,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 73,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 73,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 74,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 74,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 74,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 74,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 74,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 74,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 75,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 75,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 75,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 75,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 75,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 75,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 78,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 78,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 78,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 78,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 78,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "घर",
+    "computerAssessment": false,
+    "appEventId": 78,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 79,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 79,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 79,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 79,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 79,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 79,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 80,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 80,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 80,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 80,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 80,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 80,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 81,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 81,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 81,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 81,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 81,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 81,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 82,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 82,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 82,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 82,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 82,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 82,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 83,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 83,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 83,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 83,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 83,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बट",
+    "computerAssessment": false,
+    "appEventId": 83,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 84,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 84,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 84,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 84,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 84,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 84,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 85,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 85,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 85,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 85,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 85,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 85,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 86,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 86,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 86,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 86,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 86,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 86,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 87,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 87,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 87,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 87,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 87,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 87,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 88,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 88,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 88,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 88,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 88,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "फल",
+    "computerAssessment": false,
+    "appEventId": 88,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 89,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 89,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 89,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 89,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 89,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 89,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 90,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 90,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 90,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 90,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 90,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 90,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 91,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 91,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 91,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 91,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 91,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 91,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 92,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 92,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 92,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 92,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 92,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 92,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 93,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 93,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 93,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 93,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 93,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "गज",
+    "computerAssessment": false,
+    "appEventId": 93,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 94,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 94,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 94,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 94,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 94,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 94,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 95,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 95,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 95,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 95,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 95,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 95,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 96,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 96,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 96,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 96,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 96,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 96,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 97,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 97,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 97,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 97,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 97,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 97,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 98,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 98,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 98,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 98,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 98,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 98,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 99,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 99,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 99,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 99,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 99,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 99,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 100,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 100,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 100,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 100,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 100,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 100,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 101,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 101,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 101,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 101,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 101,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 101,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 102,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 102,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 102,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 102,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 102,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "king",
+    "computerAssessment": false,
+    "appEventId": 102,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 103,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 103,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 103,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 103,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 103,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "र",
+    "computerAssessment": false,
+    "appEventId": 103,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 104,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 104,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 104,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 104,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 104,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "खर",
+    "computerAssessment": false,
+    "appEventId": 104,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 105,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 105,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 105,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 105,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 105,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 105,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 106,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 106,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 106,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 106,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 106,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 106,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 107,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 107,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 107,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 107,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 107,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 107,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 108,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 108,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 108,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 108,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 108,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 108,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 109,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 109,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 109,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 109,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 109,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "चतर",
+    "computerAssessment": false,
+    "appEventId": 109,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 110,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 110,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 110,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 110,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 110,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 110,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 111,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 111,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 111,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 111,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 111,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 111,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 112,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 112,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 112,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 112,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 112,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 112,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 113,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 113,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 113,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 113,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 113,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 113,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 114,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 114,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 114,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 114,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 114,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 114,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "watermelon",
+    "computerAssessment": false,
+    "appEventId": 115,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "watermelon",
+    "computerAssessment": false,
+    "appEventId": 115,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "watermelon",
+    "computerAssessment": false,
+    "appEventId": 115,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "watermelon",
+    "computerAssessment": false,
+    "appEventId": 115,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "watermelon",
+    "computerAssessment": false,
+    "appEventId": 115,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "watermelon",
+    "computerAssessment": false,
+    "appEventId": 115,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 116,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 116,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 116,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 116,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 116,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "त",
+    "computerAssessment": false,
+    "appEventId": 116,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 117,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 117,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 117,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 117,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 117,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बत",
+    "computerAssessment": false,
+    "appEventId": 117,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 118,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 118,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 118,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 118,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 118,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 118,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 119,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 119,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 119,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 119,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 119,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 119,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 120,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 120,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 120,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 120,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 120,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 120,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 121,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 121,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 121,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 121,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 121,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 121,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 122,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 122,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 122,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 122,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 122,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "नल",
+    "computerAssessment": false,
+    "appEventId": 122,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 123,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 123,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 123,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 123,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 123,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 123,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 124,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 124,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 124,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 124,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 124,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 124,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 125,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 125,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 125,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 125,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 125,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 125,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 126,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 126,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 126,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 126,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 126,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 126,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "kite",
+    "computerAssessment": false,
+    "appEventId": 127,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "kite",
+    "computerAssessment": false,
+    "appEventId": 127,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "kite",
+    "computerAssessment": false,
+    "appEventId": 127,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "kite",
+    "computerAssessment": false,
+    "appEventId": 127,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "kite",
+    "computerAssessment": false,
+    "appEventId": 127,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "kite",
+    "computerAssessment": false,
+    "appEventId": 127,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 128,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 128,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 128,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 128,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 128,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "प",
+    "computerAssessment": false,
+    "appEventId": 128,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 129,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 129,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 129,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 129,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 129,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 129,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 130,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 130,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 130,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 130,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 130,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कप",
+    "computerAssessment": false,
+    "appEventId": 130,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 131,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 131,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 131,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 131,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 131,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 131,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 132,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 132,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 132,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 132,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 132,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 132,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 133,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 133,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 133,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 133,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 133,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 133,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 134,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 134,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 134,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 134,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 134,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 134,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 135,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 135,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 135,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 135,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 135,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "मकन",
+    "computerAssessment": false,
+    "appEventId": 135,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 136,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 136,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 136,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 136,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 136,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 136,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 137,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 137,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 137,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 137,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 137,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 137,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 138,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 138,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 138,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 138,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 138,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 138,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 139,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 139,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 139,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 139,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 139,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 139,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 140,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 140,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 140,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 140,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 140,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कब",
+    "computerAssessment": false,
+    "appEventId": 140,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 141,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 141,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 141,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 141,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 141,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 141,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 142,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 142,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 142,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 142,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 142,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 142,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 143,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 143,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 143,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 143,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 143,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 143,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 144,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 144,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 144,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 144,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 144,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 144,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 145,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 145,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 145,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 145,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 145,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 145,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 146,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 146,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 146,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 146,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 146,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 146,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 147,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 147,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 147,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 147,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 147,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 147,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 148,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 148,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 148,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 148,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 148,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 148,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 149,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 149,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 149,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 149,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 149,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 149,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 150,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 150,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 150,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 150,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 150,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 150,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 151,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 151,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 151,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 151,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 151,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 151,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 152,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 152,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 152,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 152,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 152,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 152,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 153,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 153,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 153,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 153,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 153,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "thermos",
+    "computerAssessment": false,
+    "appEventId": 153,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 154,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 154,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 154,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 154,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 154,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "थ",
+    "computerAssessment": false,
+    "appEventId": 154,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 155,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 155,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 155,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 155,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 155,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "रथ",
+    "computerAssessment": false,
+    "appEventId": 155,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 156,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 156,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 156,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 156,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 156,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 156,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 157,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 157,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 157,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 157,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 157,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 157,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 158,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 158,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 158,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 158,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 158,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 158,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 159,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 159,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 159,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 159,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 159,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 159,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 160,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 160,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 160,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 160,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 160,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "पग",
+    "computerAssessment": false,
+    "appEventId": 160,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 161,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 161,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 161,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 161,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 161,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 161,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 162,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 162,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 162,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 162,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 162,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 162,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 163,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 163,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 163,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 163,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 163,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 163,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 164,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 164,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 164,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 164,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 164,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 164,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 165,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 165,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 165,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 165,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 165,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "बम",
+    "computerAssessment": false,
+    "appEventId": 165,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 166,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 166,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 166,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 166,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 166,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 166,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 167,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 167,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 167,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कल",
+    "computerAssessment": true,
+    "appEventId": 167,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 167,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 167,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 168,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 168,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 168,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कल",
+    "computerAssessment": true,
+    "appEventId": 168,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 168,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 168,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 169,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 169,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 169,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कल",
+    "computerAssessment": true,
+    "appEventId": 169,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 169,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 169,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 170,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 170,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 170,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "कल",
+    "computerAssessment": true,
+    "appEventId": 170,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 170,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "कल",
+    "computerAssessment": false,
+    "appEventId": 170,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 171,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 171,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 171,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 171,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 171,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 171,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 172,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 172,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 172,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 172,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 172,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 172,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 173,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 173,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 173,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 173,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 173,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 173,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 174,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 174,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 174,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 174,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 174,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 174,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 175,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 175,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 175,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 175,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 175,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "गम",
+    "computerAssessment": false,
+    "appEventId": 175,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 176,
+    "state": "complete"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 176,
+    "state": "complete"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 176,
+    "state": "complete"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 176,
+    "state": "complete"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 176,
+    "state": "complete"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "Error: undetectible state",
+    "computerAssessment": false,
+    "appEventId": 176,
+    "state": "complete"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 177,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 177,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 177,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 177,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 177,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 177,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 178,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 178,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 178,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 178,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 178,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 178,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 179,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 179,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 179,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 179,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 179,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 179,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 180,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 180,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 180,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 180,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 180,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 180,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 181,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 181,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 181,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 181,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 181,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 181,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 182,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 182,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 182,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 182,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 182,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 182,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 183,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 183,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 183,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 183,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 183,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 183,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 184,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 184,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 184,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 184,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 184,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 184,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 185,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 185,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 185,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 185,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 185,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 185,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 186,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 186,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 186,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 186,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 186,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 186,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 187,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 187,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 187,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 187,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 187,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 187,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 188,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 188,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 188,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 188,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 188,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "rabbit",
+    "computerAssessment": false,
+    "appEventId": 188,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 189,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 189,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 189,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 189,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 189,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 189,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 190,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 190,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 190,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 190,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 190,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 190,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 191,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 191,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 191,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 191,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 191,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 191,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 192,
+    "state": "word"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 192,
+    "state": "word"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 192,
+    "state": "word"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 192,
+    "state": "word"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 192,
+    "state": "word"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "दख",
+    "computerAssessment": false,
+    "appEventId": 192,
+    "state": "word"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 193,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 193,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 193,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 193,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 193,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 193,
+    "state": "letter"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 194,
+    "state": "image"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 194,
+    "state": "image"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 194,
+    "state": "image"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 194,
+    "state": "image"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 194,
+    "state": "image"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "door",
+    "computerAssessment": false,
+    "appEventId": 194,
+    "state": "image"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 195,
+    "state": "letterImage"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 195,
+    "state": "letterImage"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 195,
+    "state": "letterImage"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 195,
+    "state": "letterImage"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 195,
+    "state": "letterImage"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "द",
+    "computerAssessment": false,
+    "appEventId": 195,
+    "state": "letterImage"
+  },
+  {
+    "service": "GPT",
+    "serviceAnswer": "क।",
+    "responseTime": 1.824,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 196,
+    "state": "letter"
+  },
+  {
+    "service": "Speechmatics",
+    "serviceAnswer": "",
+    "responseTime": 1.95,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 196,
+    "state": "letter"
+  },
+  {
+    "service": "Google",
+    "serviceAnswer": "",
+    "responseTime": 0.341,
+    "correctAnswer": "ख",
+    "computerAssessment": false,
+    "appEventId": 196,
+    "state": "letter"
+  },
+  {
+    "service": "Deepgram",
+    "serviceAnswer": "खा",
+    "responseTime": 1.057,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 196,
+    "state": "letter"
+  },
+  {
+    "service": "Sarvam",
+    "serviceAnswer": "ख।",
+    "responseTime": 1.466,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 196,
+    "state": "letter"
+  },
+  {
+    "service": "Reverie",
+    "serviceAnswer": "ख",
+    "responseTime": 1.783,
+    "correctAnswer": "ख",
+    "computerAssessment": true,
+    "appEventId": 196,
+    "state": "letter"
+  }
+]
