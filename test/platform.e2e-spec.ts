@@ -25,6 +25,7 @@ import { ReverieService } from 'src/integrations/reverie/reverie.service';
 import { ENGLISH_PHONEMES } from 'src/apps/alfa-app/phonemes/data/english-phonemes';
 import { HINDI_PHONEMES } from 'src/apps/alfa-app/phonemes/data/hindi-phonemes';
 import * as dotenv from 'dotenv';
+import { AzureSttService } from 'src/integrations/azure/azure.service';
 
 // Load env for tests, if needed by any modules
 dotenv.config();
@@ -94,6 +95,12 @@ describe('PlatformController (e2e)', () => {
         transcribeAudio: jest
           .fn()
           .mockResolvedValue('reverie-mock-transcription'),
+      })
+      .overrideProvider(AzureSttService)
+      .useValue({
+        transcribeAudio: jest
+          .fn()
+          .mockResolvedValue('azure-mock-transcription'),
       })
       .compile();
 
