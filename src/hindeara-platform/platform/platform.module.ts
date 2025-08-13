@@ -18,6 +18,7 @@ import { GoogleModule } from 'src/integrations/google/google.module';
 import { DeepgramModule } from 'src/integrations/deepgram/deepgram.module';
 import { SarvamModule } from 'src/integrations/sarvam/sarvam.module';
 import { ReverieModule } from 'src/integrations/reverie/reverie.module';
+import { AzureModule } from 'src/integrations/azure/azure.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ReverieModule } from 'src/integrations/reverie/reverie.module';
     DeepgramModule,
     SarvamModule,
     ReverieModule,
+    AzureModule,
     CommonModule,
     StateModule,
   ],

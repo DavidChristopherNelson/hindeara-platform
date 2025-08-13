@@ -26,6 +26,7 @@ import { GoogleService } from 'src/integrations/google/google.service';
 import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
 import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
 import { ReverieService } from 'src/integrations/reverie/reverie.service';
+import { AzureSttService } from 'src/integrations/azure/azure.service';
 
 interface extractServiceData {
   service: string;
@@ -42,9 +43,9 @@ const CONSONANT_SET = new Set(
   'कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहabcdefghijklmnopqrstuvwxyz'.split(''),
 );
 
-const VOWEL_MATRA_SET = new Set(
-  'ा ि ी ु ू ृ ॄ े ै ो ौ ॢ ॣ'.replace(/\s+/g, '').split(''),
-);
+// const VOWEL_MATRA_SET = new Set(
+//   'ा ि ी ु ू ृ ॄ े ै ो ौ ॢ ॣ'.replace(/\s+/g, '').split(''),
+// );
 
 const LONG_A = 'ा';
 
@@ -71,6 +72,17 @@ const sameFamily = (a: string, b: string) =>
   CHARACTER_TO_FAMILY.get(a) === CHARACTER_TO_FAMILY.get(b);
 
 type MarkArgs = { correctAnswer: string; studentAnswer: string };
+type ServiceTranscription = {
+  service: string;
+  transcript: string;
+  latency: number;
+};
+type UiData = {
+  state: 'word' | 'letter' | 'image' | 'letterImage';
+  word?: string;
+  letter?: string;
+  picture?: string;
+};
 
 /* ───────── utility class ───────── */
 class EvaluateAnswer {
@@ -184,6 +196,7 @@ export class PlatformService {
     private readonly deepgram: DeepgramService,
     private readonly sarvam: SarvamService,
     private readonly reverie: ReverieService,
+    private readonly azure: AzureSttService,
   ) {}
 
   @LogMethod()
@@ -261,6 +274,7 @@ export class PlatformService {
     const deepgramStartTime = Date.now();
     const sarvamStartTime = Date.now();
     const reverieStartTime = Date.now();
+    const azureStartTime = Date.now();
 
     const [
       gptRes,
@@ -269,6 +283,7 @@ export class PlatformService {
       deepgramRes,
       sarvamRes,
       reverieRes,
+      azureRes,
     ] = await Promise.allSettled([
       this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
         const gptEndTime = Date.now();
@@ -300,6 +315,11 @@ export class PlatformService {
         const reverieDuration = (reverieEndTime - reverieStartTime) / 1000; // seconds
         return { result, duration: reverieDuration };
       }),
+      this.azure.transcribeAudio(audioBuffer, locale).then((result) => {
+        const azureEndTime = Date.now();
+        const azureDuration = (azureEndTime - azureStartTime) / 1000; // seconds
+        return { result, duration: azureDuration };
+      }),
     ]);
 
     const transcriptions: Array<{
@@ -327,6 +347,7 @@ export class PlatformService {
     pushIfFulfilled(deepgramRes, 'Deepgram');
     pushIfFulfilled(sarvamRes, 'Sarvam');
     pushIfFulfilled(reverieRes, 'Reverie');
+    pushIfFulfilled(azureRes, 'Azure');
 
     const transcription = JSON.stringify(transcriptions);
 
