@@ -34,7 +34,7 @@ type LessonContext = Readonly<{
 
 @Injectable()
 export class AlfaAppInterfaceService {
-  private readonly appId = 2;
+  private readonly appId = 1;
 
   constructor(
     private readonly appEventsService: AppEventsService,
