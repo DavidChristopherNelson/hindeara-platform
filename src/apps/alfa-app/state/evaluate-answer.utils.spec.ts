@@ -135,6 +135,19 @@ describe('markLetter', () => {
   test('false mismatch (क vs ग) → false', () => {
     expect(markLetter({ correctAnswer: 'क', studentAnswer: 'ग' })).toBe(false);
   });
+
+  /* added: conjunct cluster cases */
+  test('conjunct: exact cluster match (क्त) → true', () => {
+    expect(markLetter({ correctAnswer: 'क्त', studentAnswer: 'क्त' })).toBe(
+      true,
+    );
+  });
+
+  test('conjunct: extra ā on cluster (क्त → क्ता) → false', () => {
+    expect(markLetter({ correctAnswer: 'क्त', studentAnswer: 'क्ता' })).toBe(
+      false,
+    );
+  });
 });
 
 /* ------------------------------------------------------------------ */
@@ -220,6 +233,16 @@ describe('detectIncorrectMiddleMatra', () => {
       detectIncorrectMiddleMatra({
         correctAnswer: 'तरबूज', // already has ू on 3rd consonant
         studentAnswer: 'तरबूज',
+      }),
+    ).toBe(false);
+  });
+
+  /* added: matra at wrong location should not count */
+  test('middle-mātrā: matra between 1st & 2nd consonant (कालकल) → false', () => {
+    expect(
+      detectIncorrectMiddleMatra({
+        correctAnswer: 'कलकल',
+        studentAnswer: 'कालकल',
       }),
     ).toBe(false);
   });

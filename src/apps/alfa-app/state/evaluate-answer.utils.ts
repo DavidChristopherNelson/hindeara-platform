@@ -31,8 +31,11 @@ const CHARACTER_TO_FAMILY = new Map<string, number>();
 FAMILIES.forEach((fam, i) =>
   fam.forEach((ch) => CHARACTER_TO_FAMILY.set(ch, i)),
 );
-const sameFamily = (a: string, b: string) =>
-  CHARACTER_TO_FAMILY.get(a) === CHARACTER_TO_FAMILY.get(b);
+const sameFamily = (a: string, b: string) => {
+  const famA = CHARACTER_TO_FAMILY.get(a);
+  const famB = CHARACTER_TO_FAMILY.get(b);
+  return famA !== undefined && famB !== undefined && famA === famB;
+};
 
 type MarkArgs = { correctAnswer: string; studentAnswer: string };
 
@@ -101,21 +104,14 @@ class EvaluateAnswer {
     const cleanedCorrectAnswer = this.clean(correctAnswer);
     const words = studentAnswer.trim().split(/\s+/);
     const cCount = this.consonantCount(cleanedCorrectAnswer);
-    console.log('cleanedCorrectAnswer: ', cleanedCorrectAnswer);
-    console.log('words: ', words);
-    console.log('cCount: ', cCount);
 
     return words.some((w) => {
       const cleaned = this.clean(w);
-      console.log('cleaned: ', cleaned);
       if (cCount === 1) {
-        console.log('inside cCount === 1 branch');
         return this.markPhoneme(cleanedCorrectAnswer, cleaned);
       } else if (cCount === 2) {
-        console.log('inside cCount === 2 branch');
         return this.markConjunct(cleanedCorrectAnswer, cleaned);
       } else {
-        console.log('inside else branch');
         return false;
       }
     });
