@@ -1,6 +1,6 @@
 // src/hindeara-platform/users/dto/create-user.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { IsPhoneNumber } from 'class-validator';
 
 export class CreateUserDto {
@@ -14,4 +14,9 @@ export class CreateUserDto {
     message: 'Please enter a valid Indian E.164 phone number',
   })
   phoneNumber!: string;
+
+  @ApiProperty({ required: false, description: "User's display name" })
+  @IsString()
+  @IsOptional()
+  name?: string;
 }

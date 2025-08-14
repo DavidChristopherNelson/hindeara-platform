@@ -11,6 +11,9 @@ export class User {
   @Column({ unique: true, nullable: false })
   phoneNumber: string;
 
+  @Column({ nullable: true })
+  name?: string;
+
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 

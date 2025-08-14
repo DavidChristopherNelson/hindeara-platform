@@ -19,6 +19,10 @@ export class UserDto {
   @Expose()
   phoneNumber!: string;
 
+  @ApiProperty({ required: false })
+  @Expose()
+  name?: string;
+
   @ApiProperty()
   @Expose()
   createdAt!: Date;
