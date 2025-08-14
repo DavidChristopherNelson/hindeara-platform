@@ -6,12 +6,14 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { UserPhonemeScoreService } from 'src/apps/alfa-app/score/score.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly scores: UserPhonemeScoreService,
   ) {}
 
   @LogMethod()
@@ -21,7 +23,9 @@ export class UsersService {
     });
     if (existing) return existing;
     const user = this.userRepository.create(createUserDto);
-    return this.userRepository.save(user);
+    const saved = await this.userRepository.save(user);
+    await this.scores.ensureUserCoverage(saved.id);
+    return saved;
   }
 
   @LogMethod()
