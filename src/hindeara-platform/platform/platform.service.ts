@@ -3,14 +3,8 @@
 // src/hindeara-platform/platform/platform.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/hindeara-platform/users/users.service';
-import {
-  UserEventsService,
-  UserEventWithIds,
-} from 'src/hindeara-platform/user-events/user-events.service';
-import {
-  AppEventsService,
-  AppEventWithIds,
-} from 'src/hindeara-platform/app-events/app-events.service';
+import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
+import { AppEventsService } from 'src/hindeara-platform/app-events/app-events.service';
 import { AppEvent } from 'src/hindeara-platform/app-events/entities/app-event.entity';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import { AppsService } from '../apps/apps.service';
@@ -27,159 +21,6 @@ import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
 import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
 import { ReverieService } from 'src/integrations/reverie/reverie.service';
 import { AzureSttService } from 'src/integrations/azure/azure.service';
-
-interface extractServiceData {
-  service: string;
-  serviceAnswer: string;
-  responseTime: number;
-  correctAnswer: string;
-  computerAssessment: boolean;
-  appEventId: number;
-  state: string;
-}
-
-/* ───────── constants ───────── */
-const CONSONANT_SET = new Set(
-  'कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहabcdefghijklmnopqrstuvwxyz'.split(''),
-);
-
-// const VOWEL_MATRA_SET = new Set(
-//   'ा ि ी ु ू ृ ॄ े ै ो ौ ॢ ॣ'.replace(/\s+/g, '').split(''),
-// );
-
-const LONG_A = 'ा';
-
-const FAMILIES: string[][] = [
-  ['क', 'ख', 'क़', 'ख़'],
-  ['ग', 'घ', 'ग़'],
-  ['च', 'छ'],
-  ['ज', 'झ', 'ज़'],
-  ['ट', 'ठ', 'त', 'थ'],
-  ['ड', 'ढ', 'द', 'ध'],
-  ['प', 'फ', 'फ़'],
-  ['ब', 'भ'],
-  ['श', 'ष', 'स'],
-  ['र', 'ड़', 'ढ़'],
-  ['य', 'ए', 'ऐ'],
-  ['ओ', 'औ'],
-];
-
-const CHARACTER_TO_FAMILY = new Map<string, number>();
-FAMILIES.forEach((fam, i) =>
-  fam.forEach((ch) => CHARACTER_TO_FAMILY.set(ch, i)),
-);
-const sameFamily = (a: string, b: string) =>
-  CHARACTER_TO_FAMILY.get(a) === CHARACTER_TO_FAMILY.get(b);
-
-type MarkArgs = { correctAnswer: string; studentAnswer: string };
-type ServiceTranscription = {
-  service: string;
-  transcript: string;
-  latency: number;
-};
-type UiData = {
-  state: 'word' | 'letter' | 'image' | 'letterImage';
-  word?: string;
-  letter?: string;
-  picture?: string;
-};
-
-/* ───────── utility class ───────── */
-class EvaluateAnswer {
-  /* helpers */
-  private static isConsonant = (ch: string) => CONSONANT_SET.has(ch);
-
-  private static consonantCount(word: string): number {
-    let c = 0;
-    for (const ch of [...word.normalize('NFC')]) {
-      if (this.isConsonant(ch)) c++;
-    }
-    return c;
-  }
-
-  private static clean(str: string): string {
-    return str
-      .normalize('NFC')
-      .trim()
-      .replace(/[^\p{L}\p{M}]/gu, '')
-      .toLocaleLowerCase();
-  }
-
-  /* public APIs --------------------------------------------------- */
-
-  @LogMethod()
-  static markWord({ correctAnswer, studentAnswer }: MarkArgs): boolean {
-    const cleanedCorrectAnswer = this.clean(correctAnswer);
-    const splitStudentAnswer = studentAnswer.split(/\s+/);
-
-    const isEquivalent = (a: string, b: string) => a === b || sameFamily(a, b);
-
-    return splitStudentAnswer.some((w) => {
-      const cleanedW = this.clean(w);
-      if (cleanedW === cleanedCorrectAnswer) return true;
-
-      // Schwa deletion: ignore trailing long ā (ा) in correctAnswer
-      if (
-        cleanedCorrectAnswer.endsWith(LONG_A) &&
-        cleanedW === cleanedCorrectAnswer.slice(0, -1)
-      ) {
-        return true;
-      }
-
-      // Match words that have characters in the same family in the same position.
-      if (cleanedW.length == cleanedCorrectAnswer.length) {
-        for (let i = 0; i < cleanedW.length; i++) {
-          if (!isEquivalent(cleanedW[i], cleanedCorrectAnswer[i])) return false;
-        }
-        return true;
-      }
-
-      return false;
-    });
-  }
-
-  /* alias */
-  @LogMethod()
-  static markImage({ correctAnswer, studentAnswer }: MarkArgs): boolean {
-    return this.markWord({ correctAnswer, studentAnswer });
-  }
-
-  @LogMethod()
-  static markLetter({ correctAnswer, studentAnswer }: MarkArgs): boolean {
-    const cleanedCorrectAnswer = this.clean(correctAnswer);
-    const words = studentAnswer.trim().split(/\s+/);
-    const cCount = this.consonantCount(cleanedCorrectAnswer);
-
-    return words.some((w) => {
-      const cleaned = this.clean(w);
-      if (cCount === 1) {
-        return this.markPhoneme(cleanedCorrectAnswer, cleaned);
-      } else if (cCount === 2) {
-        return this.markConjunct(cleanedCorrectAnswer, cleaned);
-      } else {
-        return false;
-      }
-    });
-  }
-
-  @LogMethod()
-  private static markPhoneme(correctAnswer: string, word: string): boolean {
-    if (!word || !correctAnswer) return false;
-    if (word === correctAnswer) return true;
-
-    if (sameFamily(word[0], correctAnswer[0])) {
-      if (word.slice(1) === correctAnswer.slice(1)) return true;
-      if (word.slice(1) === LONG_A && correctAnswer.slice(1) === '')
-        return true;
-    }
-    return false;
-  }
-
-  @LogMethod()
-  private static markConjunct(correctAnswer: string, word: string): boolean {
-    return word === correctAnswer;
-  }
-}
 
 @Injectable()
 export class PlatformService {
@@ -267,203 +108,30 @@ export class PlatformService {
     const audioBuffer = Buffer.from(recordingBase64, 'base64');
     if (audioBuffer.length === 0) return [user, ''];
 
-    // Measure execution time for all transcription services
-    const gptStartTime = Date.now();
-    const smStartTime = Date.now();
-    const googleStartTime = Date.now();
-    const deepgramStartTime = Date.now();
-    const sarvamStartTime = Date.now();
-    const reverieStartTime = Date.now();
-    const azureStartTime = Date.now();
-
-    const [
-      gptRes,
-      smRes,
-      googleRes,
-      deepgramRes,
-      sarvamRes,
-      reverieRes,
-      azureRes,
-    ] = await Promise.allSettled([
-      this.chatgpt.transcribeAudio(audioBuffer, locale).then((result) => {
-        const gptEndTime = Date.now();
-        const gptDuration = (gptEndTime - gptStartTime) / 1000; // seconds
-        return { result, duration: gptDuration };
-      }),
-      this.speechmatics.transcribeAudio(audioBuffer, locale).then((result) => {
-        const smEndTime = Date.now();
-        const smDuration = (smEndTime - smStartTime) / 1000; // seconds
-        return { result, duration: smDuration };
-      }),
-      this.google.transcribeAudio(audioBuffer, locale).then((result) => {
-        const googleEndTime = Date.now();
-        const googleDuration = (googleEndTime - googleStartTime) / 1000; // seconds
-        return { result, duration: googleDuration };
-      }),
-      this.deepgram.transcribeAudio(audioBuffer, locale).then((result) => {
-        const deepgramEndTime = Date.now();
-        const deepgramDuration = (deepgramEndTime - deepgramStartTime) / 1000; // seconds
-        return { result, duration: deepgramDuration };
-      }),
-      this.sarvam.transcribeAudio(audioBuffer, locale).then((result) => {
-        const sarvamEndTime = Date.now();
-        const sarvamDuration = (sarvamEndTime - sarvamStartTime) / 1000; // seconds
-        return { result, duration: sarvamDuration };
-      }),
-      this.reverie.transcribeAudio(audioBuffer, locale).then((result) => {
-        const reverieEndTime = Date.now();
-        const reverieDuration = (reverieEndTime - reverieStartTime) / 1000; // seconds
-        return { result, duration: reverieDuration };
-      }),
-      this.azure.transcribeAudio(audioBuffer, locale).then((result) => {
-        const azureEndTime = Date.now();
-        const azureDuration = (azureEndTime - azureStartTime) / 1000; // seconds
-        return { result, duration: azureDuration };
-      }),
-    ]);
-
-    const transcriptions: Array<{
-      service: string;
-      latency: number;
-      transcript: string;
-    }> = [];
-
-    const pushIfFulfilled = (
-      res: PromiseSettledResult<{ result: string; duration: number }>,
-      service: string,
-    ) => {
-      if (res.status === 'fulfilled') {
-        transcriptions.push({
-          service,
-          transcript: res.value.result,
-          latency: Number(res.value.duration.toFixed(3)),
-        });
-      }
-    };
-
-    pushIfFulfilled(gptRes, 'GPT');
-    pushIfFulfilled(smRes, 'Speechmatics');
-    pushIfFulfilled(googleRes, 'Google');
-    pushIfFulfilled(deepgramRes, 'Deepgram');
-    pushIfFulfilled(sarvamRes, 'Sarvam');
-    pushIfFulfilled(reverieRes, 'Reverie');
-    pushIfFulfilled(azureRes, 'Azure');
-
-    const transcription = JSON.stringify(transcriptions);
+    const transcription = await this.runSTTEngines(audioBuffer, locale);
 
     // Return data
     return [user, transcription];
   }
 
-  // This analysis code is not written to be maintanable
-  // It is a quick and dirty solution to get the data out of the system.
   @LogMethod()
-  async analyzeData(): Promise<extractServiceData[]> {
-    const userId = 5;
-    const appEvents: AppEventWithIds[] = await this.appEventsService.findAll({
-      userId,
-      locale: 'hi',
-    });
-    const extractedData: extractServiceData[] = [];
-    let counter = 0;
-    for (const appEvent of appEvents.slice(1).reverse()) {
-      counter = counter + 1;
-      const userEvents = await this.userEventsService.findAll({
-        userId,
-        since: appEvent.event_createdAt,
-      });
-      const userEvent = userEvents[userEvents.length - 1];
-      extractedData.push(...this.analyzeEventPairs(appEvent, userEvent));
+  private async runSTTEngines(audio: Buffer, locale: string): Promise<string> {
+    const settled = await Promise.allSettled([
+      this.chatgpt.transcribeAudio(audio, locale),
+      this.speechmatics.transcribeAudio(audio, locale),
+      this.google.transcribeAudio(audio, locale),
+      this.deepgram.transcribeAudio(audio, locale),
+      this.sarvam.transcribeAudio(audio, locale),
+      this.reverie.transcribeAudio(audio, locale),
+      this.azure.transcribeAudio(audio, locale),
+    ]);
+
+    const transcripts: string[] = [];
+    for (const r of settled) {
+      if (r.status === 'fulfilled' && r.value != null) {
+        transcripts.push(String(r.value));
+      }
     }
-    return extractedData;
-  }
-
-  @LogMethod()
-  private analyzeEventPairs(
-    appEvent: AppEventWithIds,
-    userEvent: UserEventWithIds,
-  ): extractServiceData[] {
-    // ── NEW: guard against missing/empty/non‑JSON transcription ──
-    const raw = userEvent?.event_transcription;
-    if (!raw || typeof raw !== 'string' || raw.trim() === '') {
-      // nothing to analyze for this userEvent
-      return [];
-    }
-
-    const extractedServiceData: extractServiceData[] = [];
-    const serviceEvents = JSON.parse(userEvent.event_transcription);
-    for (const serviceEvent of serviceEvents) {
-      extractedServiceData.push(
-        this.analyzeServiceEvent(appEvent, serviceEvent),
-      );
-    }
-    return extractedServiceData;
-  }
-
-  @LogMethod()
-  private analyzeServiceEvent(
-    appEvent: AppEventWithIds,
-    serviceEvent: string,
-  ): extractServiceData[] {
-    const serviceAnswer = serviceEvent.transcript;
-    const [correctAnswer, computerAssessment] = this.findAndMarkCorrectAnswer(
-      serviceAnswer,
-      appEvent,
-    );
-    const state = JSON.parse(appEvent.event_uiData).state;
-    return {
-      service: serviceEvent.service,
-      serviceAnswer: serviceEvent.transcript,
-      responseTime: serviceEvent.latency,
-      correctAnswer,
-      computerAssessment,
-      appEventId: appEvent.event_id,
-      state,
-    };
-  }
-
-  @LogMethod()
-  private findAndMarkCorrectAnswer(
-    serviceAnswer: string,
-    appEvent: AppEventWithIds,
-  ): [string, boolean] {
-    const ui = JSON.parse(appEvent.event_uiData);
-    let correctAnswer = '';
-    let computerAssessment: boolean;
-    switch (ui.state) {
-      case 'word':
-        correctAnswer = ui.word;
-        computerAssessment = EvaluateAnswer.markWord({
-          correctAnswer,
-          studentAnswer: serviceAnswer,
-        });
-        break;
-      case 'letter':
-        correctAnswer = ui.letter;
-        computerAssessment = EvaluateAnswer.markLetter({
-          correctAnswer,
-          studentAnswer: serviceAnswer,
-        });
-        break;
-      case 'image':
-        correctAnswer = ui.picture.slice(0, -4);
-        computerAssessment = EvaluateAnswer.markImage({
-          correctAnswer,
-          studentAnswer: serviceAnswer,
-        });
-        break;
-      case 'letterImage':
-        correctAnswer = ui.letter;
-        computerAssessment = EvaluateAnswer.markLetter({
-          correctAnswer,
-          studentAnswer: serviceAnswer,
-        });
-        break;
-      default:
-        correctAnswer = 'Error: undetectible state';
-        computerAssessment = false;
-    }
-
-    return [correctAnswer, computerAssessment];
+    return transcripts.join(' ');
   }
 }
