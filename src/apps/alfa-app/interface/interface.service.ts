@@ -8,8 +8,9 @@ import {
   getPrompt,
   getWord,
   getWrongCharacters,
-  getAnswer,
+  getAnswer as getRawAnswer,
   lessonMachine,
+  getAnswerStatus,
 } from '../state/state.machine';
 import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
 import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
@@ -19,6 +20,7 @@ import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { PhonemesService } from '../phonemes/phonemes.service';
 import { UiDataDto } from './dto/ui-data.dto';
 import { UtilsService } from 'src/common/utils.service';
+import { UserPhonemeScoreService } from 'src/apps/alfa-app/score/score.service';
 
 type LessonContext = Readonly<{
   userId: number;
@@ -43,6 +45,7 @@ export class AlfaAppInterfaceService {
     private readonly chatgptService: ChatGPTService,
     private readonly phonemesService: PhonemesService,
     private readonly utilsService: UtilsService,
+    private readonly userPhonemeScoreService: UserPhonemeScoreService,
   ) {}
 
   @LogMethod()
@@ -52,15 +55,7 @@ export class AlfaAppInterfaceService {
 
     // Calculate new state
     if (ctx.isLatestAppEventValid) {
-      let correctAnswer = getAnswer(ctx.lessonActor);
-      if (ctx.lessonActor.getSnapshot().value === 'image') {
-        correctAnswer = await this.phonemesService.getNoun(correctAnswer);
-      }
-      if (!correctAnswer) {
-        throw new Error('Cannot find the correct answer.');
-      }
-      const studentAnswer = ctx.latestUserEvent.transcription ?? '';
-      ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
+      await this.calculateNewState(ctx);
     }
 
     // Generate return data
@@ -108,6 +103,41 @@ export class AlfaAppInterfaceService {
       uiData: JSON.stringify(uiData),
       isComplete: state === 'complete' ? true : false,
     };
+  }
+
+  @LogMethod()
+  private async calculateNewState(ctx: LessonContext): Promise<void> {
+    const correctAnswer = await this.getAnswer(ctx);
+
+    const studentAnswer = ctx.latestUserEvent.transcription ?? '';
+    const previousState = ctx.lessonActor.getSnapshot().value;
+    ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
+    const answerStatus = getAnswerStatus(ctx.lessonActor);
+
+    // Update's phoneme's score
+    if (previousState === 'letter') {
+      // Get phoneme and delegate score update
+      const phoneme = await this.phonemesService.findByLetter(correctAnswer);
+      if (!phoneme) return;
+      const isCorrect = answerStatus === true;
+      await this.userPhonemeScoreService.updateScore(
+        ctx.userId,
+        phoneme.id,
+        isCorrect,
+      );
+    }
+  }
+
+  @LogMethod()
+  private async getAnswer(ctx: LessonContext): Promise<string> {
+    let answer = getRawAnswer(ctx.lessonActor);
+    if (ctx.lessonActor.getSnapshot().value === 'image') {
+      answer = await this.phonemesService.getNoun(answer);
+    }
+    if (!answer) {
+      throw new Error('Cannot find the correct answer.');
+    }
+    return answer;
   }
 
   @LogMethod()

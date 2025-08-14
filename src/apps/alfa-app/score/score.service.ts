@@ -211,4 +211,31 @@ export class UserPhonemeScoreService {
   async removeAllForUser(userId: number): Promise<void> {
     await this.repo.delete({ userId });
   }
+
+  /**
+   * Update a user's score for a phoneme based on answer correctness.
+   * Accepts either IDs or entity objects for user and phoneme.
+   */
+  @LogMethod()
+  async updateScore(
+    user: number | User,
+    phoneme: number | Phoneme,
+    answerStatus: boolean,
+  ): Promise<void> {
+    const userId = typeof user === 'number' ? user : user.id;
+    const phonemeId = typeof phoneme === 'number' ? phoneme : phoneme.id;
+
+    const existingScore = await this.repo.findOne({
+      where: { userId, phonemeId },
+      select: ['id', 'value'],
+    });
+
+    const currentValue = existingScore?.value
+      ? parseFloat(existingScore.value)
+      : 0;
+    const increment = answerStatus ? 1 : -0.5;
+    const newValue = (currentValue + increment).toFixed(3);
+
+    await this.createOrUpdate(userId, phonemeId, newValue);
+  }
 }
