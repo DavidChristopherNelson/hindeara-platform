@@ -21,6 +21,7 @@ import { PhonemesService } from '../phonemes/phonemes.service';
 import { UiDataDto } from './dto/ui-data.dto';
 import { UtilsService } from 'src/common/utils.service';
 import { UserPhonemeScoreService } from 'src/apps/alfa-app/score/score.service';
+import wordDataJson from '../phonemes/data/word-data.json';
 
 type LessonContext = Readonly<{
   userId: number;
@@ -33,6 +34,9 @@ type LessonContext = Readonly<{
   locale: string;
   isLatestAppEventValid: boolean;
 }>;
+
+type WordPhoneme = { id: number };
+type WordEntry = { word: string; phonemes: WordPhoneme[] };
 
 @Injectable()
 export class AlfaAppInterfaceService {
@@ -197,28 +201,41 @@ export class AlfaAppInterfaceService {
 
   @LogMethod()
   private async generateWord(userId: number, locale: string): Promise<string> {
-    const words = await this.miniLessonsService.findAllWordsByUserIdAndLocale(
-      userId,
-      locale,
-    );
-    const word = await this.chatgptService.sendMessage({
-      userPrompt: `
-        Generate a simple, common, three-letter noun for a 5-year-old child to 
-        practice reading. Do not pick a word with any diacritics, matras, 
-        bindus, or ligatures.
-        ${words.length !== 0 ? `It must not be any of these words: ${words.toString()}.` : ''}
-        The response must only contain the chosen word.
-      `,
-      roleContent:
-        'You are a helpful assistant that must strictly follow letter-based logic rules.',
-      model: 'gpt-4o',
-      locale,
-    });
-    return word
-      .toString()
-      .toLowerCase()
-      .trim()
-      .replace(/[^\p{L}\p{N}\s]|_/gu, '')
-      .split(/\s+/)[0];
+    const usedWords =
+      await this.miniLessonsService.findAllWordsByUserIdAndLocale(
+        userId,
+        locale,
+      );
+    const recentUsed = usedWords.slice(-3);
+
+    const scoreRows = await this.userPhonemeScoreService.findAllForUser(userId);
+    const scoreByPhonemeId = new Map<number, number>();
+    for (const row of scoreRows) {
+      const n = row.value === null ? 0 : parseFloat(row.value);
+      scoreByPhonemeId.set(row.phonemeId, Number.isFinite(n) ? n : 0);
+    }
+
+    const wordScores: Array<{ word: string; score: number }> = [];
+    for (const word of this.wordData) {
+      let wordScore = 0;
+      for (const phoneme of word.phonemes) {
+        wordScore += scoreByPhonemeId.get(phoneme.id) ?? 0;
+      }
+      wordScores.push({ word: word.word, score: wordScore });
+    }
+
+    // words ordered from lowest score to highest score.
+    wordScores.sort((a, b) => a.score - b.score);
+    for (const word of wordScores) {
+      if (!recentUsed.includes(word.word)) {
+        console.log('word: ', word.word);
+        console.log('score: ', word.score);
+        return word.word;
+      }
+    }
+    throw new Error('No word found. This should not have happened.');
   }
+
+  private readonly wordData: ReadonlyArray<WordEntry> =
+    wordDataJson as WordEntry[];
 }
