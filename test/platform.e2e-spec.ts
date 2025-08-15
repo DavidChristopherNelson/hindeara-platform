@@ -1,7 +1,7 @@
 // test/platform.e2e-spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, Logger } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { PlatformModule } from '../src/hindeara-platform/platform/platform.module';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';

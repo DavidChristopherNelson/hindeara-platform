@@ -229,7 +229,7 @@ export class AlfaAppInterfaceService {
     wordScores.sort((a, b) => a.score - b.score);
     const targetLen = await this.calculateWordLength(userId, locale);
     for (const word of wordScores) {
-      if (!recentUsed.includes(word.word)) continue;
+      if (recentUsed.includes(word.word)) continue; // skip recently used words
       if (word.word.length !== targetLen) continue;
       return word.word;
     }
