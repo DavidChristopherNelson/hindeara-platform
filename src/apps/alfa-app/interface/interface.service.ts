@@ -22,6 +22,7 @@ import { UiDataDto } from './dto/ui-data.dto';
 import { UtilsService } from 'src/common/utils.service';
 import { UserPhonemeScoreService } from 'src/apps/alfa-app/score/score.service';
 import wordDataJson from '../phonemes/data/word-data.json';
+import { uniq } from 'lodash';
 
 type LessonContext = Readonly<{
   userId: number;
@@ -226,16 +227,60 @@ export class AlfaAppInterfaceService {
 
     // words ordered from lowest score to highest score.
     wordScores.sort((a, b) => a.score - b.score);
+    const targetLen = await this.calculateWordLength(userId, locale);
     for (const word of wordScores) {
-      if (!recentUsed.includes(word.word)) {
-        console.log('word: ', word.word);
-        console.log('score: ', word.score);
-        return word.word;
-      }
+      if (!recentUsed.includes(word.word)) continue;
+      if (word.word.length !== targetLen) continue;
+      return word.word;
     }
     throw new Error('No word found. This should not have happened.');
   }
 
   private readonly wordData: ReadonlyArray<WordEntry> =
     wordDataJson as WordEntry[];
+
+  @LogMethod()
+  private async calculateWordLength(
+    userId: number,
+    locale: string,
+  ): Promise<number> {
+    const recentLessons = await this.miniLessonsService.findMostRecentNByUserId(
+      userId,
+      20,
+      locale,
+    );
+    console.log('recentLessons: ', recentLessons);
+    const mostRecentLessons = recentLessons.slice(-5);
+    console.log('mostRecentLessons: ', mostRecentLessons);
+    const recentLessonUniqueWords = [
+      ...new Set(recentLessons.map((lesson) => lesson.word)),
+    ];
+    console.log('recentLessonUniqueWords: ', recentLessonUniqueWords);
+    const mostRecentLessonUniqueWords = [
+      ...new Set(mostRecentLessons.map((lesson) => lesson.word)),
+    ];
+    console.log('mostRecentLessonUniqueWords: ', mostRecentLessonUniqueWords);
+
+    // Start the student with a word length of 2 if they have done less than 5 lessons
+    if (recentLessons.length < 5) return 2;
+
+    // Increment the word length if the student has covered 3 or more unique words in the last 5 lessons
+    if (mostRecentLessonUniqueWords.length >= 3) {
+      if (
+        mostRecentLessonUniqueWords.every(
+          (w) => w.length === mostRecentLessonUniqueWords[0].length,
+        )
+      ) {
+        return Math.min(mostRecentLessonUniqueWords[0].length + 1, 4);
+      }
+    }
+
+    // Decrement the word length if the student has covered 3 or less unique words in the last 20 lessons
+    if (recentLessonUniqueWords.length <= 3) {
+      return Math.max(recentLessonUniqueWords[0].length - 1, 2);
+    }
+
+    // Else don't change the word length
+    return recentLessonUniqueWords[0].length;
+  }
 }
