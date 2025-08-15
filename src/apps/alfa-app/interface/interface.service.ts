@@ -8,8 +8,9 @@ import {
   getPrompt,
   getWord,
   getWrongCharacters,
-  getAnswer,
+  getAnswer as getRawAnswer,
   lessonMachine,
+  getAnswerStatus,
 } from '../state/state.machine';
 import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
 import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
@@ -19,6 +20,9 @@ import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { PhonemesService } from '../phonemes/phonemes.service';
 import { UiDataDto } from './dto/ui-data.dto';
 import { UtilsService } from 'src/common/utils.service';
+import { UserPhonemeScoreService } from 'src/apps/alfa-app/score/score.service';
+import wordDataJson from '../phonemes/data/word-data.json';
+import { uniq } from 'lodash';
 
 type LessonContext = Readonly<{
   userId: number;
@@ -32,6 +36,9 @@ type LessonContext = Readonly<{
   isLatestAppEventValid: boolean;
 }>;
 
+type WordPhoneme = { id: number };
+type WordEntry = { word: string; phonemes: WordPhoneme[] };
+
 @Injectable()
 export class AlfaAppInterfaceService {
   private readonly appId = 1;
@@ -43,6 +50,7 @@ export class AlfaAppInterfaceService {
     private readonly chatgptService: ChatGPTService,
     private readonly phonemesService: PhonemesService,
     private readonly utilsService: UtilsService,
+    private readonly userPhonemeScoreService: UserPhonemeScoreService,
   ) {}
 
   @LogMethod()
@@ -52,15 +60,7 @@ export class AlfaAppInterfaceService {
 
     // Calculate new state
     if (ctx.isLatestAppEventValid) {
-      let correctAnswer = getAnswer(ctx.lessonActor);
-      if (ctx.lessonActor.getSnapshot().value === 'image') {
-        correctAnswer = await this.phonemesService.getNoun(correctAnswer);
-      }
-      if (!correctAnswer) {
-        throw new Error('Cannot find the correct answer.');
-      }
-      const studentAnswer = ctx.latestUserEvent.transcription ?? '';
-      ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
+      await this.calculateNewState(ctx);
     }
 
     // Generate return data
@@ -108,6 +108,41 @@ export class AlfaAppInterfaceService {
       uiData: JSON.stringify(uiData),
       isComplete: state === 'complete' ? true : false,
     };
+  }
+
+  @LogMethod()
+  private async calculateNewState(ctx: LessonContext): Promise<void> {
+    const correctAnswer = await this.getAnswer(ctx);
+
+    const studentAnswer = ctx.latestUserEvent.transcription ?? '';
+    const previousState = ctx.lessonActor.getSnapshot().value;
+    ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
+    const answerStatus = getAnswerStatus(ctx.lessonActor);
+
+    // Update's phoneme's score
+    if (previousState === 'letter') {
+      // Get phoneme and delegate score update
+      const phoneme = await this.phonemesService.findByLetter(correctAnswer);
+      if (!phoneme) return;
+      const isCorrect = answerStatus === true;
+      await this.userPhonemeScoreService.updateScore(
+        ctx.userId,
+        phoneme.id,
+        isCorrect,
+      );
+    }
+  }
+
+  @LogMethod()
+  private async getAnswer(ctx: LessonContext): Promise<string> {
+    let answer = getRawAnswer(ctx.lessonActor);
+    if (ctx.lessonActor.getSnapshot().value === 'image') {
+      answer = await this.phonemesService.getNoun(answer);
+    }
+    if (!answer) {
+      throw new Error('Cannot find the correct answer.');
+    }
+    return answer;
   }
 
   @LogMethod()
@@ -167,28 +202,85 @@ export class AlfaAppInterfaceService {
 
   @LogMethod()
   private async generateWord(userId: number, locale: string): Promise<string> {
-    const words = await this.miniLessonsService.findAllWordsByUserIdAndLocale(
+    const usedWords =
+      await this.miniLessonsService.findAllWordsByUserIdAndLocale(
+        userId,
+        locale,
+      );
+    const recentUsed = usedWords.slice(-3);
+
+    const scoreRows = await this.userPhonemeScoreService.findAllForUser(userId);
+    const scoreByPhonemeId = new Map<number, number>();
+    for (const row of scoreRows) {
+      const n = row.value === null ? 0 : parseFloat(row.value);
+      scoreByPhonemeId.set(row.phonemeId, Number.isFinite(n) ? n : 0);
+    }
+
+    const wordScores: Array<{ word: string; score: number }> = [];
+    for (const word of this.wordData) {
+      let wordScore = 0;
+      for (const phoneme of word.phonemes) {
+        wordScore += scoreByPhonemeId.get(phoneme.id) ?? 0;
+      }
+      wordScores.push({ word: word.word, score: wordScore });
+    }
+
+    // words ordered from lowest score to highest score.
+    wordScores.sort((a, b) => a.score - b.score);
+    const targetLen = await this.calculateWordLength(userId, locale);
+    for (const word of wordScores) {
+      if (recentUsed.includes(word.word)) continue; // skip recently used words
+      if (word.word.length !== targetLen) continue;
+      return word.word;
+    }
+    throw new Error('No word found. This should not have happened.');
+  }
+
+  private readonly wordData: ReadonlyArray<WordEntry> =
+    wordDataJson as WordEntry[];
+
+  @LogMethod()
+  private async calculateWordLength(
+    userId: number,
+    locale: string,
+  ): Promise<number> {
+    const recentLessons = await this.miniLessonsService.findMostRecentNByUserId(
       userId,
+      20,
       locale,
     );
-    const word = await this.chatgptService.sendMessage({
-      userPrompt: `
-        Generate a simple, common, three-letter noun for a 5-year-old child to 
-        practice reading. Do not pick a word with any diacritics, matras, 
-        bindus, or ligatures.
-        ${words.length !== 0 ? `It must not be any of these words: ${words.toString()}.` : ''}
-        The response must only contain the chosen word.
-      `,
-      roleContent:
-        'You are a helpful assistant that must strictly follow letter-based logic rules.',
-      model: 'gpt-4o',
-      locale,
-    });
-    return word
-      .toString()
-      .toLowerCase()
-      .trim()
-      .replace(/[^\p{L}\p{N}\s]|_/gu, '')
-      .split(/\s+/)[0];
+    console.log('recentLessons: ', recentLessons);
+    const mostRecentLessons = recentLessons.slice(-5);
+    console.log('mostRecentLessons: ', mostRecentLessons);
+    const recentLessonUniqueWords = [
+      ...new Set(recentLessons.map((lesson) => lesson.word)),
+    ];
+    console.log('recentLessonUniqueWords: ', recentLessonUniqueWords);
+    const mostRecentLessonUniqueWords = [
+      ...new Set(mostRecentLessons.map((lesson) => lesson.word)),
+    ];
+    console.log('mostRecentLessonUniqueWords: ', mostRecentLessonUniqueWords);
+
+    // Start the student with a word length of 2 if they have done less than 5 lessons
+    if (recentLessons.length < 5) return 2;
+
+    // Increment the word length if the student has covered 3 or more unique words in the last 5 lessons
+    if (mostRecentLessonUniqueWords.length >= 3) {
+      if (
+        mostRecentLessonUniqueWords.every(
+          (w) => w.length === mostRecentLessonUniqueWords[0].length,
+        )
+      ) {
+        return Math.min(mostRecentLessonUniqueWords[0].length + 1, 4);
+      }
+    }
+
+    // Decrement the word length if the student has covered 3 or less unique words in the last 20 lessons
+    if (recentLessonUniqueWords.length <= 3) {
+      return Math.max(recentLessonUniqueWords[0].length - 1, 2);
+    }
+
+    // Else don't change the word length
+    return recentLessonUniqueWords[0].length;
   }
 }

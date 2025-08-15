@@ -32,6 +32,18 @@ export class MiniLessonsService {
   }
 
   @LogMethod()
+  async findMostRecentNByUserId(
+    userId: number,
+    n: number,
+    locale?: string,
+  ): Promise<MiniLesson[]> {
+    return this.miniLessonRepository.find({
+      where: { userId, locale },
+      take: n,
+    });
+  }
+
+  @LogMethod()
   async remove(id: number): Promise<void> {
     await this.miniLessonRepository.delete(id);
   }

@@ -7,6 +7,7 @@ import { UserEventsModule } from 'src/hindeara-platform/user-events/user-events.
 import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
 import { PhonemesModule } from '../phonemes/phonemes.module';
 import { CommonModule } from 'src/common/common.module';
+import { UserPhonemeScoreModule } from '../score/score.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CommonModule } from 'src/common/common.module';
     ChatGPTModule,
     PhonemesModule,
     CommonModule,
+    UserPhonemeScoreModule,
   ],
   controllers: [InterfaceController],
   providers: [AlfaAppInterfaceService],
