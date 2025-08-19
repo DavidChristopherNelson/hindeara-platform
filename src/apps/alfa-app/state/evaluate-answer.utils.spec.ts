@@ -120,12 +120,34 @@ describe('markLetter', () => {
     expect(markLetter({ correctAnswer: 'क', studentAnswer: 'क' })).toBe(true);
   });
 
+  test('identical single vowel → true', () => {
+    expect(markLetter({ correctAnswer: 'ई', studentAnswer: 'ई' })).toBe(true);
+  });
+
+  test('single a vowel with long ā → true', () => {
+    expect(markLetter({ correctAnswer: 'अ', studentAnswer: 'आ' })).toBe(true);
+  });
+
+  test("a short vowel with it's long form → true", () => {
+    expect(markLetter({ correctAnswer: 'उ', studentAnswer: 'ऊ' })).toBe(true);
+  });
+
+  test("a long vowel with it's short form → true", () => {
+    expect(markLetter({ correctAnswer: 'ऊ', studentAnswer: 'उ' })).toBe(true);
+  });
+
   test('same family consonants → true (क ↔ ख)', () => {
     expect(markLetter({ correctAnswer: 'क', studentAnswer: 'ख' })).toBe(true);
   });
 
   test('student adds long ā mātrā where none in correct → true (क → का)', () => {
     expect(markLetter({ correctAnswer: 'क', studentAnswer: 'का' })).toBe(true);
+  });
+
+  test('student adds a non-long a mātrā where none in correct → false (क → क◌ी)', () => {
+    expect(markLetter({ correctAnswer: 'क', studentAnswer: 'क◌ी' })).toBe(
+      false,
+    );
   });
 
   test('family + long ā together (क → खा) → true', () => {

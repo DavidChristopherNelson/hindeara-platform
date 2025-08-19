@@ -3,7 +3,9 @@ import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 /* ───────── constants ───────── */
 const CONSONANT_SET = new Set(
-  'कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहabcdefghijklmnopqrstuvwxyz'.split(''),
+  'अआइईउऊऋॠऌॡएऐओऔकखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसहabcdefghijklmnopqrstuvwxyz'.split(
+    '',
+  ),
 );
 
 const VOWEL_MATRA_SET = new Set(
@@ -25,6 +27,11 @@ const FAMILIES: string[][] = [
   ['र', 'ड़', 'ढ़'],
   ['य', 'ए', 'ऐ'],
   ['ओ', 'औ'],
+  ['अ', 'आ'],
+  ['इ', 'ई'],
+  ['उ', 'ऊ'],
+  ['ऋ', 'ॠ'],
+  ['ऌ', 'ॡ'],
 ];
 
 const CHARACTER_TO_FAMILY = new Map<string, number>();
