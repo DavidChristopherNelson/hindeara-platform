@@ -124,7 +124,7 @@ export class AlfaAppInterfaceService {
       // Get phoneme and delegate score update
       const phoneme = await this.phonemesService.findByLetter(correctAnswer);
       if (!phoneme) return;
-      const isCorrect = answerStatus === true;
+      const isCorrect = answerStatus === true; // Because answerStatus can be null
       await this.userPhonemeScoreService.updateScore(
         ctx.userId,
         phoneme.id,
