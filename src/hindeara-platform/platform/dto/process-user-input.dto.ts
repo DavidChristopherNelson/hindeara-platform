@@ -1,6 +1,11 @@
 // src/hindeara-platform/platform/dto/process-user-input.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
 
 export class ProcessUserInputDto {
   @ApiProperty()
@@ -14,4 +19,9 @@ export class ProcessUserInputDto {
     message: 'Please enter a valid Indian E.164 phone number',
   })
   phoneNumber: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  textInput?: string;
 }

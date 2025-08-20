@@ -1,8 +1,9 @@
+// src/hindeara-platform/platform/platform.controller.ts
 import { Body, Controller, Post, Headers } from '@nestjs/common';
 import { PlatformService } from './platform.service';
 import { ProcessUserInputDto } from './dto/process-user-input.dto';
 import { ProcessUserInputResponseDto } from './dto/process-user-input-response.dto';
-import { ApiBody, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @ApiTags('platforms')
@@ -11,12 +12,6 @@ export class PlatformController {
   constructor(private readonly platformService: PlatformService) {}
 
   @Post('/processUserInput')
-  @ApiParam({
-    name: 'userId',
-    type: Number,
-    required: true,
-    description: 'User ID',
-  })
   @ApiBody({ type: ProcessUserInputDto })
   @ApiResponse({
     status: 200,
@@ -33,6 +28,7 @@ export class PlatformController {
         dto.phoneNumber,
         dto.recording,
         locale,
+        dto.textInput,
       ),
     );
   }

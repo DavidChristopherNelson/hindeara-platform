@@ -45,11 +45,13 @@ export class PlatformService {
     phoneNumber: string,
     recordingBase64: string,
     locale: string,
+    textInput?: string,
   ): Promise<AppEvent> {
     const [user, transcription] = await this.dataProcessing(
       phoneNumber,
       recordingBase64,
       locale,
+      textInput,
     );
 
     const createUserEventDto: CreateUserEventDto = {
@@ -95,6 +97,7 @@ export class PlatformService {
     phoneNumber: string,
     recordingBase64: string,
     locale: string,
+    textInput?: string,
   ): Promise<[User, string]> {
     // Get the user from the phone number
     const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
@@ -103,6 +106,9 @@ export class PlatformService {
         `No user corresponds with this phone number: ${phoneNumber}.`,
       );
     }
+
+    // If text input is provided, use it as the transcription
+    if (textInput) return [user, textInput];
 
     // Process the recording to get the transcription
     const audioBuffer = Buffer.from(recordingBase64, 'base64');
