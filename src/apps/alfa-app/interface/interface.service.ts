@@ -7,6 +7,7 @@ import { ActorRefFrom, createActor } from 'xstate';
 import {
   getPrompt,
   getWord,
+  getCorrectLetters,
   getWrongCharacters,
   getAnswer as getRawAnswer,
   lessonMachine,
@@ -117,18 +118,30 @@ export class AlfaAppInterfaceService {
     const studentAnswer = ctx.latestUserEvent.transcription ?? '';
     const previousState = ctx.lessonActor.getSnapshot().value;
     ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
-    const answerStatus = getAnswerStatus(ctx.lessonActor);
 
     // Update's phoneme's score
-    if (previousState === 'letter') {
-      // Get phoneme and delegate score update
-      const phoneme = await this.phonemesService.findByLetter(correctAnswer);
-      if (!phoneme) return;
-      const isCorrect = answerStatus === true; // Because answerStatus can be null
+    // Mark correct letters as correct
+    const correctLetters = getCorrectLetters(ctx.lessonActor) ?? [];
+    for (const correctLetter of correctLetters) {
+      const phoneme = await this.phonemesService.findByLetter(correctLetter);
+      if (!phoneme) continue;
+
       await this.userPhonemeScoreService.updateScore(
         ctx.userId,
         phoneme.id,
-        isCorrect,
+        true,
+      );
+    }
+    // Mark incorrect letters as incorrect
+    if (previousState === 'image') {
+      const wrongLetter = getWrongCharacters(ctx.lessonActor)[0];
+      if (!wrongLetter) return;
+      const phoneme = await this.phonemesService.findByLetter(wrongLetter);
+      if (!phoneme) return;
+      await this.userPhonemeScoreService.updateScore(
+        ctx.userId,
+        phoneme.id,
+        false,
       );
     }
   }

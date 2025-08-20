@@ -229,8 +229,8 @@ export const lessonMachine = setup({
           {
             target: 'letter',
             actions: [
-              'identifyCorrectCharacters',
               'identifyWrongCharacters',
+              'identifyCorrectCharacters',
               'incrementWordErrors',
               'previousAnswerIncorrect',
             ],
@@ -404,6 +404,9 @@ export type LessonSnapshot = SnapshotFrom<typeof lessonMachine>;
 type LessonActor = ActorRefFrom<typeof lessonMachine>;
 
 export const getWord = (actor: LessonActor) => actor.getSnapshot().context.word;
+
+export const getCorrectLetters = (actor: LessonActor) =>
+  actor.getSnapshot().context.correctCharacters;
 
 export const getWrongCharacters = (actor: LessonActor) =>
   actor.getSnapshot().context.wrongCharacters;
