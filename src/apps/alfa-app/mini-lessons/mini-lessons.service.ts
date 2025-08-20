@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateMiniLessonDto } from './dto/create-mini-lesson.dto';
 import { MiniLesson } from './entities/mini-lesson.entity';
 import { Repository } from 'typeorm';
@@ -9,6 +9,8 @@ import { PhonemesService } from '../phonemes/phonemes.service';
 
 @Injectable()
 export class MiniLessonsService {
+  private readonly logger = new Logger(MiniLessonsService.name);
+
   constructor(
     @InjectRepository(MiniLesson)
     private miniLessonRepository: Repository<MiniLesson>,
@@ -37,10 +39,36 @@ export class MiniLessonsService {
     n: number,
     locale?: string,
   ): Promise<MiniLesson[]> {
-    return this.miniLessonRepository.find({
-      where: { userId, locale },
-      take: n,
+    const qb = this.miniLessonRepository
+      .createQueryBuilder('ml')
+      .where('ml.userId = :userId', { userId });
+
+    // locale filter only if provided; trim to avoid hidden spaces
+    if (locale != null) {
+      qb.andWhere('trim(ml.locale) = trim(:locale)', { locale });
+    }
+
+    // deterministic “most recent”
+    qb.orderBy('ml.createdAt', 'DESC').addOrderBy('ml.id', 'DESC').take(n);
+
+    // TEMP: emit SQL to logs to verify DB/schema/table in use
+    const [sql, params] = qb.getQueryAndParameters();
+    this.logger?.log?.(
+      `[MiniLessonsService] SQL: ${sql} :: ${JSON.stringify(params)}`,
+    );
+
+    const rows = await qb.getMany();
+
+    // TEMP: quick sanity counts you can keep or remove later
+    const countAll = await this.miniLessonRepository.count();
+    const countForUser = await this.miniLessonRepository.count({
+      where: { userId },
     });
+    this.logger?.log?.(
+      `[MiniLessonsService] totals → all:${countAll} user:${countForUser} returned:${rows.length}`,
+    );
+
+    return rows;
   }
 
   @LogMethod()

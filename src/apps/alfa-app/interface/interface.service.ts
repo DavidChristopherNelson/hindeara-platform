@@ -263,7 +263,7 @@ export class AlfaAppInterfaceService {
       locale,
     );
     console.log('recentLessons: ', recentLessons);
-    const mostRecentLessons = recentLessons.slice(-5);
+    const mostRecentLessons = recentLessons.slice(0, 5);
     console.log('mostRecentLessons: ', mostRecentLessons);
     const recentLessonUniqueWords = [
       ...new Set(recentLessons.map((lesson) => lesson.word)),
