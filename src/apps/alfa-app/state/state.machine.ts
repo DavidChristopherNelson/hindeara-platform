@@ -19,6 +19,7 @@ export const lessonMachine = setup({
   types: {
     context: {} as {
       word: string;
+      correctCharacters: string[];
       wrongCharacters: string[];
       wordErrors: number;
       imageErrors: number;
@@ -38,6 +39,26 @@ export const lessonMachine = setup({
    *          ACTIONS          *
    *───────────────────────────*/
   actions: {
+    identifyCorrectCharacters: assign({
+      correctCharacters: ({ context, self }) => {
+        const state = self.getSnapshot().value;
+
+        if (state === 'letter') {
+          // The letter being tested is the first unresolved wrongCharacter
+          const first = context.wrongCharacters[0];
+          return first ? [first] : [];
+        }
+
+        // Otherwise we're in 'word' (or anything that's not 'letter'):
+        // correct = all characters of the word minus wrongCharacters
+        const wrongSet = new Set(context.wrongCharacters);
+        const wordChars = Array.from(context.word); // preserves order
+        return wordChars.filter((ch) => !wrongSet.has(ch));
+      },
+    }),
+    resetCorrectCharacters: assign({
+      correctCharacters: () => [],
+    }),
     identifyWrongCharacters: assign({
       wrongCharacters: ({ event }) =>
         identifyWrongCharacters({
@@ -140,13 +161,14 @@ export const lessonMachine = setup({
   id: 'lesson',
   initial: 'word',
   context: ({ input }) => ({
-    word: (input as { word?: string } | undefined)?.word ?? 'hat',
+    word: (input as { word?: string } | undefined)?.word ?? 'शहद',
+    correctCharacters: [],
     wrongCharacters: [],
     wordErrors: 0,
     imageErrors: 0,
     letterImageErrors: 0,
     hint: '',
-    answer: (input as { word?: string } | undefined)?.word ?? 'hat',
+    answer: (input as { word?: string } | undefined)?.word ?? 'शहद',
     previousAnswerStatus: null,
   }),
 
@@ -161,23 +183,25 @@ export const lessonMachine = setup({
       },
       entry: assign({
         answer: ({ context }) => context.word,
+        wrongCharacters: () => [],
       }),
       on: {
         ANSWER: [
           {
             guard: { type: 'checkAnswer', params: { fn: markWord } },
             target: 'complete',
-            actions: 'previousAnswerCorrect',
+            actions: ['identifyCorrectCharacters', 'previousAnswerCorrect'],
           },
           {
             guard: 'fourthIncorrect',
             target: 'complete',
-            actions: 'previousAnswerIncorrect',
+            actions: ['identifyCorrectCharacters', 'previousAnswerIncorrect'],
           },
           {
             guard: 'incorrectEndMatra',
             target: 'word',
             actions: [
+              'identifyCorrectCharacters',
               'giveEndMatraHint',
               'incrementWordErrors',
               'previousAnswerIncorrect',
@@ -187,6 +211,7 @@ export const lessonMachine = setup({
             guard: 'incorrectMiddleMatra',
             target: 'word',
             actions: [
+              'identifyCorrectCharacters',
               'giveMiddleMatraHint',
               'incrementWordErrors',
               'previousAnswerIncorrect',
@@ -195,12 +220,17 @@ export const lessonMachine = setup({
           {
             guard: 'detectInsertion',
             target: 'word',
-            actions: ['incrementWordErrors', 'previousAnswerIncorrect'],
+            actions: [
+              'identifyCorrectCharacters',
+              'incrementWordErrors',
+              'previousAnswerIncorrect',
+            ],
           },
           {
             target: 'letter',
             actions: [
               'identifyWrongCharacters',
+              'identifyCorrectCharacters',
               'incrementWordErrors',
               'previousAnswerIncorrect',
             ],
@@ -226,6 +256,7 @@ export const lessonMachine = setup({
             ]),
             target: 'word',
             actions: [
+              'identifyCorrectCharacters',
               'resetLetterImageErrors',
               'previousAnswerCorrect',
               'dropFirstWrongCharacter',
@@ -236,12 +267,16 @@ export const lessonMachine = setup({
             target: 'letter',
             reenter: true,
             actions: [
+              'identifyCorrectCharacters',
               'resetLetterImageErrors',
               'previousAnswerCorrect',
               'dropFirstWrongCharacter',
             ],
           },
-          { target: 'image', actions: 'previousAnswerIncorrect' },
+          {
+            target: 'image',
+            actions: ['resetCorrectCharacters', 'previousAnswerIncorrect'],
+          },
         ],
       },
     },
@@ -259,16 +294,24 @@ export const lessonMachine = setup({
           {
             guard: { type: 'checkAnswer', params: { fn: markImage } },
             target: 'letterImage',
-            actions: 'previousAnswerCorrect',
+            actions: ['resetCorrectCharacters', 'previousAnswerCorrect'],
           },
           {
             guard: 'thirdIncorrect',
             target: 'letterImage',
-            actions: ['resetImageErrors', 'previousAnswerIncorrect'],
+            actions: [
+              'resetCorrectCharacters',
+              'resetImageErrors',
+              'previousAnswerIncorrect',
+            ],
           },
           {
             target: 'image',
-            actions: ['incrementImageErrors', 'previousAnswerIncorrect'],
+            actions: [
+              'resetCorrectCharacters',
+              'incrementImageErrors',
+              'previousAnswerIncorrect',
+            ],
           },
         ],
       },
@@ -292,6 +335,7 @@ export const lessonMachine = setup({
             ]),
             target: 'word',
             actions: [
+              'resetCorrectCharacters',
               'resetLetterImageErrors',
               'previousAnswerCorrect',
               'dropFirstWrongCharacter',
@@ -302,6 +346,7 @@ export const lessonMachine = setup({
             guard: { type: 'checkAnswer', params: { fn: markLetter } },
             target: 'letter',
             actions: [
+              'resetCorrectCharacters',
               'resetLetterImageErrors',
               'previousAnswerCorrect',
               'dropFirstWrongCharacter',
@@ -312,6 +357,7 @@ export const lessonMachine = setup({
             guard: and(['isLastLetter', 'thirdIncorrect']),
             target: 'word',
             actions: [
+              'resetCorrectCharacters',
               'resetLetterImageErrors',
               'previousAnswerIncorrect',
               'dropFirstWrongCharacter',
@@ -322,6 +368,7 @@ export const lessonMachine = setup({
             guard: 'thirdIncorrect',
             target: 'letter',
             actions: [
+              'resetCorrectCharacters',
               'resetLetterImageErrors',
               'previousAnswerIncorrect',
               'dropFirstWrongCharacter',
@@ -329,7 +376,11 @@ export const lessonMachine = setup({
           },
           {
             target: 'letterImage',
-            actions: ['incrementLetterImageErrors', 'previousAnswerIncorrect'],
+            actions: [
+              'resetCorrectCharacters',
+              'incrementLetterImageErrors',
+              'previousAnswerIncorrect',
+            ],
           },
         ],
       },
@@ -353,6 +404,9 @@ export type LessonSnapshot = SnapshotFrom<typeof lessonMachine>;
 type LessonActor = ActorRefFrom<typeof lessonMachine>;
 
 export const getWord = (actor: LessonActor) => actor.getSnapshot().context.word;
+
+export const getCorrectLetters = (actor: LessonActor) =>
+  actor.getSnapshot().context.correctCharacters;
 
 export const getWrongCharacters = (actor: LessonActor) =>
   actor.getSnapshot().context.wrongCharacters;
