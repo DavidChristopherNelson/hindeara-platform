@@ -15,7 +15,6 @@ import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import { CreateUserEventDto } from '../user-events/dto/create-user-event.dto';
 import { UtilsService } from 'src/common/utils.service';
 import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
-import { SpeechmaticsService } from 'src/integrations/speechmatics/speechmatics.service';
 import { GoogleService } from 'src/integrations/google/google.service';
 import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
 import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
@@ -32,7 +31,6 @@ export class PlatformService {
     private readonly alfaAppInterface: AlfaAppInterfaceService,
     private readonly utilsService: UtilsService,
     private readonly chatgpt: ChatGPTService,
-    private readonly speechmatics: SpeechmaticsService,
     private readonly google: GoogleService,
     private readonly deepgram: DeepgramService,
     private readonly sarvam: SarvamService,
@@ -124,7 +122,6 @@ export class PlatformService {
   private async runSTTEngines(audio: Buffer, locale: string): Promise<string> {
     const settled = await Promise.allSettled([
       this.chatgpt.transcribeAudio(audio, locale),
-      this.speechmatics.transcribeAudio(audio, locale),
       this.google.transcribeAudio(audio, locale),
       this.deepgram.transcribeAudio(audio, locale),
       this.sarvam.transcribeAudio(audio, locale),
