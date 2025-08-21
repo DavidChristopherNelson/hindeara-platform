@@ -32,6 +32,14 @@ const FAMILIES: string[][] = [
   ['उ', 'ऊ'],
   ['ऋ', 'ॠ'],
   ['ऌ', 'ॡ'],
+  ['ङ'],
+  ['ञ'],
+  ['ण'],
+  ['न'],
+  ['म'],
+  ['ल'],
+  ['व'],
+  ['ह'],
 ];
 
 const CHARACTER_TO_FAMILY = new Map<string, number>();
@@ -129,7 +137,10 @@ class EvaluateAnswer {
     if (!word || !correctAnswer) return false;
     if (word === correctAnswer) return true;
 
-    if (sameFamily(word[0], correctAnswer[0])) {
+    const baseMatches =
+      word[0] === correctAnswer[0] || sameFamily(word[0], correctAnswer[0]);
+
+    if (baseMatches) {
       if (word.slice(1) === correctAnswer.slice(1)) return true;
       if (word.slice(1) === LONG_A && correctAnswer.slice(1) === '')
         return true;

@@ -39,7 +39,6 @@ describe('clean (indirect via markWord)', () => {
   });
 
   it('lower-cases English letters', () => {
-    // Only the English “A/a” survives the regex; result should be equal
     expect(markWord({ correctAnswer: 'a', studentAnswer: 'A' })).toBe(true);
   });
 });
@@ -48,7 +47,7 @@ describe('clean (indirect via markWord)', () => {
 /*  markWord  &  markImage (alias)                                    */
 /* ------------------------------------------------------------------ */
 describe('markWord / markImage', () => {
-  const correct = 'कला'; // ends with LONG_A
+  const correct = 'कला';
 
   test('single matching word → true', () => {
     expect(markWord({ correctAnswer: correct, studentAnswer: 'कला' })).toBe(
@@ -104,7 +103,6 @@ describe('markWord / markImage', () => {
     ).toBe(false);
   });
 
-  /* markImage should behave identically */
   test('markImage mirrors markWord', () => {
     expect(markImage({ correctAnswer: correct, studentAnswer: 'कला' })).toBe(
       true,
@@ -158,7 +156,6 @@ describe('markLetter', () => {
     expect(markLetter({ correctAnswer: 'क', studentAnswer: 'ग' })).toBe(false);
   });
 
-  /* added: conjunct cluster cases */
   test('conjunct: exact cluster match (क्त) → true', () => {
     expect(markLetter({ correctAnswer: 'क्त', studentAnswer: 'क्त' })).toBe(
       true,
@@ -170,6 +167,47 @@ describe('markLetter', () => {
       false,
     );
   });
+});
+
+/* ------------------------------------------------------------------ */
+/*  markLetter – previously missing consonants accept long ā          */
+/* ------------------------------------------------------------------ */
+describe('markLetter - base + long ā for previously-uncovered consonants', () => {
+  const PREVIOUSLY_UNFAMILIED_CONSONANTS = [
+    'ल',
+    'म',
+    'न',
+    'व',
+    'ह',
+    'य',
+    'ङ',
+    'ञ',
+    'ण',
+  ];
+
+  test.each(PREVIOUSLY_UNFAMILIED_CONSONANTS.map((c) => [c, c + LONG_A]))(
+    '%s → %s should be marked correct',
+    (base, withLongA) => {
+      expect(
+        markLetter({
+          correctAnswer: base,
+          studentAnswer: withLongA,
+        }),
+      ).toBe(true);
+    },
+  );
+
+  test.each(PREVIOUSLY_UNFAMILIED_CONSONANTS.map((c) => [c, c]))(
+    '%s → %s exact match remains correct',
+    (base, same) => {
+      expect(
+        markLetter({
+          correctAnswer: base,
+          studentAnswer: same,
+        }),
+      ).toBe(true);
+    },
+  );
 });
 
 /* ------------------------------------------------------------------ */
@@ -188,7 +226,7 @@ describe('detectIncorrectEndMatra', () => {
     ).toBe(false);
   });
 
-  test('correct already ends with ā, student identical → true (per spec)', () => {
+  test('correct already ends with ā, student identical → false', () => {
     expect(
       detectIncorrectEndMatra({ correctAnswer: 'कला', studentAnswer: 'कला' }),
     ).toBe(false);
@@ -201,7 +239,6 @@ describe('detectIncorrectEndMatra', () => {
   });
 
   test.each([
-    // two, three, four consonant base forms
     ['कल', 'कला', true],
     ['कमल', 'कमला', true],
     ['कलकल', 'कलकल' + LONG_A, true],
@@ -220,7 +257,6 @@ describe('detectIncorrectEndMatra', () => {
 /* ------------------------------------------------------------------ */
 describe('detectIncorrectMiddleMatra', () => {
   test('true when matra inserted between 2nd & 3rd consonant', () => {
-    // क ल क ल  →  क ल ा क ल
     expect(
       detectIncorrectMiddleMatra({
         correctAnswer: 'कलकल',
@@ -253,13 +289,12 @@ describe('detectIncorrectMiddleMatra', () => {
   test('four-consonant word with existing matra in target → false', () => {
     expect(
       detectIncorrectMiddleMatra({
-        correctAnswer: 'तरबूज', // already has ू on 3rd consonant
+        correctAnswer: 'तरबूज',
         studentAnswer: 'तरबूज',
       }),
     ).toBe(false);
   });
 
-  /* added: matra at wrong location should not count */
   test('middle-mātrā: matra between 1st & 2nd consonant (कालकल) → false', () => {
     expect(
       detectIncorrectMiddleMatra({
