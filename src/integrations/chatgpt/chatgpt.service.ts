@@ -13,7 +13,7 @@ import {
  *  Retry / timeout config
  *───────────────────────────────*/
 const MAX_RETRIES = 3;
-const ATTEMPT_TIMEOUT_MS = 10_000;
+const ATTEMPT_TIMEOUT_MS = 5000;
 const SDK_TIMEOUT_MS = MAX_RETRIES * ATTEMPT_TIMEOUT_MS + 1_000;
 
 /*───────────────────────────────*

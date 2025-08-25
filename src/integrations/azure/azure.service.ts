@@ -66,7 +66,7 @@ export class AzureSttService {
             'Content-Type': contentType,
             Accept: 'application/json',
           },
-          timeout: 30_000,
+          timeout: 2000,
           maxBodyLength: Infinity,
           maxContentLength: Infinity,
         },

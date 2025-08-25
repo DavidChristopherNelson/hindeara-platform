@@ -63,7 +63,7 @@ export class ReverieService {
           domain: this.domain,
           ...form.getHeaders(),
         },
-        timeout: 30_000,
+        timeout: 2000,
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
       });

@@ -55,7 +55,7 @@ export class SarvamService {
           Authorization: `Bearer ${this.apiKey}`,
           ...form.getHeaders(),
         },
-        timeout: 30_000,
+        timeout: 2000,
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
       });

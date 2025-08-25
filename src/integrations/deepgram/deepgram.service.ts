@@ -44,7 +44,7 @@ export class DeepgramService {
             Authorization: `Token ${this.apiKey}`,
             'Content-Type': contentType,
           },
-          timeout: 30_000,
+          timeout: 5000,
           maxBodyLength: Infinity,
           maxContentLength: Infinity,
         },
