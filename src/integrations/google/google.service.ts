@@ -110,7 +110,9 @@ export class GoogleService {
         `Request audio content length: ${request.audio.content.length} characters`,
       );
 
-      const [response] = await this.speechClient.recognize(request);
+      const [response] = await this.speechClient.recognize(request, {
+        timeout: 2000,
+      });
 
       this.logger.log('Received response from Google Speech-to-Text');
       this.logger.log(
