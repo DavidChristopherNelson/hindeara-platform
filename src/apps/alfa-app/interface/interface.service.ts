@@ -11,7 +11,6 @@ import {
   getWrongCharacters,
   getAnswer as getRawAnswer,
   lessonMachine,
-  getAnswerStatus,
 } from '../state/state.machine';
 import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
 import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
@@ -23,7 +22,6 @@ import { UiDataDto } from './dto/ui-data.dto';
 import { UtilsService } from 'src/common/utils.service';
 import { UserPhonemeScoreService } from 'src/apps/alfa-app/score/score.service';
 import wordDataJson from '../phonemes/data/word-data.json';
-import { uniq } from 'lodash';
 
 type LessonContext = Readonly<{
   userId: number;
