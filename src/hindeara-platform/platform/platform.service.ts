@@ -121,9 +121,7 @@ export class PlatformService {
   @LogMethod()
   private async runSTTEngines(audio: Buffer, locale: string): Promise<string> {
     const settled = await Promise.allSettled([
-      this.chatgpt.transcribeAudio(audio, locale),
       this.google.transcribeAudio(audio, locale),
-      this.deepgram.transcribeAudio(audio, locale),
       this.sarvam.transcribeAudio(audio, locale),
       this.reverie.transcribeAudio(audio, locale),
       this.azure.transcribeAudio(audio, locale),
