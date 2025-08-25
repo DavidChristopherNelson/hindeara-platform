@@ -89,6 +89,11 @@ class EvaluateAnswer {
       const cleanedW = this.clean(w);
       if (cleanedW === cleanedCorrectAnswer) return true;
 
+      // Hard coding some common transcription engine mistakes.
+      if (cleanedCorrectAnswer === 'ईख' && cleanedW === 'एक') return true;
+      if (cleanedCorrectAnswer === 'दरवाज़ा' && cleanedW === 'दरवाजा')
+        return true;
+
       // Schwa deletion: ignore trailing long ā (ा) in correctAnswer
       if (
         cleanedCorrectAnswer.endsWith(LONG_A) &&
@@ -123,6 +128,19 @@ class EvaluateAnswer {
 
     return words.some((w) => {
       const cleaned = this.clean(w);
+      // Hard coding some common transcription engine mistakes.
+      if (cleanedCorrectAnswer === 'म' && cleaned === 'माँ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ह' && cleaned === 'हां') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'औ' && cleaned === 'ओह') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ओ' && cleaned === 'ओह') {
+        return true;
+      }
       if (cCount === 1) {
         return this.markPhoneme(cleanedCorrectAnswer, cleaned);
       } else if (cCount === 2) {
