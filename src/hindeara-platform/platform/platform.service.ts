@@ -14,9 +14,7 @@ import { App } from '../apps/entities/app.entity';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import { CreateUserEventDto } from '../user-events/dto/create-user-event.dto';
 import { UtilsService } from 'src/common/utils.service';
-import { ChatGPTService } from 'src/integrations/chatgpt/chatgpt.service';
 import { GoogleService } from 'src/integrations/google/google.service';
-import { DeepgramService } from 'src/integrations/deepgram/deepgram.service';
 import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
 import { ReverieService } from 'src/integrations/reverie/reverie.service';
 import { AzureSttService } from 'src/integrations/azure/azure.service';
@@ -30,9 +28,7 @@ export class PlatformService {
     private readonly appsService: AppsService,
     private readonly alfaAppInterface: AlfaAppInterfaceService,
     private readonly utilsService: UtilsService,
-    private readonly chatgpt: ChatGPTService,
     private readonly google: GoogleService,
-    private readonly deepgram: DeepgramService,
     private readonly sarvam: SarvamService,
     private readonly reverie: ReverieService,
     private readonly azure: AzureSttService,
