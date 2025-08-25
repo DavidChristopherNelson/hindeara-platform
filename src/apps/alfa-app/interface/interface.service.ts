@@ -220,7 +220,7 @@ export class AlfaAppInterfaceService {
         userId,
         locale,
       );
-    const recentUsed = usedWords.slice(-3);
+    const recentUsed = usedWords.slice(-5);
 
     const scoreRows = await this.userPhonemeScoreService.findAllForUser(userId);
     const scoreByPhonemeId = new Map<number, number>();
@@ -239,7 +239,10 @@ export class AlfaAppInterfaceService {
     }
 
     // words ordered from lowest score to highest score.
-    wordScores.sort((a, b) => a.score - b.score);
+    wordScores.sort((a, b) => {
+      if (a.score !== b.score) return a.score - b.score;
+      return Math.random() - 0.5;
+    });
     const targetLen = await this.calculateWordLength(userId, locale);
     for (const word of wordScores) {
       if (recentUsed.includes(word.word)) continue; // skip recently used words
