@@ -22,8 +22,8 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'ई',
-    example_noun: 'ईंट',
-    example_image: 'brick.png',
+    example_noun: 'ईख',
+    example_image: 'sugarcane.png',
     is_active: true,
   },
   {
@@ -46,8 +46,8 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'ए',
-    example_noun: 'एरोप्लेन',
-    example_image: 'aeroplane.png',
+    example_noun: 'एड़ी',
+    example_image: 'heel.png',
     is_active: true,
   },
   {
@@ -84,8 +84,8 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'ग',
-    example_noun: 'गाय',
-    example_image: 'cow.png',
+    example_noun: 'गमला',
+    example_image: 'flower_pot.png',
     is_active: true,
   },
   {
@@ -120,8 +120,8 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'झ',
-    example_noun: 'झील',
-    example_image: 'lake.png',
+    example_noun: 'झंडा',
+    example_image: 'flag.png',
     is_active: true,
   },
   {
@@ -138,8 +138,8 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'ठ',
-    example_noun: 'ठप्पा',
-    example_image: 'stamp.png',
+    example_noun: 'ठठेरा',
+    example_image: 'metal_smith.png',
     is_active: true,
   },
   {
@@ -186,8 +186,8 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'न',
-    example_noun: 'नारियल',
-    example_image: 'coconut.png',
+    example_noun: 'नल',
+    example_image: 'tap.png',
     is_active: true,
   },
   {
@@ -198,14 +198,14 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'फ',
-    example_noun: 'फूल',
-    example_image: 'flower.png',
+    example_noun: 'फल',
+    example_image: 'fruit.png',
     is_active: true,
   },
   {
     letter: 'ब',
-    example_noun: 'बिल्ली',
-    example_image: 'cat.png',
+    example_noun: 'बतख',
+    example_image: 'duck.png',
     is_active: true,
   },
   {
@@ -222,20 +222,20 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'य',
-    example_noun: 'याक',
-    example_image: 'yak.png',
+    example_noun: 'यज्ञ',
+    example_image: 'yagna.png',
     is_active: true,
   },
   {
     letter: 'र',
-    example_noun: 'राजा',
-    example_image: 'king.png',
+    example_noun: 'रस्सी',
+    example_image: 'rope.png',
     is_active: true,
   },
   {
     letter: 'ल',
-    example_noun: 'लड्डू',
-    example_image: 'sweet_ball.png',
+    example_noun: 'लट्टू',
+    example_image: 'top.png',
     is_active: true,
   },
   {
@@ -246,8 +246,8 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'श',
-    example_noun: 'शेर',
-    example_image: 'lion.png',
+    example_noun: 'शहद',
+    example_image: 'honey.png',
     is_active: true,
   },
   {
@@ -258,14 +258,14 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
   },
   {
     letter: 'स',
-    example_noun: 'साइकिल',
-    example_image: 'bicycle.png',
+    example_noun: 'सपेरा',
+    example_image: 'snake_charmer.png',
     is_active: true,
   },
   {
     letter: 'ह',
-    example_noun: 'हाथी',
-    example_image: 'elephant.png',
+    example_noun: 'हथौड़ा',
+    example_image: 'hammer.png',
     is_active: true,
   },
 ];
