@@ -32,4 +32,14 @@ export class PlatformController {
       ),
     );
   }
+
+  @Get('/analyzeData')
+  @ApiResponse({
+    status: 200,
+    description: 'Analyzes data and returns analysis.',
+    type: AnalyzeDataResponseDto,
+  })
+  async analyzeData(): Promise<AnalyzeDataResponseDto {
+    return this.platformService.analyzeData();
+  }
 }
