@@ -1,3 +1,4 @@
+// src/hindeara-platform/platform/dto/analyze-data-response.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AnalyzeDataItemDto {
@@ -20,7 +21,7 @@ export class AnalyzeDataItemDto {
   userId!: number;
 
   @ApiProperty()
-  phoneNumber!: string;
+  name!: string;
 
   @ApiProperty()
   userEventCreatedAt!: Date;

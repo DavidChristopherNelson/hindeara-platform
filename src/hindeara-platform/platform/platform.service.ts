@@ -40,6 +40,7 @@ export class PlatformService {
     private readonly sarvam: SarvamService,
     private readonly reverie: ReverieService,
     private readonly azure: AzureSttService,
+    // TODO: Bad Code! Write a mini-lesson serice method instead of exposing the mini-lesson repository directly.
     @InjectRepository(MiniLesson)
     private readonly miniLessonRepository: Repository<MiniLesson>,
   ) {}
@@ -148,7 +149,7 @@ export class PlatformService {
     const recentUserEvents = await this.userEventsService.findAll({ since });
 
     const items: AnalyzeDataItemDto[] = [];
-    const phoneCache = new Map<number, string>();
+    const userNameCache = new Map<number, string>();
 
     const isRecord = (v: unknown): v is Record<string, unknown> =>
       typeof v === 'object' && v !== null;
@@ -163,6 +164,7 @@ export class PlatformService {
       const userId = ev.userId;
       const userEventCreatedAt = ev.event_createdAt;
 
+      // TODO: Bad Code! Write a mini-lesson serice method instead of exposing the mini-lesson repository directly.
       const miniLesson = await this.miniLessonRepository.findOne({
         where: {
           userId,
@@ -176,12 +178,12 @@ export class PlatformService {
         ? (snapshotUnknown as Snapshot<unknown>).context
         : null;
 
-      // get phone number with simple cache
-      let phoneNumber = phoneCache.get(userId);
-      if (!phoneNumber) {
+      // get user name with simple cache
+      let name = userNameCache.get(userId);
+      if (!name) {
         const user = await this.usersService.findOne(userId);
-        phoneNumber = user?.phoneNumber ?? '';
-        phoneCache.set(userId, phoneNumber);
+        name = user?.name ?? '';
+        userNameCache.set(userId, name);
       }
 
       items.push({
@@ -199,7 +201,7 @@ export class PlatformService {
           ? getNullableString(contextUnknown['previousStudentAnswer'])
           : null,
         userId,
-        phoneNumber,
+        name,
         userEventCreatedAt,
       });
     }
