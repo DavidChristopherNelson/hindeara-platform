@@ -27,6 +27,8 @@ export const lessonMachine = setup({
       hint: string;
       answer: string | undefined;
       previousAnswerStatus: boolean | null;
+      previousCorrectAnswer: string | null;
+      previousStudentAnswer: string | null;
     },
     events: {} as {
       type: 'ANSWER';
@@ -103,6 +105,10 @@ export const lessonMachine = setup({
     dropFirstWrongCharacter: assign({
       wrongCharacters: ({ context }) => context.wrongCharacters.slice(1),
     }),
+    persistEventData: assign({
+      previousCorrectAnswer: ({ event }) => event.correctAnswer,
+      previousStudentAnswer: ({ event }) => event.studentAnswer,
+    }),
   },
 
   /*───────────────────────────*
@@ -170,6 +176,8 @@ export const lessonMachine = setup({
     hint: '',
     answer: (input as { word?: string } | undefined)?.word ?? 'शहद',
     previousAnswerStatus: null,
+    previousCorrectAnswer: null,
+    previousStudentAnswer: null,
   }),
 
   /*───────────────────────────*
@@ -190,12 +198,20 @@ export const lessonMachine = setup({
           {
             guard: { type: 'checkAnswer', params: { fn: markWord } },
             target: 'complete',
-            actions: ['identifyCorrectCharacters', 'previousAnswerCorrect'],
+            actions: [
+              'identifyCorrectCharacters',
+              'previousAnswerCorrect',
+              'persistEventData',
+            ],
           },
           {
             guard: 'fourthIncorrect',
             target: 'complete',
-            actions: ['identifyCorrectCharacters', 'previousAnswerIncorrect'],
+            actions: [
+              'identifyCorrectCharacters',
+              'previousAnswerIncorrect',
+              'persistEventData',
+            ],
           },
           {
             guard: 'incorrectEndMatra',
@@ -205,6 +221,7 @@ export const lessonMachine = setup({
               'giveEndMatraHint',
               'incrementWordErrors',
               'previousAnswerIncorrect',
+              'persistEventData',
             ],
           },
           {
@@ -215,6 +232,7 @@ export const lessonMachine = setup({
               'giveMiddleMatraHint',
               'incrementWordErrors',
               'previousAnswerIncorrect',
+              'persistEventData',
             ],
           },
           {
@@ -224,6 +242,7 @@ export const lessonMachine = setup({
               'identifyCorrectCharacters',
               'incrementWordErrors',
               'previousAnswerIncorrect',
+              'persistEventData',
             ],
           },
           {
@@ -233,6 +252,7 @@ export const lessonMachine = setup({
               'identifyCorrectCharacters',
               'incrementWordErrors',
               'previousAnswerIncorrect',
+              'persistEventData',
             ],
           },
         ],
@@ -260,6 +280,7 @@ export const lessonMachine = setup({
               'resetLetterImageErrors',
               'previousAnswerCorrect',
               'dropFirstWrongCharacter',
+              'persistEventData',
             ],
           },
           {
@@ -271,11 +292,16 @@ export const lessonMachine = setup({
               'resetLetterImageErrors',
               'previousAnswerCorrect',
               'dropFirstWrongCharacter',
+              'persistEventData',
             ],
           },
           {
             target: 'image',
-            actions: ['resetCorrectCharacters', 'previousAnswerIncorrect'],
+            actions: [
+              'resetCorrectCharacters',
+              'previousAnswerIncorrect',
+              'persistEventData',
+            ],
           },
         ],
       },
@@ -294,7 +320,11 @@ export const lessonMachine = setup({
           {
             guard: { type: 'checkAnswer', params: { fn: markImage } },
             target: 'letterImage',
-            actions: ['resetCorrectCharacters', 'previousAnswerCorrect'],
+            actions: [
+              'resetCorrectCharacters',
+              'previousAnswerCorrect',
+              'persistEventData',
+            ],
           },
           {
             guard: 'thirdIncorrect',
@@ -303,6 +333,7 @@ export const lessonMachine = setup({
               'resetCorrectCharacters',
               'resetImageErrors',
               'previousAnswerIncorrect',
+              'persistEventData',
             ],
           },
           {
@@ -311,6 +342,7 @@ export const lessonMachine = setup({
               'resetCorrectCharacters',
               'incrementImageErrors',
               'previousAnswerIncorrect',
+              'persistEventData',
             ],
           },
         ],
@@ -339,6 +371,7 @@ export const lessonMachine = setup({
               'resetLetterImageErrors',
               'previousAnswerCorrect',
               'dropFirstWrongCharacter',
+              'persistEventData',
             ],
           },
           /* correct → next letter */
@@ -350,6 +383,7 @@ export const lessonMachine = setup({
               'resetLetterImageErrors',
               'previousAnswerCorrect',
               'dropFirstWrongCharacter',
+              'persistEventData',
             ],
           },
           /* third incorrect & last letter → still advance to word */
@@ -361,6 +395,7 @@ export const lessonMachine = setup({
               'resetLetterImageErrors',
               'previousAnswerIncorrect',
               'dropFirstWrongCharacter',
+              'persistEventData',
             ],
           },
           /* third incorrect → advance to next letter */
@@ -372,6 +407,7 @@ export const lessonMachine = setup({
               'resetLetterImageErrors',
               'previousAnswerIncorrect',
               'dropFirstWrongCharacter',
+              'persistEventData',
             ],
           },
           {
@@ -380,6 +416,7 @@ export const lessonMachine = setup({
               'resetCorrectCharacters',
               'incrementLetterImageErrors',
               'previousAnswerIncorrect',
+              'persistEventData',
             ],
           },
         ],
