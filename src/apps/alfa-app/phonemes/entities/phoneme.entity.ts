@@ -1,7 +1,15 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+// src/apps/alfa-app/phonemes/entities/phoneme.entity.ts
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { MiniLesson } from '../../mini-lessons/entities/mini-lesson.entity';
 
 @Entity('phoneme')
+@Unique(['letter'])
 export class Phoneme {
   @PrimaryGeneratedColumn()
   id: number;

@@ -1,3 +1,4 @@
+// src/apps/alfa-app/phonemes/phonemes.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePhonemeDto } from './dto/create-phoneme.dto';
 import { UpdatePhonemeDto } from './dto/update-phoneme.dto';
@@ -7,6 +8,7 @@ import { Repository } from 'typeorm';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import { ENGLISH_PHONEMES } from './data/english-phonemes';
 import { HINDI_PHONEMES } from './data/hindi-phonemes';
+import { In } from 'typeorm';
 
 @Injectable()
 export class PhonemesService {
@@ -74,33 +76,27 @@ export class PhonemesService {
 
   @LogMethod()
   async seedEnglishAlphabet(): Promise<Phoneme[]> {
-    // avoid duplicates by skipping letters that already exist
-    const existing = await this.phonemeRepository.find({
-      select: ['letter'],
+    // Upsert by unique key 'letter'
+    await this.phonemeRepository.upsert(ENGLISH_PHONEMES, {
+      conflictPaths: ['letter'],
+      skipUpdateIfNoValuesChanged: true,
     });
-    const existingLetters = new Set(
-      existing.map((p) => p.letter.toUpperCase()),
-    );
-    const toInsert = ENGLISH_PHONEMES.filter(
-      (p) => !existingLetters.has(p.letter.toUpperCase()),
-    );
-    const entities = this.phonemeRepository.create(toInsert);
-    return this.phonemeRepository.save(entities);
+
+    // Return the affected entities
+    const letters = ENGLISH_PHONEMES.map((p) => p.letter.toUpperCase());
+    return this.phonemeRepository.find({ where: { letter: In(letters) } });
   }
 
   @LogMethod()
   async seedHindiAlphabet(): Promise<Phoneme[]> {
-    // avoid duplicates by skipping letters that already exist
-    const existing = await this.phonemeRepository.find({
-      select: ['letter'],
+    // Upsert by unique key 'letter'
+    await this.phonemeRepository.upsert(HINDI_PHONEMES, {
+      conflictPaths: ['letter'],
+      skipUpdateIfNoValuesChanged: true,
     });
-    const existingLetters = new Set(
-      existing.map((p) => p.letter.toUpperCase()),
-    );
-    const toInsert = HINDI_PHONEMES.filter(
-      (p) => !existingLetters.has(p.letter.toUpperCase()),
-    );
-    const entities = this.phonemeRepository.create(toInsert);
-    return this.phonemeRepository.save(entities);
+
+    // Return the affected entities
+    const letters = HINDI_PHONEMES.map((p) => p.letter.toUpperCase());
+    return this.phonemeRepository.find({ where: { letter: In(letters) } });
   }
 }

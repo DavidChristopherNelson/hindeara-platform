@@ -9,6 +9,7 @@ import { UsersService } from './hindeara-platform/users/users.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
+import { DataSource } from 'typeorm';
 
 // Load environment variables from .env before any other logic
 dotenv.config();
@@ -30,6 +31,9 @@ function ensureGoogleCredentials() {
 async function bootstrap() {
   ensureGoogleCredentials();
   const app = await NestFactory.create(PlatformModule);
+
+  const dataSource = app.get(DataSource);
+  await dataSource.runMigrations();
 
   app.use(bodyParser.json({ limit: '25mb' }));
   app.use(bodyParser.urlencoded({ limit: '25mb', extended: true }));
