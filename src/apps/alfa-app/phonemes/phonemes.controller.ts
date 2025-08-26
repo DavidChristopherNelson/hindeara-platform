@@ -84,6 +84,12 @@ export class PhonemesController {
   }
 
   @Patch(':id')
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    required: true,
+    description: 'Numeric ID of the phoneme to retrieve',
+  })
   @ApiBody({ type: UpdatePhonemeDto })
   @ApiResponse({ status: 200, description: 'Phoneme updated.', type: Phoneme })
   @ApiResponse({ status: 404, description: 'Phoneme not found.' })
