@@ -454,6 +454,12 @@ export const getAnswer = (actor: LessonActor) =>
 export const getAnswerStatus = (actor: LessonActor) =>
   actor.getSnapshot().context.previousAnswerStatus;
 
+export const getCorrectAnswer = (actor: LessonActor) =>
+  actor.getSnapshot().context.previousCorrectAnswer;
+
+export const getStudentAnswer = (actor: LessonActor) =>
+  actor.getSnapshot().context.previousStudentAnswer;
+
 export const getPrompt = (actor: LessonActor): string => {
   const snap = actor.getSnapshot();
   const meta = snap.getMeta() as Record<string, { prompt?: string }>;
