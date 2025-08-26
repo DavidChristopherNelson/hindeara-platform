@@ -213,6 +213,14 @@ export class UserPhonemeScoreService {
   }
 
   /**
+   * Reset all phoneme scores for a user to zero.
+   */
+  @LogMethod()
+  async resetAllForUser(userId: number): Promise<void> {
+    await this.repo.update({ userId }, { value: '0' });
+  }
+
+  /**
    * Update a user's score for a phoneme based on answer correctness.
    * Accepts either IDs or entity objects for user and phoneme.
    */
