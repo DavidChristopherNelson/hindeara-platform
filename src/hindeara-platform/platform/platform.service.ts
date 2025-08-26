@@ -18,6 +18,14 @@ import { GoogleService } from 'src/integrations/google/google.service';
 import { SarvamService } from 'src/integrations/sarvam/sarvam.service';
 import { ReverieService } from 'src/integrations/reverie/reverie.service';
 import { AzureSttService } from 'src/integrations/azure/azure.service';
+import {
+  AnalyzeDataItemDto,
+  AnalyzeDataResponseDto,
+} from './dto/analyze-data-response.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, MoreThan } from 'typeorm';
+import { MiniLesson } from 'src/apps/alfa-app/mini-lessons/entities/mini-lesson.entity';
+import { Snapshot } from 'xstate';
 
 @Injectable()
 export class PlatformService {
@@ -32,6 +40,8 @@ export class PlatformService {
     private readonly sarvam: SarvamService,
     private readonly reverie: ReverieService,
     private readonly azure: AzureSttService,
+    @InjectRepository(MiniLesson)
+    private readonly miniLessonRepository: Repository<MiniLesson>,
   ) {}
 
   @LogMethod()
@@ -130,5 +140,70 @@ export class PlatformService {
       }
     }
     return transcripts.join(' ');
+  }
+
+  @LogMethod()
+  async analyzeData(): Promise<AnalyzeDataResponseDto> {
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recentUserEvents = await this.userEventsService.findAll({ since });
+
+    const items: AnalyzeDataItemDto[] = [];
+    const phoneCache = new Map<number, string>();
+
+    const isRecord = (v: unknown): v is Record<string, unknown> =>
+      typeof v === 'object' && v !== null;
+    const hasContext = (v: unknown): v is { context: unknown } =>
+      isRecord(v) && 'context' in v;
+    const getNullableBoolean = (v: unknown): boolean | null =>
+      typeof v === 'boolean' ? v : null;
+    const getNullableString = (v: unknown): string | null =>
+      typeof v === 'string' ? v : null;
+
+    for (const ev of recentUserEvents) {
+      const userId = ev.userId;
+      const userEventCreatedAt = ev.event_createdAt;
+
+      const miniLesson = await this.miniLessonRepository.findOne({
+        where: {
+          userId,
+          createdAt: MoreThan(userEventCreatedAt),
+        },
+        order: { createdAt: 'ASC' },
+      });
+
+      const snapshotUnknown: unknown = (miniLesson?.state ?? null) as unknown;
+      const contextUnknown: unknown = hasContext(snapshotUnknown)
+        ? (snapshotUnknown as Snapshot<unknown>).context
+        : null;
+
+      // get phone number with simple cache
+      let phoneNumber = phoneCache.get(userId);
+      if (!phoneNumber) {
+        const user = await this.usersService.findOne(userId);
+        phoneNumber = user?.phoneNumber ?? '';
+        phoneCache.set(userId, phoneNumber);
+      }
+
+      items.push({
+        audioBase64: Buffer.isBuffer(ev.event_recording)
+          ? ev.event_recording.toString('base64')
+          : '',
+        transcript: ev.event_transcription ?? null,
+        answerStatus: isRecord(contextUnknown)
+          ? getNullableBoolean(contextUnknown['previousAnswerStatus'])
+          : null,
+        correctAnswer: isRecord(contextUnknown)
+          ? getNullableString(contextUnknown['previousCorrectAnswer'])
+          : null,
+        studentAnswer: isRecord(contextUnknown)
+          ? getNullableString(contextUnknown['previousStudentAnswer'])
+          : null,
+        userId,
+        phoneNumber,
+        userEventCreatedAt,
+      });
+    }
+
+    return { items };
   }
 }

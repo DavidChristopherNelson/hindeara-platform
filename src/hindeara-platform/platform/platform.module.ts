@@ -8,6 +8,7 @@ import { UserEventsModule } from '../user-events/user-events.module';
 import { AppEventsModule } from '../app-events/app-events.module';
 import { dataSourceOptions } from 'src/database/data-source';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MiniLesson } from 'src/apps/alfa-app/mini-lessons/entities/mini-lesson.entity';
 import { AlfaAppInterfaceModule } from 'src/apps/alfa-app/interface/interface.module';
 import { UsersModule } from '../users/users.module';
 import { ChatGPTModule } from 'src/integrations/chatgpt/chatgpt.module';
@@ -40,6 +41,7 @@ import { AzureModule } from 'src/integrations/azure/azure.module';
     AzureModule,
     CommonModule,
     StateModule,
+    TypeOrmModule.forFeature([MiniLesson]),
   ],
   controllers: [PlatformController],
   providers: [PlatformService],

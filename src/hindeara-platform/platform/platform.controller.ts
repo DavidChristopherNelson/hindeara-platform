@@ -1,9 +1,10 @@
 // src/hindeara-platform/platform/platform.controller.ts
-import { Body, Controller, Post, Headers } from '@nestjs/common';
+import { Body, Controller, Post, Headers, Get } from '@nestjs/common';
 import { PlatformService } from './platform.service';
 import { ProcessUserInputDto } from './dto/process-user-input.dto';
 import { ProcessUserInputResponseDto } from './dto/process-user-input-response.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AnalyzeDataResponseDto } from './dto/analyze-data-response.dto';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 
 @ApiTags('platforms')
@@ -39,7 +40,7 @@ export class PlatformController {
     description: 'Analyzes data and returns analysis.',
     type: AnalyzeDataResponseDto,
   })
-  async analyzeData(): Promise<AnalyzeDataResponseDto {
+  async analyzeData(): Promise<AnalyzeDataResponseDto> {
     return this.platformService.analyzeData();
   }
 }
