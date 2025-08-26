@@ -1,108 +1,171 @@
-import { createActor, SnapshotFrom } from 'xstate';
+// src/apps/alfa-app/state/state.machine.spec.ts
+import { createActor } from 'xstate';
+
+// ---- Mock evaluation utils so tests are deterministic ----
+// Correct iff studentAnswer === '✅'. No special matra detection.
+jest.mock('./evaluate-answer.utils', () => ({
+  markWord: jest.fn(
+    ({ studentAnswer }: { studentAnswer: string }) => studentAnswer === '✅',
+  ),
+  markLetter: jest.fn(
+    ({ studentAnswer }: { studentAnswer: string }) => studentAnswer === '✅',
+  ),
+  markImage: jest.fn(
+    ({ studentAnswer }: { studentAnswer: string }) => studentAnswer === '✅',
+  ),
+  detectIncorrectEndMatra: jest.fn(() => false),
+  detectIncorrectMiddleMatra: jest.fn(() => false),
+}));
+
+// For incorrect answers, pretend there are three wrong letters to step through.
+jest.mock('./identify-wrong-characters.utils', () => ({
+  identifyWrongCharacters: jest.fn(
+    ({ studentAnswer }: { correctAnswer: string; studentAnswer: string }) =>
+      studentAnswer === '✅' ? [] : ['x', 'y', 'z'],
+  ),
+}));
+
 import { lessonMachine } from './state.machine';
 
-function startMachine(snapshot?: SnapshotFrom<typeof lessonMachine>) {
-  return createActor(
-    lessonMachine,
-    snapshot ? { snapshot } : undefined,
-  ).start();
+type AnswerEvent = {
+  type: 'ANSWER';
+  correctAnswer: string;
+  studentAnswer: string;
+};
+
+const answer = (correct: string, student: string): AnswerEvent => ({
+  type: 'ANSWER',
+  correctAnswer: correct,
+  studentAnswer: student,
+});
+
+const CORRECT = '✅';
+const WRONG = '❌';
+
+function start() {
+  return createActor(lessonMachine).start();
 }
 
 describe('lessonMachine', () => {
-  it('starts in the "word" state with index 0', () => {
-    const actor = startMachine();
+  it('starts in "word" with clean previous* fields', () => {
+    const actor = start();
     const snap = actor.getSnapshot();
+
     expect(snap.value).toBe('word');
-    expect(snap.context.index).toBe(0);
+    expect(snap.context.previousAnswerStatus).toBeNull();
+    expect(snap.context.previousCorrectAnswer).toBeNull();
+    expect(snap.context.previousStudentAnswer).toBeNull();
+
+    actor.stop();
   });
 
-  describe('top‑level transitions from "word"', () => {
-    it('CORRECT_ANSWER → complete (final)', () => {
-      const actor = startMachine();
-      actor.send({ type: 'CORRECT_ANSWER' });
-      expect(actor.getSnapshot().value).toBe('complete');
-    });
+  describe('transitions from "word"', () => {
+    it('correct ANSWER → complete (final)', () => {
+      const actor = start();
 
-    it('INCORRECT_ANSWER → letter (index stays 0)', () => {
-      const actor = startMachine();
-      actor.send({ type: 'INCORRECT_ANSWER' });
+      actor.send(answer('शहद', CORRECT));
       const snap = actor.getSnapshot();
-      expect(snap.value).toBe('letter');
-      expect(snap.context.index).toBe(0);
+
+      expect(snap.value).toBe('complete');
+      expect(snap.context.previousAnswerStatus).toBe(true);
+      expect(snap.context.previousCorrectAnswer).toBe('शहद');
+      expect(snap.context.previousStudentAnswer).toBe(CORRECT);
+
+      actor.stop();
     });
 
-    it('START_LESSON is self‑loop to "word"', () => {
-      const actor = startMachine();
-      actor.send({ type: 'START_LESSON' });
-      expect(actor.getSnapshot().value).toBe('word');
+    it('incorrect ANSWER → letter', () => {
+      const actor = start();
+
+      actor.send(answer('शहद', WRONG));
+      const snap = actor.getSnapshot();
+
+      expect(snap.value).toBe('letter');
+      // wrongCharacters are mocked to 3 for incorrect answers
+      expect(Array.isArray(snap.context.wrongCharacters)).toBe(true);
+      expect(snap.context.wrongCharacters.length).toBe(3);
+      expect(snap.context.previousAnswerStatus).toBe(false);
+      expect(snap.context.previousCorrectAnswer).toBe('शहद');
+      expect(snap.context.previousStudentAnswer).toBe(WRONG);
+
+      actor.stop();
     });
   });
 
-  describe('"letter" state', () => {
-    it('INCORRECT_ANSWER → picture', () => {
-      const actor = startMachine();
-      actor.send({ type: 'INCORRECT_ANSWER' }); // word -> letter
-      actor.send({ type: 'INCORRECT_ANSWER' }); // letter -> picture
-      expect(actor.getSnapshot().value).toBe('picture');
+  describe('"letter" → "image" and back via "letterImage"', () => {
+    it('letter incorrect → image; image correct → letterImage', () => {
+      const actor = start();
+
+      // word → letter (populate wrongCharacters = ['x','y','z'])
+      actor.send(answer('शहद', WRONG));
+      expect(actor.getSnapshot().value).toBe('letter');
+
+      // letter → image (incorrect letter)
+      actor.send(answer('x', WRONG));
+      expect(actor.getSnapshot().value).toBe('image');
+      expect(actor.getSnapshot().context.previousAnswerStatus).toBe(false);
+
+      // image → letterImage (correct image)
+      actor.send(answer('x', CORRECT));
+      expect(actor.getSnapshot().value).toBe('letterImage');
+      expect(actor.getSnapshot().context.previousAnswerStatus).toBe(true);
+
+      actor.stop();
     });
 
-    it('CORRECT_ANSWER increments index until last letter then resets', () => {
-      const actor = startMachine();
-      actor.send({ type: 'INCORRECT_ANSWER' }); // word -> letter (index 0)
+    it('letterImage correct drops first wrong char → letter; then progresses until last letter → word', () => {
+      const actor = start();
 
-      // first correct answer (index 0 -> 1)
-      actor.send({ type: 'CORRECT_ANSWER' });
+      // Setup to letterImage:
+      actor.send(answer('शहद', WRONG)); // word -> letter (wrongChars = 3)
+      actor.send(answer('x', WRONG)); // letter -> image
+      actor.send(answer('x', CORRECT)); // image -> letterImage
       let snap = actor.getSnapshot();
-      expect(snap.value).toBe('letter');
-      expect(snap.context.index).toBe(1);
+      expect(snap.value).toBe('letterImage');
+      expect(snap.context.wrongCharacters.length).toBe(3);
 
-      // second correct answer (index 1 -> 2)
-      actor.send({ type: 'CORRECT_ANSWER' });
+      // letterImage correct -> letter (dropFirstWrongCharacter)
+      actor.send(answer('x', CORRECT));
       snap = actor.getSnapshot();
       expect(snap.value).toBe('letter');
-      expect(snap.context.index).toBe(2);
+      expect(snap.context.wrongCharacters.length).toBe(2);
 
-      // third correct answer (index 2 is last; guard true)
-      actor.send({ type: 'CORRECT_ANSWER' });
+      // letter correct (not last) -> letter (reenter), drop first again
+      actor.send(answer('y', CORRECT));
       snap = actor.getSnapshot();
-      expect(snap.value).toBe('word'); // back to word
-      expect(snap.context.index).toBe(0); // resetIndex action
+      expect(snap.value).toBe('letter');
+      expect(snap.context.wrongCharacters.length).toBe(1);
+
+      // letter correct (last) -> word
+      actor.send(answer('z', CORRECT));
+      snap = actor.getSnapshot();
+      expect(snap.value).toBe('word');
+      expect(snap.context.wrongCharacters.length).toBe(0);
+      expect(snap.context.previousAnswerStatus).toBe(true);
+      expect(snap.context.previousStudentAnswer).toBe(CORRECT);
+
+      actor.stop();
     });
   });
 
-  describe('"picture" and "letterPicture" loop', () => {
-    it('picture CORRECT_ANSWER → letterPicture', () => {
-      const actor = startMachine();
-      actor.send({ type: 'INCORRECT_ANSWER' }); // word -> letter
-      actor.send({ type: 'INCORRECT_ANSWER' }); // letter -> picture
-      actor.send({ type: 'CORRECT_ANSWER' }); // picture -> letterPicture
-      expect(actor.getSnapshot().value).toBe('letterPicture');
-    });
+  describe('persistEventData action', () => {
+    it('captures the last ANSWER payload on every taken transition', () => {
+      const actor = start();
 
-    it('letterPicture INCORRECT_ANSWER → picture', () => {
-      const actor = startMachine();
-      actor.send({ type: 'INCORRECT_ANSWER' }); // word -> letter
-      actor.send({ type: 'INCORRECT_ANSWER' }); // letter -> picture
-      actor.send({ type: 'CORRECT_ANSWER' }); // picture -> letterPicture
-      actor.send({ type: 'INCORRECT_ANSWER' }); // back to picture
-      expect(actor.getSnapshot().value).toBe('picture');
-    });
+      // incorrect: word -> letter
+      actor.send(answer('शहद', WRONG));
+      let snap = actor.getSnapshot();
+      expect(snap.context.previousCorrectAnswer).toBe('शहद');
+      expect(snap.context.previousStudentAnswer).toBe(WRONG);
 
-    it('letterPicture CORRECT_ANSWER loops until last letter, then → word', () => {
-      const actor = startMachine();
-      actor.send({ type: 'INCORRECT_ANSWER' }); // word -> letter
-      actor.send({ type: 'INCORRECT_ANSWER' }); // letter -> picture
-      actor.send({ type: 'CORRECT_ANSWER' }); // picture -> letterPicture (index 0)
-      actor.send({ type: 'CORRECT_ANSWER' }); // letterPicture -> letter (index 1)
-      actor.send({ type: 'INCORRECT_ANSWER' }); // letter -> picture
-      actor.send({ type: 'CORRECT_ANSWER' }); // picture -> letterPicture (index 1)
-      actor.send({ type: 'CORRECT_ANSWER' }); // letterPicture -> letter (index 2)
-      actor.send({ type: 'INCORRECT_ANSWER' }); // letter -> picture
-      actor.send({ type: 'CORRECT_ANSWER' }); // picture -> letterPicture (index 2)
-      actor.send({ type: 'CORRECT_ANSWER' }); // letterPicture -> word (guard true)
-      const snap = actor.getSnapshot();
-      expect(snap.value).toBe('word');
-      expect(snap.context.index).toBe(0);
+      // correct: letter -> image
+      actor.send(answer('x', WRONG)); // move to image
+      actor.send(answer('x', CORRECT)); // image -> letterImage
+      snap = actor.getSnapshot();
+      expect(snap.context.previousCorrectAnswer).toBe('x');
+      expect(snap.context.previousStudentAnswer).toBe(CORRECT);
+
+      actor.stop();
     });
   });
 });
