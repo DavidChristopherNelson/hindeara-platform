@@ -115,7 +115,20 @@ export class AlfaAppInterfaceService {
 
     const studentAnswer = ctx.latestUserEvent.transcription ?? '';
     const previousState = ctx.lessonActor.getSnapshot().value;
+
+    // Snapshot before
+    const snapBefore = ctx.lessonActor.getSnapshot();
+    console.log('--- BEFORE ---');
+    console.log('State:', snapBefore.value);
+    console.log('Context:', JSON.stringify(snapBefore.context, null, 2));
+    
     ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
+
+    // Snapshot after
+    const snapAfter = ctx.lessonActor.getSnapshot();
+    console.log('--- AFTER ---');
+    console.log('State:', snapAfter.value);
+    console.log('Context:', JSON.stringify(snapAfter.context, null, 2));
 
     // Update's phoneme's score
     // Mark correct letters as correct

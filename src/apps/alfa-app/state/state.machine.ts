@@ -129,17 +129,6 @@ export const lessonMachine = setup({
       });
     },
 
-    /** third consecutive incorrect response (any index) */
-    thirdIncorrect: ({ context }) => {
-      const { wordErrors, imageErrors, letterImageErrors } = context;
-      return Math.max(wordErrors, imageErrors, letterImageErrors) >= 2;
-    },
-
-    fourthIncorrect: ({ context }) => {
-      const { wordErrors, imageErrors, letterImageErrors } = context;
-      return Math.max(wordErrors, imageErrors, letterImageErrors) >= 3;
-    },
-
     incorrectEndMatra: ({ event }) => {
       return detectIncorrectEndMatra({
         correctAnswer: event.correctAnswer,
@@ -205,7 +194,7 @@ export const lessonMachine = setup({
             ],
           },
           {
-            guard: 'fourthIncorrect',
+            guard: ({ context }) => context.wordErrors >= 2,
             target: 'complete',
             actions: [
               'identifyCorrectCharacters',
@@ -327,7 +316,7 @@ export const lessonMachine = setup({
             ],
           },
           {
-            guard: 'thirdIncorrect',
+            guard: ({ context }) => context.imageErrors >= 2,
             target: 'letterImage',
             actions: [
               'resetCorrectCharacters',
@@ -388,7 +377,7 @@ export const lessonMachine = setup({
           },
           /* third incorrect & last letter → still advance to word */
           {
-            guard: and(['isLastLetter', 'thirdIncorrect']),
+            guard: and(['isLastLetter', ({ context }) => context.letterImageErrors >= 2]),
             target: 'word',
             actions: [
               'resetCorrectCharacters',
@@ -400,7 +389,7 @@ export const lessonMachine = setup({
           },
           /* third incorrect → advance to next letter */
           {
-            guard: 'thirdIncorrect',
+            guard: ({ context }) => context.letterImageErrors >= 2,
             target: 'letter',
             actions: [
               'resetCorrectCharacters',
