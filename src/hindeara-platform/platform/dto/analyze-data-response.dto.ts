@@ -2,6 +2,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AnalyzeDataItemDto {
+  @ApiProperty()
+  appTranscript!: string;
+
   @ApiProperty({ description: 'Base64-encoded audio from the user event' })
   audioBase64!: string;
 

@@ -20,6 +20,7 @@ import { DeepgramModule } from 'src/integrations/deepgram/deepgram.module';
 import { SarvamModule } from 'src/integrations/sarvam/sarvam.module';
 import { ReverieModule } from 'src/integrations/reverie/reverie.module';
 import { AzureModule } from 'src/integrations/azure/azure.module';
+import { AppEvent } from '../app-events/entities/app-event.entity';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { AzureModule } from 'src/integrations/azure/azure.module';
     CommonModule,
     StateModule,
     TypeOrmModule.forFeature([MiniLesson]),
+    TypeOrmModule.forFeature([AppEvent]),
   ],
   controllers: [PlatformController],
   providers: [PlatformService],

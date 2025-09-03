@@ -23,7 +23,7 @@ import {
   AnalyzeDataResponseDto,
 } from './dto/analyze-data-response.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThan } from 'typeorm';
+import { Repository, MoreThan, LessThan } from 'typeorm';
 import { MiniLesson } from 'src/apps/alfa-app/mini-lessons/entities/mini-lesson.entity';
 import { Snapshot } from 'xstate';
 
@@ -43,6 +43,9 @@ export class PlatformService {
     // TODO: Bad Code! Write a mini-lesson serice method instead of exposing the mini-lesson repository directly.
     @InjectRepository(MiniLesson)
     private readonly miniLessonRepository: Repository<MiniLesson>,
+    // TODO: Bad Code! Write a appEvent serice method instead of exposing the appEvent repository directly.
+    @InjectRepository(AppEvent)
+    private readonly appEventRepository: Repository<AppEvent>,
   ) {}
 
   @LogMethod()
@@ -160,9 +163,9 @@ export class PlatformService {
     const getNullableString = (v: unknown): string | null =>
       typeof v === 'string' ? v : null;
 
-    for (const ev of recentUserEvents) {
-      const userId = ev.userId;
-      const userEventCreatedAt = ev.event_createdAt;
+    for (const userEvent of recentUserEvents) {
+      const userId = userEvent.userId;
+      const userEventCreatedAt = userEvent.event_createdAt;
 
       // TODO: Bad Code! Write a mini-lesson serice method instead of exposing the mini-lesson repository directly.
       const miniLesson = await this.miniLessonRepository.findOne({
@@ -172,6 +175,21 @@ export class PlatformService {
         },
         order: { createdAt: 'ASC' },
       });
+
+      // TODO: Bad Code! Write a appEvent serice method instead of exposing the appEvent repository directly.
+      const appEvent = await this.appEventRepository.findOne({
+        where: {
+          user: { id: userId },
+          createdAt: LessThan(userEventCreatedAt),
+        },
+        order: { createdAt: 'DESC' },
+        select: { id: true, createdAt: true, recording: true },
+      });
+
+      console.log('X---------------------------------X');
+      console.log('appEvent?.recording: ' + appEvent?.recording);
+      console.log('X---------------------------------X');
+
 
       const snapshotUnknown: unknown = (miniLesson?.state ?? null) as unknown;
       const contextUnknown: unknown = hasContext(snapshotUnknown)
@@ -187,10 +205,11 @@ export class PlatformService {
       }
 
       items.push({
-        audioBase64: Buffer.isBuffer(ev.event_recording)
-          ? ev.event_recording.toString('base64')
+        appTranscript: appEvent?.recording ?? '',
+        audioBase64: Buffer.isBuffer(userEvent.event_recording)
+          ? userEvent.event_recording.toString('base64')
           : '',
-        transcript: ev.event_transcription ?? null,
+        transcript: userEvent.event_transcription ?? null,
         answerStatus: isRecord(contextUnknown)
           ? getNullableBoolean(contextUnknown['previousAnswerStatus'])
           : null,
