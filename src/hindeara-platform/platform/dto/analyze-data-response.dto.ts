@@ -28,6 +28,9 @@ export class AnalyzeDataItemDto {
 
   @ApiProperty()
   userEventCreatedAt!: Date;
+
+  @ApiProperty()
+  latency!: number;
 }
 
 export class AnalyzeDataResponseDto {

@@ -177,7 +177,7 @@ export class PlatformService {
       });
 
       // TODO: Bad Code! Write a appEvent serice method instead of exposing the appEvent repository directly.
-      const appEvent = await this.appEventRepository.findOne({
+      const preceedingAppEvent = await this.appEventRepository.findOne({
         where: {
           user: { id: userId },
           createdAt: LessThan(userEventCreatedAt),
@@ -185,11 +185,18 @@ export class PlatformService {
         order: { createdAt: 'DESC' },
         select: { id: true, createdAt: true, recording: true },
       });
-
-      console.log('X---------------------------------X');
-      console.log('appEvent?.recording: ' + appEvent?.recording);
-      console.log('X---------------------------------X');
-
+      const followingAppEvent = await this.appEventRepository.findOne({
+        where: {
+          user: { id: userId },
+          createdAt: MoreThan(userEventCreatedAt),
+        },
+        order: { createdAt: 'ASC' },
+        select: { id: true, createdAt: true },
+      });
+      const latency =
+        followingAppEvent?.createdAt && userEventCreatedAt
+          ? followingAppEvent.createdAt.getTime() - userEventCreatedAt.getTime()
+          : 0;
 
       const snapshotUnknown: unknown = (miniLesson?.state ?? null) as unknown;
       const contextUnknown: unknown = hasContext(snapshotUnknown)
@@ -205,7 +212,7 @@ export class PlatformService {
       }
 
       items.push({
-        appTranscript: appEvent?.recording ?? '',
+        appTranscript: preceedingAppEvent?.recording ?? '',
         audioBase64: Buffer.isBuffer(userEvent.event_recording)
           ? userEvent.event_recording.toString('base64')
           : '',
@@ -222,6 +229,7 @@ export class PlatformService {
         userId,
         name,
         userEventCreatedAt,
+        latency,
       });
     }
 
