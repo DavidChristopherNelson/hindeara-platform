@@ -26,6 +26,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan, LessThan } from 'typeorm';
 import { MiniLesson } from 'src/apps/alfa-app/mini-lessons/entities/mini-lesson.entity';
 import { Snapshot } from 'xstate';
+import { UserPhonemeScoreService } from 'src/apps/alfa-app/score/score.service';
 
 @Injectable()
 export class PlatformService {
@@ -46,6 +47,7 @@ export class PlatformService {
     // TODO: Bad Code! Write a appEvent serice method instead of exposing the appEvent repository directly.
     @InjectRepository(AppEvent)
     private readonly appEventRepository: Repository<AppEvent>,
+    private readonly userPhonemeScoreService: UserPhonemeScoreService,
   ) {}
 
   @LogMethod()
@@ -163,13 +165,6 @@ export class PlatformService {
       recentUserEvents = await this.userEventsService.findAll({ since, userId: user.id });
     }
 
-    const missedDays = this.daysWithNoUserEvents(recentUserEvents, timeInDays);
-    console.log('X---------------------------------X');
-    console.log('recentUserEvents: ' + recentUserEvents);
-    console.log('timeInDays: ' + timeInDays);
-    console.log('missedDays: ' + missedDays);
-    console.log('X---------------------------------X');
-
     const items: AnalyzeDataItemDto[] = [];
     const userNameCache = new Map<number, string>();
     const phoneNumberCache = new Map<number, string>();
@@ -262,7 +257,19 @@ export class PlatformService {
       });
     }
 
-    return { items, missedDays };
+    const missedDays = this.daysWithNoUserEvents(recentUserEvents, timeInDays);
+
+    let userScore = [];
+    if (phoneNumber) {
+      const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
+      userScore = await this.userPhonemeScoreService.findAllForUser(user.id);
+      userScore = userScore
+        .filter((item) => /[^\u0000-\u007F]/.test(item.letter))
+        .map(({ letter, value }) => ({ letter, value: parseFloat(value) }))
+        .sort((a, b) => a.value - b.value);
+    }
+
+    return { items, missedDays, userScore };
   }
 
   private daysWithNoUserEvents(userEvents: UserEvent[], timeInDays: number): number {
@@ -285,5 +292,4 @@ export class PlatformService {
     }
     return missedDays;
   }
-
 }

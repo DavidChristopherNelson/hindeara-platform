@@ -21,6 +21,7 @@ import { SarvamModule } from 'src/integrations/sarvam/sarvam.module';
 import { ReverieModule } from 'src/integrations/reverie/reverie.module';
 import { AzureModule } from 'src/integrations/azure/azure.module';
 import { AppEvent } from '../app-events/entities/app-event.entity';
+import { UserPhonemeScoreModule } from 'src/apps/alfa-app/score/score.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { AppEvent } from '../app-events/entities/app-event.entity';
     StateModule,
     TypeOrmModule.forFeature([MiniLesson]),
     TypeOrmModule.forFeature([AppEvent]),
+    UserPhonemeScoreModule,
   ],
   controllers: [PlatformController],
   providers: [PlatformService],

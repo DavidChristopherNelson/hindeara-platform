@@ -42,4 +42,7 @@ export class AnalyzeDataResponseDto {
 
   @ApiProperty()
   missedDays!: number;
+
+  @ApiProperty({ type: Array<{ phonemeId: number; letter: string; value: string | null }> })
+  userScore: Array<{ letter: string; value: string | null }>;
 }
