@@ -27,6 +27,9 @@ export class AnalyzeDataItemDto {
   name!: string;
 
   @ApiProperty()
+  phoneNumber!: string;
+
+  @ApiProperty()
   userEventCreatedAt!: Date;
 
   @ApiProperty()

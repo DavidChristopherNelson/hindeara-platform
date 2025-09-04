@@ -153,6 +153,7 @@ export class PlatformService {
 
     const items: AnalyzeDataItemDto[] = [];
     const userNameCache = new Map<number, string>();
+    const phoneNumberCache = new Map<number, string>();
 
     const isRecord = (v: unknown): v is Record<string, unknown> =>
       typeof v === 'object' && v !== null;
@@ -211,6 +212,14 @@ export class PlatformService {
         userNameCache.set(userId, name);
       }
 
+      // get user phone number with simple cache
+      let phoneNumber = phoneNumberCache.get(userId);
+      if (!phoneNumber) {
+        const user = await this.usersService.findOne(userId);
+        phoneNumber = user?.phoneNumber ?? '';
+        phoneNumberCache.set(userId, phoneNumber);
+      }
+
       items.push({
         appTranscript: preceedingAppEvent?.recording ?? '',
         audioBase64: Buffer.isBuffer(userEvent.event_recording)
@@ -228,6 +237,7 @@ export class PlatformService {
           : null,
         userId,
         name,
+        phoneNumber,
         userEventCreatedAt,
         latency,
       });
