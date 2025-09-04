@@ -39,4 +39,7 @@ export class AnalyzeDataItemDto {
 export class AnalyzeDataResponseDto {
   @ApiProperty({ type: [AnalyzeDataItemDto] })
   items!: AnalyzeDataItemDto[];
+
+  @ApiProperty()
+  missedDays!: number;
 }

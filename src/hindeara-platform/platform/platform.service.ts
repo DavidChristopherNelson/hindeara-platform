@@ -149,7 +149,7 @@ export class PlatformService {
   @LogMethod()
   async analyzeData(phoneNumber?: string, timeWindow?: number): Promise<AnalyzeDataResponseDto> {
     const timeInDays = timeWindow ?? 1;
-    const since = new Date(Date.now() - timeInDays * 24 * 60 * 60 * 1000);
+    const since = new Date(new Date().setHours(0, 0, 0, 0) - timeInDays * 24 * 60 * 60 * 1000);
     let recentUserEvents = [];
     if (!phoneNumber) {
       // No phone number provided, get all recent user events
@@ -163,6 +163,12 @@ export class PlatformService {
       recentUserEvents = await this.userEventsService.findAll({ since, userId: user.id });
     }
 
+    const missedDays = this.daysWithNoUserEvents(recentUserEvents, timeInDays);
+    console.log('X---------------------------------X');
+    console.log('recentUserEvents: ' + recentUserEvents);
+    console.log('timeInDays: ' + timeInDays);
+    console.log('missedDays: ' + missedDays);
+    console.log('X---------------------------------X');
 
     const items: AnalyzeDataItemDto[] = [];
     const userNameCache = new Map<number, string>();
@@ -256,6 +262,28 @@ export class PlatformService {
       });
     }
 
-    return { items };
+    return { items, missedDays };
   }
+
+  private daysWithNoUserEvents(userEvents: UserEvent[], timeInDays: number): number {
+    let midnight: Date = new Date(new Date().setHours(0, 0, 0, 0));
+    let previousMidnight: Date = new Date(midnight - 24 * 60 * 60 * 1000);
+    let missedDays = 0;
+    for (let i = 0; i < timeInDays; i++) {
+      let activeDay = false;
+      for (const userEvent of userEvents) {
+        if (userEvent.event_createdAt > previousMidnight && userEvent.event_createdAt <= midnight) {
+          activeDay = true;
+          break;
+        }
+      }
+      if (!activeDay) {
+        missedDays++;
+      }
+      midnight = previousMidnight;
+      previousMidnight = new Date(previousMidnight - 24 * 60 * 60 * 1000);
+    }
+    return missedDays;
+  }
+
 }
