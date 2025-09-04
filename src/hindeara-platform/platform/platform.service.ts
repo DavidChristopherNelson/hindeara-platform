@@ -147,9 +147,22 @@ export class PlatformService {
   }
 
   @LogMethod()
-  async analyzeData(): Promise<AnalyzeDataResponseDto> {
-    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const recentUserEvents = await this.userEventsService.findAll({ since });
+  async analyzeData(phoneNumber?: string, timeWindow?: number): Promise<AnalyzeDataResponseDto> {
+    const timeInDays = timeWindow ?? 1;
+    const since = new Date(Date.now() - timeInDays * 24 * 60 * 60 * 1000);
+    let recentUserEvents = [];
+    if (!phoneNumber) {
+      // No phone number provided, get all recent user events
+      recentUserEvents = await this.userEventsService.findAll({ since });
+    } else {
+      // Phone number provided, get user and their events
+      const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
+      if (!user) {
+        throw new NotFoundException(`No user found with phone number: ${phoneNumber}`);
+      }
+      recentUserEvents = await this.userEventsService.findAll({ since, userId: user.id });
+    }
+
 
     const items: AnalyzeDataItemDto[] = [];
     const userNameCache = new Map<number, string>();

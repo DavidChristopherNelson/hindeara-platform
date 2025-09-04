@@ -1,11 +1,12 @@
 // src/hindeara-platform/platform/platform.controller.ts
-import { Body, Controller, Post, Headers, Get } from '@nestjs/common';
+import { Body, Controller, Post, Headers, Get, Query } from '@nestjs/common';
 import { PlatformService } from './platform.service';
 import { ProcessUserInputDto } from './dto/process-user-input.dto';
 import { ProcessUserInputResponseDto } from './dto/process-user-input-response.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AnalyzeDataResponseDto } from './dto/analyze-data-response.dto';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
+import { AnalyzeDataQueryDto } from './dto/analyze-data-query.dto';
 
 @ApiTags('platforms')
 @Controller()
@@ -40,7 +41,10 @@ export class PlatformController {
     description: 'Analyzes data and returns analysis.',
     type: AnalyzeDataResponseDto,
   })
-  async analyzeData(): Promise<AnalyzeDataResponseDto> {
-    return this.platformService.analyzeData();
+  async analyzeData(
+    @Query() query: AnalyzeDataQueryDto,
+  ): Promise<AnalyzeDataResponseDto> {
+    const { phoneNumber, timeWindow } = query;
+    return this.platformService.analyzeData(phoneNumber, timeWindow);
   }
 }
