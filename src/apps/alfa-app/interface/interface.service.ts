@@ -149,11 +149,14 @@ export class AlfaAppInterfaceService {
       if (!wrongLetter) return;
       const phoneme = await this.phonemesService.findByLetter(wrongLetter);
       if (!phoneme) return;
-      await this.userPhonemeScoreService.updateScore(
-        ctx.userId,
-        phoneme.id,
-        false,
-      );
+      const score = await this.userPhonemeScoreService.findScoreForUserAndPhoneme(ctx.userId, phoneme.id);
+      if (score && Number(score.value) > -5) {
+        await this.userPhonemeScoreService.updateScore(
+          ctx.userId,
+          phoneme.id,
+          false,
+        );
+      }
     }
   }
 

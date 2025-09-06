@@ -143,6 +143,11 @@ export class UserPhonemeScoreService {
     }));
   }
 
+  @LogMethod()
+  async findScoreForUserAndPhoneme(userId: number, phonemeId: number): Promise<UserPhonemeScore | null> {
+    return this.repo.findOne({ where: { userId, phonemeId } });
+  }
+
   /**
    * Ensure this user has a row for every phoneme (default 0).
    * TypeORM-only: fetch sets and insert missing.
@@ -241,7 +246,7 @@ export class UserPhonemeScoreService {
     const currentValue = existingScore?.value
       ? parseFloat(existingScore.value)
       : 0;
-    const increment = answerStatus ? 1 : -2.5;
+    const increment = answerStatus ? 1 : -2;
     const newValue = (currentValue + increment).toFixed(3);
 
     await this.createOrUpdate(userId, phonemeId, newValue);
