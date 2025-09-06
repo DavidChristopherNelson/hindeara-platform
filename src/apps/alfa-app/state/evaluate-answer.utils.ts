@@ -93,6 +93,8 @@ class EvaluateAnswer {
       if (cleanedCorrectAnswer === 'ईख' && cleanedW === 'एक') return true;
       if (cleanedCorrectAnswer === 'दरवाज़ा' && cleanedW === 'दरवाजा')
         return true;
+      if (correctAnswer === 'हथौड़ा' && studentAnswer === 'हथौड़ी') return true;
+      if (correctAnswer === 'हथौड़ी' && studentAnswer === 'हथौड़ा') return true;
 
       // Schwa deletion: ignore trailing long ā (ा) in correctAnswer
       if (
@@ -141,6 +143,10 @@ class EvaluateAnswer {
       if (cleanedCorrectAnswer === 'ओ' && cleaned === 'ओह') {
         return true;
       }
+      if (cleanedCorrectAnswer === 'आ' && cleaned === 'हाँ') {
+        return true;
+      }
+
       if (cCount === 1) {
         return this.markPhoneme(cleanedCorrectAnswer, cleaned);
       } else if (cCount === 2) {

@@ -108,6 +108,15 @@ describe('markWord / markImage', () => {
       true,
     );
   });
+
+  test('hardcoded case: हथौड़ा ↔ हथौड़ी should be equivalent', () => {
+    expect(markImage({ correctAnswer: 'हथौड़ा', studentAnswer: 'हथौड़ी' })).toBe(
+      true,
+    );
+    expect(markImage({ correctAnswer: 'हथौड़ी', studentAnswer: 'हथौड़ा' })).toBe(
+      true,
+    );
+  });
 });
 
 /* ------------------------------------------------------------------ */
@@ -166,6 +175,10 @@ describe('markLetter', () => {
     expect(markLetter({ correctAnswer: 'क्त', studentAnswer: 'क्ता' })).toBe(
       false,
     );
+  });
+
+  test('hardcoded case: आ ↔ हाँ should be equivalent', () => {
+    expect(markLetter({ correctAnswer: 'आ', studentAnswer: 'हाँ' })).toBe(true);
   });
 });
 
