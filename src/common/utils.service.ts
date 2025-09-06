@@ -77,6 +77,8 @@ export class UtilsService {
   @LogMethod()
   async isAppEventValid(appEvent: AppEvent | null): Promise<AppEvent | null> {
     if (!appEvent) return null;
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60_000);
+    if (appEvent.createdAt < fiveMinutesAgo) return null;
     const locale = await this.currentLocale({ user: appEvent.user });
     if (locale !== appEvent.locale) return null;
     if (appEvent.isComplete) return null;
