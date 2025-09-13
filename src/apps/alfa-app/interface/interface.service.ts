@@ -260,7 +260,7 @@ export class AlfaAppInterfaceService {
     const targetLen = await this.calculateWordLength(userId, locale);
     for (const word of wordScores) {
       if (recentUsed.includes(word.word)) continue; // skip recently used words
-      if (word.word.length !== targetLen) continue;
+      if (word.word.length > targetLen) continue;
       return word.word;
     }
     throw new Error('No word found. This should not have happened.');
