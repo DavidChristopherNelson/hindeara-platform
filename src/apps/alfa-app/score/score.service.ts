@@ -113,14 +113,14 @@ export class UserPhonemeScoreService {
   }
 
   /**
-   * Return all phonemes with the user's score (null if missing) WITHOUT raw SQL.
+   * Return all phonemes with the user's score WITHOUT raw SQL.
    * Strategy: two lightweight queries then merge in memory.
    */
   @LogMethod()
   async findAllForUser(
     userId: number,
   ): Promise<
-    Array<{ phonemeId: number; letter: string; value: string | null }>
+    Array<{ phonemeId: number; letter: string; value: string }>
   > {
     const [phonemes, scores] = await Promise.all([
       this.phonemeRepo.find({
@@ -139,7 +139,7 @@ export class UserPhonemeScoreService {
     return phonemes.map((p) => ({
       phonemeId: p.id,
       letter: p.letter,
-      value: scoreByPid.get(p.id) ?? null,
+      value: scoreByPid.get(p.id) ?? '0',
     }));
   }
 

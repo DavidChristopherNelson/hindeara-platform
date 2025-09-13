@@ -22,4 +22,7 @@ export class UiDataDto {
 
   @ApiProperty({ example: ['त', 'ू'] })
   deployCheck: string;
+
+  @ApiProperty({ type: Array<{ phonemeId: number; letter: string; value: number }> })
+  userScore: Array<{ letter: string; value: number }>;
 }

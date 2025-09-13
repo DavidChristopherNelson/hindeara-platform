@@ -70,7 +70,13 @@ export class AlfaAppInterfaceService {
     const phonemeId = wrongCharacters[0]
       ? (await this.phonemesService.findByLetter(wrongCharacters[0]))?.id
       : undefined;
-    const uiData: UiDataDto = {
+    const rawUserScore = await this.userPhonemeScoreService.findAllForUser(ctx.userId);
+    const userScore = rawUserScore
+      .filter((item) => /[^\u0000-\u007F]/.test(item.letter))
+      .map(({ letter, value }) => ({ letter, value: parseFloat(value) }))
+      .sort((a, b) => a.value - b.value);
+
+      const uiData: UiDataDto = {
       word,
       letter: wrongCharacters[0],
       picture: wrongCharacters[0]
@@ -80,6 +86,7 @@ export class AlfaAppInterfaceService {
       transcript: '',
       wrongCharacters,
       deployCheck,
+      userScore,
     };
 
     const recording = await this.chatgptService.sendMessage({
