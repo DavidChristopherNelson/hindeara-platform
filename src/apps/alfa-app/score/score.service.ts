@@ -246,7 +246,7 @@ export class UserPhonemeScoreService {
     const currentValue = existingScore?.value
       ? parseFloat(existingScore.value)
       : 0;
-    const increment = answerStatus ? 1 : -2;
+    const increment = answerStatus ? 1.2 : -2;
     const newValue = (currentValue + increment).toFixed(3);
 
     await this.createOrUpdate(userId, phonemeId, newValue);

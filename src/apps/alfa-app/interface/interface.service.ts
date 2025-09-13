@@ -290,10 +290,45 @@ export class AlfaAppInterfaceService {
       ...new Set(mostRecentLessons.map((lesson) => lesson.word)),
     ];
     console.log('mostRecentLessonUniqueWords: ', mostRecentLessonUniqueWords);
-
+  
+    // helper to safely extract state.value
+    const getStateValue = (lesson: unknown): string | undefined =>
+      lesson &&
+      typeof lesson === 'object' &&
+      'state' in lesson &&
+      (lesson as any).state &&
+      typeof (lesson as any).state === 'object'
+        ? (lesson as any).state.value
+        : undefined;
+  
+    // Look at past 10 lessons for "complete"
+    const lastTen = recentLessons.slice(0, 10);
+    const completedCount = lastTen.filter(
+      (lesson) => getStateValue(lesson) === 'complete',
+    ).length;
+    const mostRecentComplete = getStateValue(recentLessons[0]) === 'complete';
+  
+    // --- handle adjustments based on completion rules
+    if (completedCount >= 3 && mostRecentComplete) {
+      const baseLen =
+        recentLessonUniqueWords.length > 0
+          ? recentLessonUniqueWords[0].length
+          : 2;
+      return Math.min(baseLen + 1, 4);
+    }
+  
+    if (completedCount === 0) {
+      const baseLen =
+        recentLessonUniqueWords.length > 0
+          ? recentLessonUniqueWords[0].length
+          : 2;
+      return Math.max(baseLen - 1, 2);
+    }
+    // --- END NEW LOGIC
+  
     // Start the student with a word length of 2 if they have done less than 5 lessons
     if (recentLessons.length < 5) return 2;
-
+  
     // Increment the word length if the student has covered 3 or more unique words in the last 5 lessons
     if (mostRecentLessonUniqueWords.length >= 3) {
       if (
@@ -304,13 +339,13 @@ export class AlfaAppInterfaceService {
         return Math.min(mostRecentLessonUniqueWords[0].length + 1, 4);
       }
     }
-
+  
     // Decrement the word length if the student has covered 3 or less unique words in the last 20 lessons
     if (recentLessonUniqueWords.length <= 3) {
       return Math.max(recentLessonUniqueWords[0].length - 1, 2);
     }
-
+  
     // Else don't change the word length
     return recentLessonUniqueWords[0].length;
-  }
+  }    
 }
