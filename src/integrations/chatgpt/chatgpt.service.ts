@@ -69,7 +69,7 @@ export class ChatGPTService {
   async sendMessage({
     userPrompt,
     roleContent = `You are a helpful assistant that speaks in informal language like a child does. The student is the same age as you. Avoid saying 'तू' or 'tu'`,
-    model = 'gpt-4o',
+    model = 'gpt-5',
     tool = 'string',
     locale = 'en',
   }: {
