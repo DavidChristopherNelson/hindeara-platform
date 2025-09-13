@@ -10,6 +10,7 @@ export class AzureSttService {
   private readonly logger = new Logger(AzureSttService.name);
   private readonly apiKey: string | undefined;
   private readonly region: string | undefined;
+  private readonly timeoutMs: number;
 
   constructor(private readonly configService: ConfigService) {
     this.apiKey = this.configService.get<string>('AZURE_SPEECH_KEY');
@@ -17,6 +18,12 @@ export class AzureSttService {
 
     if (!this.apiKey) this.logger.warn('AZURE_SPEECH_KEY not configured');
     if (!this.region) this.logger.warn('AZURE_SPEECH_REGION not configured');
+
+    // Get the timeout
+    const raw = this.configService.get<string>('AZURE_TIMEOUT');
+    const parsed = Number(raw);
+    this.timeoutMs = Number.isFinite(parsed) && parsed > 0 ? parsed : 2000;
+    this.logger.log(`- AZURE_TIMEOUT: ${this.timeoutMs} ms`);
   }
 
   async transcribeAudio(audioBuffer: Buffer, locale: string): Promise<string> {
@@ -66,7 +73,7 @@ export class AzureSttService {
             'Content-Type': contentType,
             Accept: 'application/json',
           },
-          timeout: 2000,
+          timeout: this.timeoutMs,
           maxBodyLength: Infinity,
           maxContentLength: Infinity,
         },

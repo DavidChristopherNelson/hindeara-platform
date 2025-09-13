@@ -9,9 +9,16 @@ export class GoogleService {
   private readonly logger = new Logger(GoogleService.name);
   private readonly speechClient: SpeechClient | null;
   private readonly projectId: string | undefined;
+  private readonly timeoutMs: number;
 
   constructor(private readonly configService: ConfigService) {
     this.projectId = this.configService.get<string>('GOOGLE_CLOUD_PROJECT_ID');
+
+    // Get the timeout
+    const raw = this.configService.get<string>('GOOGLE_CLOUD_TIMEOUT');
+    const parsed = Number(raw);
+    this.timeoutMs = Number.isFinite(parsed) && parsed > 0 ? parsed : 2000;
+    this.logger.log(`- GOOGLE_CLOUD_TIMEOUT: ${this.timeoutMs} ms`);
 
     // Prefer Application Default Credentials via env var set in main.ts ensureGoogleCredentials()
     const keyPathFromEnv = process.env.GOOGLE_APPLICATION_CREDENTIALS;
@@ -110,9 +117,7 @@ export class GoogleService {
         `Request audio content length: ${request.audio.content.length} characters`,
       );
 
-      const [response] = await this.speechClient.recognize(request, {
-        timeout: 2000,
-      });
+      const [response] = await this.speechClient.recognize(request, { timeout: this.timeoutMs });
 
       this.logger.log('Received response from Google Speech-to-Text');
       this.logger.log(

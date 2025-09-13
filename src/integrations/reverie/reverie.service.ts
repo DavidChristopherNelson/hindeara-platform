@@ -13,6 +13,7 @@ export class ReverieService {
   private readonly baseUrl: string;
   private readonly sttPath: string;
   private readonly domain: string;
+  private readonly timeoutMs: number;
 
   constructor(private readonly configService: ConfigService) {
     this.apiKey = this.configService.get<string>('REVERIE_API_KEY');
@@ -25,6 +26,12 @@ export class ReverieService {
 
     if (!this.apiKey) this.logger.warn('REVERIE_API_KEY not configured');
     if (!this.appId) this.logger.warn('REVERIE_APP_ID not configured');
+
+    // Get the timeout
+    const raw = this.configService.get<string>('REVERIE_TIMEOUT');
+    const parsed = Number(raw);
+    this.timeoutMs = Number.isFinite(parsed) && parsed > 0 ? parsed : 2000;
+    this.logger.log(`- REVERIE_TIMEOUT: ${this.timeoutMs} ms`);
   }
 
   async transcribeAudio(audioBuffer: Buffer, locale: string): Promise<string> {
@@ -63,7 +70,7 @@ export class ReverieService {
           domain: this.domain,
           ...form.getHeaders(),
         },
-        timeout: 2000,
+        timeout: this.timeoutMs,
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
       });

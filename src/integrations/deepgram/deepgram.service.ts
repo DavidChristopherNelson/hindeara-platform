@@ -6,12 +6,19 @@ import axios from 'axios';
 export class DeepgramService {
   private readonly logger = new Logger(DeepgramService.name);
   private readonly apiKey: string | undefined;
+  private readonly timeoutMs: number;
 
   constructor(private readonly configService: ConfigService) {
     this.apiKey = this.configService.get<string>('DEEPGRAM_API_KEY');
     if (!this.apiKey) {
       this.logger.warn('DEEPGRAM_API_KEY not configured');
     }
+
+    // Get the timeout
+    const raw = this.configService.get<string>('DEEPGRAM_TIMEOUT');
+    const parsed = Number(raw);
+    this.timeoutMs = Number.isFinite(parsed) && parsed > 0 ? parsed : 2000;
+    this.logger.log(`- DEEPGRAM_TIMEOUT: ${this.timeoutMs} ms`);
   }
 
   async transcribeAudio(audioBuffer: Buffer, locale: string): Promise<string> {
@@ -44,7 +51,7 @@ export class DeepgramService {
             Authorization: `Token ${this.apiKey}`,
             'Content-Type': contentType,
           },
-          timeout: 5000,
+          timeout: this.timeoutMs,
           maxBodyLength: Infinity,
           maxContentLength: Infinity,
         },

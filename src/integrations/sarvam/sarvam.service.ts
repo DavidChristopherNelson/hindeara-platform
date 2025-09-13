@@ -10,12 +10,19 @@ export class SarvamService {
   private readonly logger = new Logger(SarvamService.name);
   private readonly apiKey: string | undefined;
   private readonly baseUrl: string = 'https://api.sarvam.ai';
+  private readonly timeoutMs: number;
 
   constructor(private readonly configService: ConfigService) {
     this.apiKey = this.configService.get<string>('SARVAM_API_KEY');
     if (!this.apiKey) {
       this.logger.warn('SARVAM_API_KEY not configured');
     }
+
+    // Get the timeout
+    const raw = this.configService.get<string>('SARVAM_TIMEOUT');
+    const parsed = Number(raw);
+    this.timeoutMs = Number.isFinite(parsed) && parsed > 0 ? parsed : 2000;
+    this.logger.log(`- SARVAM_TIMEOUT: ${this.timeoutMs} ms`);
   }
 
   async transcribeAudio(audioBuffer: Buffer, locale: string): Promise<string> {
@@ -55,7 +62,7 @@ export class SarvamService {
           Authorization: `Bearer ${this.apiKey}`,
           ...form.getHeaders(),
         },
-        timeout: 2000,
+        timeout: this.timeoutMs,
         maxBodyLength: Infinity,
         maxContentLength: Infinity,
       });
