@@ -72,3 +72,6 @@ show-structure.py
 structure.*
 copy-directory-contents.py
 copy-of-directory-contents.*
+word-checker.py
+word-builder.py
+words.json

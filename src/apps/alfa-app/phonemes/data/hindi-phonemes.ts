@@ -269,87 +269,129 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
     is_active: true,
   },
   {
-    "letter": "ा",
-    "example_noun": " आम",
-    "example_image": "mango.png",
-    "is_active": true
+    letter: "ा",
+    example_noun: " आम",
+    example_image: "mango.png",
+    is_active: true
   },
   {
-    "letter": "ि",
-    "example_noun": " इमली",
-    "example_image": "tamarind.png",
-    "is_active": true
+    letter: "ि",
+    example_noun: " इमली",
+    example_image: "tamarind.png",
+    is_active: true
   },
   {
-    "letter": "ी",
-    "example_noun": " ईंट",
-    "example_image": "brick.png",
-    "is_active": true
+    letter: "ी",
+    example_noun: " ईंट",
+    example_image: "brick.png",
+    is_active: true
   },
   {
-    "letter": "ु",
-    "example_noun": " उल्लू",
-    "example_image": "owl.png",
-    "is_active": true
+    letter: "ु",
+    example_noun: " उल्लू",
+    example_image: "owl.png",
+    is_active: true
   },
   {
-    "letter": "ू",
-    "example_noun": " ऊन",
-    "example_image": "wool.png",
-    "is_active": true
+    letter: "ू",
+    example_noun: " ऊन",
+    example_image: "wool.png",
+    is_active: true
   },
   {
-    "letter": "ृ",
-    "example_noun": " ऋषि",
-    "example_image": "sage.png",
-    "is_active": true
+    letter: "ृ",
+    example_noun: " ऋषि",
+    example_image: "sage.png",
+    is_active: true
   },
   {
-    "letter": "े",
-    "example_noun": " एक",
-    "example_image": "one.png",
-    "is_active": true
+    letter: "े",
+    example_noun: " एक",
+    example_image: "one.png",
+    is_active: true
   },
   {
-    "letter": "ै",
-    "example_noun": " ऐनक",
-    "example_image": "glasses.png",
-    "is_active": true
+    letter: "ै",
+    example_noun: " ऐनक",
+    example_image: "glasses.png",
+    is_active: true
   },
   {
-    "letter": "ो",
-    "example_noun": " ओखली",
-    "example_image": "mortar.png",
-    "is_active": true
+    letter: "ो",
+    example_noun: " ओखली",
+    example_image: "mortar.png",
+    is_active: true
   },
   {
-    "letter": "ौ",
-    "example_noun": " औरत",
-    "example_image": "woman.png",
-    "is_active": true
+    letter: "ौ",
+    example_noun: " औरत",
+    example_image: "woman.png",
+    is_active: true
   },
   {
-    "letter": "ं",
-    "example_noun": "अंगूर",
-    "example_image": "grapes.png",
-    "is_active": true
+    letter: "ं",
+    example_noun: "अंगूर",
+    example_image: "grapes.png",
+    is_active: true
   },
   {
-    "letter": "ः",
-    "example_noun": "",
-    "example_image": "",
-    "is_active": true
+    letter: "ः",
+    example_noun: "",
+    example_image: "",
+    is_active: true
   },
   {
-    "letter": "ँ",
-    "example_noun": "",
-    "example_image": "",
-    "is_active": true
+    letter: "ँ",
+    example_noun: "",
+    example_image: "",
+    is_active: true
   },
   {
-    "letter": "्",
-    "example_noun": "",
-    "example_image": "",
-    "is_active": true
+    letter: "्",
+    example_noun: "",
+    example_image: "",
+    is_active: true
+  },
+  {
+    letter: "ॉ",
+    example_noun: "",
+    example_image: "",
+    is_active: true
+  },
+  {
+    letter: "़",
+    example_noun: "",
+    example_image: "",
+    is_active: true
+  },
+  {
+    letter: "ऑ",
+    example_noun: "",
+    example_image: "",
+    is_active: true
+  },
+  {
+    letter: "ॠ",
+    example_noun: "",
+    example_image: "",
+    is_active: true
+  },
+  {
+    letter: "ॐ",
+    example_noun: "",
+    example_image: "",
+    is_active: true
+  },
+  {
+    letter: "ऌ",
+    example_noun: "",
+    example_image: "",
+    is_active: true
+  },
+  {
+    letter: "ॡ",
+    example_noun: "",
+    example_image: "",
+    is_active: true
   }
 ];
