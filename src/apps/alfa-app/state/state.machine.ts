@@ -85,7 +85,7 @@ export const lessonMachine = setup({
         const hintOne =
           'Tell the student to try again, just join the letters a little faster. ';
         const hintTwo =
-          "Tell the student not to pronounce the 'a' sound at the end of the word. ";
+          "Give the student the example of a rhyming word. For instance, if the word is 'जम' say something like 'if ह and म makes हम then what does ज and म  make? ";
         if (context.hint === hintOne) {
           return hintTwo;
         }
