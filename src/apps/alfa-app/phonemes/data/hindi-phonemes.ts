@@ -327,47 +327,47 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
     example_noun: "औरत",
     example_image: "woman.png",
     is_active: true
-  },
-  {
-    letter: "ं",
-    example_noun: "अंगूर",
-    example_image: "grapes.png",
-    is_active: true
-  },
-  {
-    letter: "ः",
-    example_noun: "",
-    example_image: "",
-    is_active: true
-  },
-  {
-    letter: "ँ",
-    example_noun: "",
-    example_image: "",
-    is_active: true
-  },
-  {
-    letter: "्",
-    example_noun: "",
-    example_image: "",
-    is_active: true
-  },
-  {
-    letter: "ॉ",
-    example_noun: "",
-    example_image: "",
-    is_active: true
-  },
-  {
-    letter: "़",
-    example_noun: "",
-    example_image: "",
-    is_active: true
-  },
-  {
-    letter: "ऑ",
-    example_noun: "",
-    example_image: "",
-    is_active: true
   }
+//  {
+//    letter: "ं",
+//    example_noun: "अंगूर",
+//    example_image: "grapes.png",
+//    is_active: true
+//  },
+//  {
+//    letter: "ः",
+//    example_noun: "",
+//    example_image: "",
+//    is_active: true
+//  },
+//  {
+//    letter: "ँ",
+//    example_noun: "",
+//    example_image: "",
+//    is_active: true
+//  },
+//  {
+//    letter: "्",
+//    example_noun: "",
+//    example_image: "",
+//    is_active: true
+//  },
+//  {
+//    letter: "ॉ",
+//    example_noun: "",
+//    example_image: "",
+//    is_active: true
+//  },
+//  {
+//    letter: "़",
+//    example_noun: "",
+//    example_image: "",
+//    is_active: true
+//  },
+//  {
+//    letter: "ऑ",
+//    example_noun: "",
+//    example_image: "",
+//    is_active: true
+//  }
 ];
