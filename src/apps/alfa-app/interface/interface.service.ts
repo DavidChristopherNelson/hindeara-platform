@@ -22,6 +22,7 @@ import { UiDataDto } from './dto/ui-data.dto';
 import { UtilsService } from 'src/common/utils.service';
 import { UserPhonemeScoreService } from 'src/apps/alfa-app/score/score.service';
 import wordDataJson from '../phonemes/data/word-data.json';
+import localWordDataJson from '../phonemes/data/word-data-local.json';
 
 type LessonContext = Readonly<{
   userId: number;
@@ -274,7 +275,9 @@ export class AlfaAppInterfaceService {
   }
 
   private readonly wordData: ReadonlyArray<WordEntry> =
-    wordDataJson as WordEntry[];
+  (process.env.NODE_ENV === 'development'
+    ? (localWordDataJson as WordEntry[])
+    : (wordDataJson as WordEntry[]));
 
   @LogMethod()
   private async calculateWordLength(

@@ -51,4 +51,16 @@ export class UserPhonemeScoreController {
   ): Promise<void> {
     await this.scoreService.resetAllForUser(userId);
   }
+
+  @Post('assign-special')
+  @ApiResponse({
+    status: 204,
+    description:
+      'Sets phoneme IDs 2031–2040 to value 2 for all users (skips missing phonemes).',
+  })
+  @HttpCode(204)
+  @LogMethod()
+  async assignSpecialPhonemesToAllUsers(): Promise<void> {
+    await this.scoreService.assignSpecialPhonemesToAllUsers();
+  }
 }

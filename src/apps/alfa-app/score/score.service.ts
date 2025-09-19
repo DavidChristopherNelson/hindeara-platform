@@ -251,4 +251,59 @@ export class UserPhonemeScoreService {
 
     await this.createOrUpdate(userId, phonemeId, newValue);
   }
+
+  /**
+   * For every user, set matras (phoneme IDs 2031–2040) to value "2".
+   * Skips any phoneme IDs that do not exist.
+   * Updates existing rows or inserts if missing.
+   */
+  @LogMethod()
+  async assignSpecialPhonemesToAllUsers(): Promise<void> {
+    const targetIds = [71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040];
+
+    // Check which phoneme IDs actually exist
+    const existingPhonemes = await this.phonemeRepo.find({
+      where: { id: In(targetIds) },
+      select: ['id'],
+    });
+    const validIds = existingPhonemes.map((p) => p.id);
+    if (!validIds.length) return;
+
+    const users = await this.userRepo.find({ select: ['id'] });
+
+    for (const u of users) {
+      await this.ds.transaction(async (manager) => {
+        const existing = await manager.find(UserPhonemeScore, {
+          where: { userId: u.id, phonemeId: In(validIds) },
+          select: ['id', 'phonemeId', 'value'],
+        });
+
+        const byPid = new Map(existing.map((row) => [row.phonemeId, row]));
+
+        const toUpdate: UserPhonemeScore[] = [];
+        const toInsert: Array<
+          Pick<UserPhonemeScore, 'userId' | 'phonemeId' | 'value'>
+        > = [];
+
+        for (const pid of validIds) {
+          const found = byPid.get(pid);
+          if (found) {
+            if (found.value !== '2') {
+              found.value = '2';
+              toUpdate.push(found);
+            }
+          } else {
+            toInsert.push({ userId: u.id, phonemeId: pid, value: '2' });
+          }
+        }
+
+        if (toUpdate.length) {
+          await manager.save(UserPhonemeScore, toUpdate);
+        }
+        if (toInsert.length) {
+          await manager.insert(UserPhonemeScore, toInsert);
+        }
+      });
+    }
+  }
 }
