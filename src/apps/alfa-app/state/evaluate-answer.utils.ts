@@ -146,6 +146,36 @@ class EvaluateAnswer {
       if (cleanedCorrectAnswer === 'आ' && cleaned === 'हाँ') {
         return true;
       }
+      if (cleanedCorrectAnswer === 'ा' && cleaned === 'आ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ि' && cleaned === 'इ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ी' && cleaned === 'ई') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ु' && cleaned === 'उ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ू' && cleaned === 'ऊ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ृ' && cleaned === 'ऋ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'े' && cleaned === 'ए') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ै' && cleaned === 'ऐ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ो' && cleaned === 'ओ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ौ' && cleaned === 'औ') {
+        return true;
+      }
 
       if (cCount === 1) {
         return this.markPhoneme(cleanedCorrectAnswer, cleaned);
