@@ -29,7 +29,7 @@ export class UserPhonemeScore {
   phonemeId!: number;
 
   // numeric → TypeORM returns string to preserve precision
-  @Column({ type: 'numeric', precision: 6, scale: 3, default: 0 })
+  @Column({ type: 'numeric', precision: 6, scale: 3, default: 1 })
   value!: string;
 
   @CreateDateColumn({ type: 'timestamptz' })

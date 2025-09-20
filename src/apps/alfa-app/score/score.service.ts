@@ -139,7 +139,7 @@ export class UserPhonemeScoreService {
     return phonemes.map((p) => ({
       phonemeId: p.id,
       letter: p.letter,
-      value: scoreByPid.get(p.id) ?? '0',
+      value: scoreByPid.get(p.id) ?? '1',
     }));
   }
 
@@ -162,7 +162,7 @@ export class UserPhonemeScoreService {
     const have = new Set(existing.map((e) => e.phonemeId));
     const toInsert = phonemes
       .filter((p) => !have.has(p.id))
-      .map((p) => ({ userId, phonemeId: p.id, value: '0' }));
+      .map((p) => ({ userId, phonemeId: p.id, value: '1' }));
 
     if (toInsert.length) {
       await this.repo.insert(toInsert);
@@ -234,22 +234,56 @@ export class UserPhonemeScoreService {
     user: number | User,
     phoneme: number | Phoneme,
     answerStatus: boolean,
+    averageScore: number,
   ): Promise<void> {
     const userId = typeof user === 'number' ? user : user.id;
     const phonemeId = typeof phoneme === 'number' ? phoneme : phoneme.id;
 
-    const existingScore = await this.repo.findOne({
+    let currentScore = await this.repo.findOne({
       where: { userId, phonemeId },
-      select: ['id', 'value'],
+      select: ['value'],
     });
 
-    const currentValue = existingScore?.value
-      ? parseFloat(existingScore.value)
-      : 0;
-    const increment = answerStatus ? 1.2 : -2;
-    const newValue = (currentValue + increment).toFixed(3);
+    const scoreDifference = parseFloat(currentScore?.value || '0') - averageScore;
+    let increment = 0;
+    const randomPerturbation = 0.1;
+    if (scoreDifference < 0) {
+      if (answerStatus === true) {
+        increment = -0.5 * scoreDifference + 1 + randomPerturbation;
+      } else {
+        increment = -Math.exp(0.5 * scoreDifference) + randomPerturbation;
+      }
+    }
+    if (scoreDifference >= 0) {
+      if (answerStatus === true) {
+        increment = Math.exp(-0.5 * scoreDifference) + randomPerturbation;
+      } else {
+        increment = -0.5 * scoreDifference - 1 + randomPerturbation;
+      }
+    }
 
+    const newValue = (parseFloat(currentScore?.value || '0') + increment).toFixed(3);
     await this.createOrUpdate(userId, phonemeId, newValue);
+  }
+
+  @LogMethod()
+  async calculateAverageScore(userId: number): Promise<number> {
+    const scores = await this.repo.find({ where: { userId }, select: ['value'] });
+  
+    // Convert to number
+    const nonIntegerScores = scores
+      .map(score => parseFloat(score.value))
+      .filter(value => !Number.isInteger(value));
+  
+    if (nonIntegerScores.length === 0) {
+      return 0;
+    }
+  
+    const averageScore =
+      nonIntegerScores.reduce((sum, value) => sum + value, 0) /
+      nonIntegerScores.length;
+  
+    return averageScore;
   }
 
   /**
@@ -288,12 +322,12 @@ export class UserPhonemeScoreService {
         for (const pid of validIds) {
           const found = byPid.get(pid);
           if (found) {
-            if (found.value !== '2') {
-              found.value = '2';
+            if (found.value !== '3') {
+              found.value = '3';
               toUpdate.push(found);
             }
           } else {
-            toInsert.push({ userId: u.id, phonemeId: pid, value: '2' });
+            toInsert.push({ userId: u.id, phonemeId: pid, value: '3' });
           }
         }
 

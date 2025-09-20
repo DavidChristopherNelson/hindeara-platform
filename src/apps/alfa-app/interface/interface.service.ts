@@ -42,6 +42,10 @@ type WordEntry = { word: string; phonemes: WordPhoneme[] };
 @Injectable()
 export class AlfaAppInterfaceService {
   private readonly appId = 1;
+  private readonly wordData: ReadonlyArray<WordEntry> =
+    ((process.env.NODE_ENV || 'development') === 'development'
+      ? (localWordDataJson as WordEntry[])
+      : (wordDataJson as WordEntry[]));
 
   constructor(
     private readonly appEventsService: AppEventsService,
@@ -126,19 +130,15 @@ export class AlfaAppInterfaceService {
 
     // Snapshot before
     const snapBefore = ctx.lessonActor.getSnapshot();
-    console.log('--- BEFORE ---');
-    console.log('State:', snapBefore.value);
-    console.log('Context:', JSON.stringify(snapBefore.context, null, 2));
     
     ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
 
     // Snapshot after
     const snapAfter = ctx.lessonActor.getSnapshot();
-    console.log('--- AFTER ---');
-    console.log('State:', snapAfter.value);
-    console.log('Context:', JSON.stringify(snapAfter.context, null, 2));
 
     // Update's phoneme's score
+    const averageScore = await this.userPhonemeScoreService.calculateAverageScore(ctx.userId);
+
     // Mark correct letters as correct
     const correctLetters = getCorrectLetters(ctx.lessonActor) ?? [];
     for (const correctLetter of correctLetters) {
@@ -149,6 +149,7 @@ export class AlfaAppInterfaceService {
         ctx.userId,
         phoneme.id,
         true,
+        averageScore,
       );
     }
     // Mark incorrect letters as incorrect
@@ -163,6 +164,7 @@ export class AlfaAppInterfaceService {
           ctx.userId,
           phoneme.id,
           false,
+          averageScore,
         );
       }
     }
@@ -216,7 +218,6 @@ export class AlfaAppInterfaceService {
         snapshot: latestMiniLesson.state,
       }).start();
     } else {
-      console.log('create a new lesson');
       lessonActor = createActor(lessonMachine, {
         input: { word: await this.generateWord(userId, locale) },
       }).start();
@@ -237,25 +238,27 @@ export class AlfaAppInterfaceService {
 
   @LogMethod()
   private async generateWord(userId: number, locale: string): Promise<string> {
-    const usedWords =
-      await this.miniLessonsService.findAllWordsByUserIdAndLocale(
-        userId,
-        locale,
-      );
-    const recentUsed = usedWords.slice(-5);
+    const recentUsed = (await this.miniLessonsService.findAllWordsByUserIdAndLocale(
+      userId,
+      locale,
+    )).slice(-5);
 
-    const scoreRows = await this.userPhonemeScoreService.findAllForUser(userId);
+    const scores = await this.userPhonemeScoreService.findAllForUser(userId);
     const scoreByPhonemeId = new Map<number, number>();
-    for (const row of scoreRows) {
-      const n = row.value === null ? 0 : parseFloat(row.value);
-      scoreByPhonemeId.set(row.phonemeId, Number.isFinite(n) ? n : 0);
+    for (const score of scores) {
+      const value = score.value === null ? 1 : parseFloat(score.value);
+      scoreByPhonemeId.set(score.phonemeId, value);
     }
+
+    // calculate the average score
+    const averageScore = await this.userPhonemeScoreService.calculateAverageScore(userId);
 
     const wordScores: Array<{ word: string; score: number }> = [];
     for (const word of this.wordData) {
       let wordScore = 0;
+      console.log('word: ', word);
       for (const phoneme of word.phonemes) {
-        wordScore += scoreByPhonemeId.get(phoneme.id) ?? 0;
+        wordScore += (scoreByPhonemeId?.get(phoneme.id) ?? 0) - averageScore;
       }
       wordScores.push({ word: word.word, score: wordScore });
     }
@@ -267,17 +270,14 @@ export class AlfaAppInterfaceService {
     });
     const targetLen = await this.calculateWordLength(userId, locale);
     for (const word of wordScores) {
+      console.log('word: ', word.word);
+      console.log('word score: ', word.score);
       if (recentUsed.includes(word.word)) continue; // skip recently used words
       if (word.word.length > targetLen) continue;
       return word.word;
     }
     throw new Error('No word found. This should not have happened.');
   }
-
-  private readonly wordData: ReadonlyArray<WordEntry> =
-  (process.env.NODE_ENV === 'development'
-    ? (localWordDataJson as WordEntry[])
-    : (wordDataJson as WordEntry[]));
 
   @LogMethod()
   private async calculateWordLength(
@@ -289,17 +289,13 @@ export class AlfaAppInterfaceService {
       20,
       locale,
     );
-    console.log('recentLessons: ', recentLessons);
     const mostRecentLessons = recentLessons.slice(0, 5);
-    console.log('mostRecentLessons: ', mostRecentLessons);
     const recentLessonUniqueWords = [
       ...new Set(recentLessons.map((lesson) => lesson.word)),
     ];
-    console.log('recentLessonUniqueWords: ', recentLessonUniqueWords);
     const mostRecentLessonUniqueWords = [
       ...new Set(mostRecentLessons.map((lesson) => lesson.word)),
     ];
-    console.log('mostRecentLessonUniqueWords: ', mostRecentLessonUniqueWords);
   
     // helper to safely extract state.value
     const getStateValue = (lesson: unknown): string | undefined =>
@@ -324,7 +320,7 @@ export class AlfaAppInterfaceService {
         recentLessonUniqueWords.length > 0
           ? recentLessonUniqueWords[0].length
           : 2;
-      return Math.min(baseLen + 1, 4);
+      return baseLen;
     }
   
     if (completedCount === 0) {
@@ -346,7 +342,7 @@ export class AlfaAppInterfaceService {
           (w) => w.length === mostRecentLessonUniqueWords[0].length,
         )
       ) {
-        return Math.min(mostRecentLessonUniqueWords[0].length + 1, 4);
+        return mostRecentLessonUniqueWords[0].length + 1;
       }
     }
   
