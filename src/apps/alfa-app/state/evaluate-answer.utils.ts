@@ -146,7 +146,22 @@ class EvaluateAnswer {
       if (cleanedCorrectAnswer === 'आ' && cleaned === 'हाँ') {
         return true;
       }
+      if (cleanedCorrectAnswer === 'आ' && cleaned === 'हां') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'आ' && cleaned === 'का') {
+        return true;
+      }
       if (cleanedCorrectAnswer === 'ा' && cleaned === 'आ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ा' && cleaned === 'हाँ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ा' && cleaned === 'हां') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ा' && cleaned === 'का') {
         return true;
       }
       if (cleanedCorrectAnswer === 'ि' && cleaned === 'इ') {
