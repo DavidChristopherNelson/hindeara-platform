@@ -94,12 +94,12 @@ export const HINDI_PHONEMES: CreatePhonemeDto[] = [
     example_image: 'clock.png',
     is_active: true,
   },
-  {
-    letter: 'ङ',
-    example_noun: 'ङ',
-    example_image: 'letter_nga.png',
-    is_active: true,
-  },
+//  {
+//    letter: 'ङ',
+//    example_noun: 'ङ',
+//    example_image: 'letter_nga.png',
+//    is_active: true,
+//  },
   {
     letter: 'च',
     example_noun: 'चम्मच',
