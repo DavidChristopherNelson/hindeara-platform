@@ -108,6 +108,40 @@ class EvaluateAnswer {
         return true;
       if (correctAnswer === 'हथौड़ा' && studentAnswer === 'हथौड़ी') return true;
       if (correctAnswer === 'हथौड़ी' && studentAnswer === 'हथौड़ा') return true;
+      if (correctAnswer === 'और' && studentAnswer === 'ओर') return true;
+      if (correctAnswer === 'ओर' && studentAnswer === 'और') return true;
+      if (correctAnswer === 'पढ़' && studentAnswer === 'पड़') return true;
+      if (correctAnswer === 'पड़' && studentAnswer === 'पढ़') return true;
+      if (correctAnswer === 'गए' && studentAnswer === 'गये') return true;
+      if (correctAnswer === 'गये' && studentAnswer === 'गए') return true;
+      if (correctAnswer === 'डर' && studentAnswer === 'दर') return true;
+      if (correctAnswer === 'दर' && studentAnswer === 'डर') return true;
+      if (correctAnswer === 'एक' && studentAnswer === '1') return true;
+      if (correctAnswer === 'एक' && studentAnswer === 'एकाएक') return true;
+      if (correctAnswer === 'दो' && studentAnswer === '2') return true;
+      if (correctAnswer === 'तीन' && studentAnswer === '3') return true;
+      if (correctAnswer === 'चार' && studentAnswer === '4') return true;
+      if (correctAnswer === 'पाँच' && studentAnswer === '5') return true;
+      if (correctAnswer === 'छह' && studentAnswer === '6') return true;
+      if (correctAnswer === 'सात' && studentAnswer === '7') return true;
+      if (correctAnswer === 'आठ' && studentAnswer === '8') return true;
+      if (correctAnswer === 'नौ' && studentAnswer === '9') return true;
+      if (correctAnswer === 'दस' && studentAnswer === '10') return true;
+      if (correctAnswer === 'बीस' && studentAnswer === '20') return true;
+      if (correctAnswer === 'तीस' && studentAnswer === '30') return true;
+      if (correctAnswer === 'चालीस' && studentAnswer === '40') return true;
+      if (correctAnswer === 'पचास' && studentAnswer === '50') return true;
+      if (correctAnswer === 'साठ' && studentAnswer === '60') return true;
+      if (correctAnswer === 'सत्तर' && studentAnswer === '70') return true;
+      if (correctAnswer === 'अस्सी' && studentAnswer === '80') return true;
+      if (correctAnswer === 'नब्बे' && studentAnswer === '90') return true;
+      if (correctAnswer === 'सौ' && studentAnswer === '100') return true;
+      if (correctAnswer === 'चख' && studentAnswer === 'चकाचक') return true;
+      if (correctAnswer === 'ठप' && studentAnswer === 'थपाथप') return true;
+      if (correctAnswer === 'तन' && studentAnswer === 'टनाटन') return true;
+      if (correctAnswer === 'फट' && studentAnswer === 'फटाफट') return true;
+      if (correctAnswer === 'भर' && studentAnswer === 'बराबर') return true;
+      if (correctAnswer === 'हट' && studentAnswer === 'हताहत') return true;
 
       // Schwa deletion: ignore trailing long ā (ा) in correctAnswer
       if (
@@ -219,6 +253,21 @@ class EvaluateAnswer {
         return true;
       }
       if (cleanedCorrectAnswer === 'ौ' && cleaned === 'औ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ओ' && cleaned === 'आओ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ऋ' && cleaned === 'री') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ऋ' && cleaned === 'रि') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'श' && cleaned === 'शाह') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ष' && cleaned === 'शाह') {
         return true;
       }
 
