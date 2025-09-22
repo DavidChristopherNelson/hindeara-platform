@@ -281,11 +281,11 @@ export class AlfaAppInterfaceService {
     userId: number,
     locale: string,
   ): Promise<number> {
-    const allLessons = await this.miniLessonsService.findMostRecentNByUserId(
+    const allLessons = (await this.miniLessonsService.findMostRecentNByUserId(
       userId,
       undefined,
       locale,
-    );
+    )).reverse();
     let lessonWord = '';
     let counter = 1;
     let allowedWordLength = 2;
