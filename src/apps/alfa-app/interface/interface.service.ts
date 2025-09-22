@@ -80,14 +80,21 @@ export class AlfaAppInterfaceService {
       .filter((item) => /[^\u0000-\u007F]/.test(item.letter))
       .map(({ letter, value }) => ({ letter, value: parseFloat(value) }))
       .sort((a, b) => a.value - b.value);
-    let letterImagePrompt = '';
-    if (state === 'letterImage') {
+    let imagePrompt = '';
+    if (state === 'image') {
       if (ctx.lessonActor.getSnapshot().context.letterImageErrors > 0) {
         const answerLetter = ctx.lessonActor.getSnapshot().context.answer;
         if (answerLetter) {
             const phoneme = await this.phonemesService.findByLetter(answerLetter);
-            letterImagePrompt = ` Tell the student that the image shown is a ${phoneme?.example_noun}. `;
+            imagePrompt = ` Tell the student that the image being shown is a ${phoneme?.example_noun}. `;
         }
+      }
+    }
+    if (state === 'letterImage') {
+      const answerLetter = ctx.lessonActor.getSnapshot().context.answer;
+      if (answerLetter) {
+        const phoneme = await this.phonemesService.findByLetter(answerLetter);
+        imagePrompt = ` Tell the student that the image previously shown was a ${phoneme?.example_noun}. `;
       }
     }
 
@@ -108,7 +115,7 @@ export class AlfaAppInterfaceService {
       userPrompt: `
         For context here is the recent previous exchange between the app and the student
         ${getPrompt(ctx.lessonActor)}
-        ${letterImagePrompt}
+        ${imagePrompt}
         Please generate a unique response.
         Your response must only contain the actual words you want to communicate to the student **and must not include any emojis or emoticons**.
         Your response must be less than 20 words. 
