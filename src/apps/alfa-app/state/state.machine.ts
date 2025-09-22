@@ -341,7 +341,7 @@ export const lessonMachine = setup({
     letterImage: {
       meta: {
         prompt:
-          'The student can see a image on a screen. The student has just successfully identified the image. Please ask the student what the first sound of the object represented in the image.',
+          'Please ask the student what the first sound of the object represented in the image.',
       },
       entry: assign({
         answer: ({ context }) => context.wrongCharacters[0],
