@@ -55,6 +55,19 @@ const sameFamily = (a: string, b: string) => {
 
 type MarkArgs = { correctAnswer: string; studentAnswer: string };
 
+const MATRAS = new Set([
+  "ा", "ि", "ी", "ु", "ू", "ृ", "े", "ै", "ो", "ौ",
+]);
+
+function splitWord(word: string): string[] {
+  // Properly split Hindi text into Unicode characters
+  return Array.from(word);
+}
+
+function isMatra(char: string): boolean {
+  return MATRAS.has(char);
+}
+
 /* ───────── utility class ───────── */
 class EvaluateAnswer {
   /* helpers */
@@ -116,10 +129,27 @@ class EvaluateAnswer {
     });
   }
 
-  /* alias */
   @LogMethod()
   static markImage({ correctAnswer, studentAnswer }: MarkArgs): boolean {
-    return this.markWord({ correctAnswer, studentAnswer });
+    const cleanedExampleWord = this.clean(correctAnswer);
+    const cleanedExampleChars = splitWord(cleanedExampleWord);
+
+    const splitStudentAnswer = studentAnswer.split(/\s+/);
+    for (const studentWord of splitStudentAnswer) {
+      const cleanedStudentWord = this.clean(studentWord)
+      const cleanedStudentChars = splitWord(cleanedStudentWord);
+      if (cleanedExampleChars.length === 0 || cleanedStudentChars.length === 0) {
+        continue;
+      }
+      if (cleanedExampleChars[0] !== cleanedStudentChars[0]) continue;
+      if (cleanedExampleChars.length > 1 && isMatra(cleanedExampleChars[1])) {
+        if (!(cleanedStudentChars.length > 1 && cleanedStudentChars[1] === cleanedExampleChars[1])) {
+          continue;
+        }
+      }
+      return true;
+    }
+    return false;
   }
 
   @LogMethod()

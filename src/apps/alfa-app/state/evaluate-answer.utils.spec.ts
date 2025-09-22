@@ -102,20 +102,76 @@ describe('markWord / markImage', () => {
       markWord({ correctAnswer: correct, studentAnswer: 'सुंदर चित्र' }),
     ).toBe(false);
   });
+});
 
-  test('markImage mirrors markWord', () => {
-    expect(markImage({ correctAnswer: correct, studentAnswer: 'कला' })).toBe(
-      true,
-    );
+/* ------------------------------------------------------------------ */
+/*  markImage – first char + optional 2nd-char matra equality         */
+/* ------------------------------------------------------------------ */
+describe('markImage (first character match + optional second-char matra match)', () => {
+  it('returns false when example is empty', () => {
+    expect(markImage({ correctAnswer: '', studentAnswer: 'कुछ' })).toBe(false);
   });
 
-  test('hardcoded case: हथौड़ा ↔ हथौड़ी should be equivalent', () => {
-    expect(markImage({ correctAnswer: 'हथौड़ा', studentAnswer: 'हथौड़ी' })).toBe(
-      true,
-    );
-    expect(markImage({ correctAnswer: 'हथौड़ी', studentAnswer: 'हथौड़ा' })).toBe(
-      true,
-    );
+  it('returns false when student is empty (no tokens)', () => {
+    expect(markImage({ correctAnswer: 'कमल', studentAnswer: '' })).toBe(false);
+  });
+
+  it('skips whitespace-only tokens and returns false if none match', () => {
+    expect(markImage({ correctAnswer: 'कमल', studentAnswer: '   \t  ' })).toBe(false);
+  });
+
+  it('first character mismatch → false', () => {
+    expect(markImage({ correctAnswer: 'कमल', studentAnswer: 'गल' })).toBe(false);
+    expect(markImage({ correctAnswer: 'कील', studentAnswer: 'गील' })).toBe(false);
+  });
+
+  it('first character matches, example 2nd char is NOT a matra → true (no 2nd-char requirement)', () => {
+    // Example: "कमल" → ['क','म','ल']; 2nd char 'म' is not a matra
+    expect(markImage({ correctAnswer: 'कमल', studentAnswer: 'कबीर' })).toBe(true);
+    // Very short student token still allowed when example’s 2nd isn’t a matra
+    expect(markImage({ correctAnswer: 'कमल', studentAnswer: 'क' })).toBe(true);
+  });
+
+  it('example 2nd char IS a matra and matches in student → true', () => {
+    // "कील" → 2nd is 'ी'
+    expect(markImage({ correctAnswer: 'कील', studentAnswer: 'कीड़ा' })).toBe(true);
+    // "कुर्सी" → 2nd is 'ु'
+    expect(markImage({ correctAnswer: 'कुर्सी', studentAnswer: 'कुत्ता' })).toBe(true);
+  });
+
+  it('example 2nd char IS a matra but student lacks that matra (too short) → false', () => {
+    expect(markImage({ correctAnswer: 'कील', studentAnswer: 'क' })).toBe(false);
+  });
+
+  it('example 2nd char IS a matra but student has a DIFFERENT matra → false', () => {
+    expect(markImage({ correctAnswer: 'कील', studentAnswer: 'कुल' })).toBe(false); // 'ी' vs 'ु'
+    expect(markImage({ correctAnswer: 'कोना', studentAnswer: 'कैदी' })).toBe(false); // 'ो' vs 'ै'
+  });
+
+  it('multiple tokens: ignores non-matching tokens and returns true when a later token matches', () => {
+    expect(
+      markImage({ correctAnswer: 'कील', studentAnswer: 'घर कल कीड़ा' })
+    ).toBe(true); // first two fail, third matches
+  });
+
+  it('multiple tokens: all tokens fail → false', () => {
+    expect(
+      markImage({ correctAnswer: 'कील', studentAnswer: 'घर गल गली' })
+    ).toBe(false);
+  });
+
+  it('Unicode NFC normalization of first char (nukta decomposed vs precomposed) → true when rule allows', () => {
+    const example = 'ड़ना';          // precomposed nukta
+    const student = 'ड\u093Cना';     // decomposed nukta
+    expect(markImage({ correctAnswer: example, studentAnswer: student })).toBe(true);
+  });
+
+  it('first character matches but example 2nd is a matra and student has a consonant at 2nd → false', () => {
+    expect(markImage({ correctAnswer: 'कोठा', studentAnswer: 'कठिन' })).toBe(false); // needs 'ो' at idx 1
+  });
+
+  it('cleans punctuation/whitespace inside token and still matches → true', () => {
+    expect(markImage({ correctAnswer: 'कील', studentAnswer: '  की,ड़ा  ' })).toBe(true);
   });
 });
 
