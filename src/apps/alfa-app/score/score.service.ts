@@ -125,6 +125,7 @@ export class UserPhonemeScoreService {
     const [phonemes, scores] = await Promise.all([
       this.phonemeRepo.find({
         select: ['id', 'letter'],
+        where: { is_active: true },
         order: { id: 'ASC' },
       }),
       this.repo.find({
