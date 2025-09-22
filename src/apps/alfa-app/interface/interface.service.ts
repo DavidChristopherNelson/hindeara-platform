@@ -268,90 +268,52 @@ export class AlfaAppInterfaceService {
       if (a.score !== b.score) return a.score - b.score;
       return Math.random() - 0.5;
     });
-    const targetLen = await this.calculateWordLength(userId, locale);
+    const targetWordLength = await this.targetWordLength(userId, locale);
     for (const word of wordScores) {
-      console.log('word: ', word.word);
-      console.log('word score: ', word.score);
       if (recentUsed.includes(word.word)) continue; // skip recently used words
-      if (word.word.length > targetLen) continue;
-      return word.word;
+      if (word.word.length <= Math.floor(targetWordLength)) return word.word;;
     }
     throw new Error('No word found. This should not have happened.');
   }
 
   @LogMethod()
-  private async calculateWordLength(
+  private async targetWordLength(
     userId: number,
     locale: string,
   ): Promise<number> {
-    const recentLessons = await this.miniLessonsService.findMostRecentNByUserId(
+    const allLessons = await this.miniLessonsService.findMostRecentNByUserId(
       userId,
-      20,
+      undefined,
       locale,
     );
-    const mostRecentLessons = recentLessons.slice(0, 5);
-    const recentLessonUniqueWords = [
-      ...new Set(recentLessons.map((lesson) => lesson.word)),
-    ];
-    const mostRecentLessonUniqueWords = [
-      ...new Set(mostRecentLessons.map((lesson) => lesson.word)),
-    ];
-  
-    // helper to safely extract state.value
-    const getStateValue = (lesson: unknown): string | undefined =>
-      lesson &&
-      typeof lesson === 'object' &&
-      'state' in lesson &&
-      (lesson as any).state &&
-      typeof (lesson as any).state === 'object'
-        ? (lesson as any).state.value
-        : undefined;
-  
-    // Look at past 10 lessons for "complete"
-    const lastTen = recentLessons.slice(0, 10);
-    const completedCount = lastTen.filter(
-      (lesson) => getStateValue(lesson) === 'complete',
-    ).length;
-    const mostRecentComplete = getStateValue(recentLessons[0]) === 'complete';
-  
-    // --- handle adjustments based on completion rules
-    if (completedCount >= 3 && mostRecentComplete) {
-      const baseLen =
-        recentLessonUniqueWords.length > 0
-          ? recentLessonUniqueWords[0].length
-          : 2;
-      return baseLen;
-    }
-  
-    if (completedCount === 0) {
-      const baseLen =
-        recentLessonUniqueWords.length > 0
-          ? recentLessonUniqueWords[0].length
-          : 2;
-      return Math.max(baseLen - 1, 2);
-    }
-    // --- END NEW LOGIC
-  
-    // Start the student with a word length of 2 if they have done less than 5 lessons
-    if (recentLessons.length < 5) return 2;
-  
-    // Increment the word length if the student has covered 3 or more unique words in the last 5 lessons
-    if (mostRecentLessonUniqueWords.length >= 3) {
-      if (
-        mostRecentLessonUniqueWords.every(
-          (w) => w.length === mostRecentLessonUniqueWords[0].length,
-        )
-      ) {
-        return mostRecentLessonUniqueWords[0].length + 1;
+    let lessonWord = '';
+    let counter = 1;
+    let allowedWordLength = 2;
+    for (const lesson of allLessons) {
+      if (lessonWord === lesson.word) {
+        counter++;
+      } else {
+        switch (counter) {
+          case 2:
+            allowedWordLength += 0.5;
+            break;
+          case 3:
+            allowedWordLength += 0.25;
+            break;
+          case 4:
+            allowedWordLength += 0;
+            break;
+          case 5:
+            allowedWordLength += -0.25;
+            break;
+          default:
+            allowedWordLength = Math.max(allowedWordLength - 0.5, 2);
+            break;
+        }
+        lessonWord = lesson.word;
+        counter = 1;
       }
     }
-  
-    // Decrement the word length if the student has covered 3 or less unique words in the last 20 lessons
-    if (recentLessonUniqueWords.length <= 3) {
-      return Math.max(recentLessonUniqueWords[0].length - 1, 2);
-    }
-  
-    // Else don't change the word length
-    return recentLessonUniqueWords[0].length;
+    return allowedWordLength;
   }    
 }

@@ -36,7 +36,7 @@ export class MiniLessonsService {
   @LogMethod()
   async findMostRecentNByUserId(
     userId: number,
-    n: number,
+    n: number | undefined,
     locale?: string,
   ): Promise<MiniLesson[]> {
     const qb = this.miniLessonRepository

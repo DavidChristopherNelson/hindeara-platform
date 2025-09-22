@@ -139,7 +139,7 @@ export class UserPhonemeScoreService {
     return phonemes.map((p) => ({
       phonemeId: p.id,
       letter: p.letter,
-      value: scoreByPid.get(p.id) ?? '1',
+      value: scoreByPid.get(p.id) ?? '0.1',
     }));
   }
 
@@ -162,7 +162,7 @@ export class UserPhonemeScoreService {
     const have = new Set(existing.map((e) => e.phonemeId));
     const toInsert = phonemes
       .filter((p) => !have.has(p.id))
-      .map((p) => ({ userId, phonemeId: p.id, value: '1' }));
+      .map((p) => ({ userId, phonemeId: p.id, value: '0' }));
 
     if (toInsert.length) {
       await this.repo.insert(toInsert);
@@ -322,12 +322,12 @@ export class UserPhonemeScoreService {
         for (const pid of validIds) {
           const found = byPid.get(pid);
           if (found) {
-            if (found.value !== '3') {
-              found.value = '3';
+            if (found.value !== '4') {
+              found.value = '4';
               toUpdate.push(found);
             }
           } else {
-            toInsert.push({ userId: u.id, phonemeId: pid, value: '3' });
+            toInsert.push({ userId: u.id, phonemeId: pid, value: '4' });
           }
         }
 
