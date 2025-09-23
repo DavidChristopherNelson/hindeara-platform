@@ -80,33 +80,13 @@ export class AlfaAppInterfaceService {
       .filter((item) => /[^\u0000-\u007F]/.test(item.letter))
       .map(({ letter, value }) => ({ letter, value: parseFloat(value) }))
       .sort((a, b) => a.value - b.value);
-    console.log('Check Point 1');
-    let imagePrompt = '';
-    if (state === 'image') {
-      console.log('Check Point 2');
-      console.log('imageErrors: ', ctx.lessonActor.getSnapshot().context.imageErrors);
-      if (ctx.lessonActor.getSnapshot().context.imageErrors > 0) {
-        console.log('Check Point 2.1');
-        const answerLetter = ctx.lessonActor.getSnapshot().context.answer;
-        if (answerLetter) {
-          console.log('Check Point 2.2');
-          const phoneme = await this.phonemesService.findByLetter(answerLetter);
-          imagePrompt = ` First tell the student that the image being shown is a ${phoneme?.example_noun}. `;
-        }
-      }
-    }
-    if (state === 'letterImage') {
-      console.log('Check Point 3');
-      const answerLetter = ctx.lessonActor.getSnapshot().context.answer;
-      const letterImageErrors = ctx.lessonActor.getSnapshot().context.letterImageErrors;
-      if (answerLetter && letterImageErrors === 0) {
-        console.log('Check Point 3.1');
-        const phoneme = await this.phonemesService.findByLetter(answerLetter);
-        console.log('Check Point 3.2');
-        console.log('phoneme?.example_noun: ', phoneme?.example_noun);
-        imagePrompt = ` Tell the student that the image previously shown was a ${phoneme?.example_noun}. `;
-      }
-    }
+    const answerLetter = ctx.lessonActor.getSnapshot().context.answer?.charAt(0);
+    const answerPhoneme = answerLetter ? 
+      await this.phonemesService.findByLetter(answerLetter) :
+      '';
+    const exampleNoun = answerPhoneme && typeof answerPhoneme === 'object' ? 
+      answerPhoneme.example_noun : 
+      '';
 
     const uiData: UiDataDto = {
       word,
@@ -123,9 +103,10 @@ export class AlfaAppInterfaceService {
 
     const recording = await this.chatgptService.sendMessage({
       userPrompt: `
-        ${imagePrompt}
-        For context here is the recent previous exchange between the app and the student
-        ${getPrompt(ctx.lessonActor)}
+        ${getPrompt(
+          ctx.lessonActor, 
+          exampleNoun
+        )}
         Please generate a unique response.
         Your response must only contain the actual words you want to communicate to the student **and must not include any emojis or emoticons**.
         Your response must be less than 20 words. 
@@ -284,7 +265,6 @@ export class AlfaAppInterfaceService {
     const wordScores: Array<{ word: string; score: number }> = [];
     for (const word of this.wordData) {
       let wordScore = 0;
-      console.log('word: ', word);
       for (const phoneme of word.phonemes) {
         wordScore += (scoreByPhonemeId?.get(phoneme.id) ?? 0) - averageScore;
       }

@@ -176,7 +176,7 @@ export const lessonMachine = setup({
     word: {
       meta: {
         prompt:
-          'Please ask the student to sound out the word that they can see on the screen. (Do not name or describe the word yourself.) No image is currently being shown.',
+          'Please ask the student to sound out the word that they can see on the screen. (Do not name or describe the word yourself.) No image is currently being shown.' as string,
       },
       entry: assign({
         answer: ({ context }) => context.word,
@@ -244,14 +244,14 @@ export const lessonMachine = setup({
               'persistEventData',
             ],
           },
-        ],
+        ] as const,
       },
     },
 
     letter: {
       meta: {
         prompt:
-          'Please also ask the student to sound out the letter that they can see on the screen. Do not say any letter in your response.',
+          'Please ask the student to sound out the letter that they can see on the screen. Do not say any letter in your response.' as string,
       },
       entry: assign({
         answer: ({ context }) => context.wrongCharacters[0],
@@ -292,14 +292,18 @@ export const lessonMachine = setup({
               'persistEventData',
             ],
           },
-        ],
+        ] as const,
       },
     },
 
     image: {
       meta: {
-        prompt:
-          'Please briefly encourage the student. The student can see a image on a screen. Please ask the student what the image is of.',
+        prompt: (ctx: LessonContext, exampleNoun?: string) => {
+          if (ctx.imageErrors === 0) {
+            return 'Please briefly encourage the student. The student can see a image on a screen. Please ask the student what the image is of.';
+          }
+          return `Please briefly encourage the student. Please tell the student that the answer we are looking for is ${exampleNoun}. Please ask the student to say the word ${exampleNoun}.`;
+        },
       },
       entry: assign({
         answer: ({ context }) => context.wrongCharacters[0],
@@ -334,14 +338,15 @@ export const lessonMachine = setup({
               'persistEventData',
             ],
           },
-        ],
+        ] as const,
       },
     },
 
     letterImage: {
       meta: {
-        prompt:
-          'Please ask the student what the first sound of the object represented in the image.',
+        prompt: (ctx: LessonContext, exampleNoun?: string) => {
+          return `Please ask the student what the first sound of ${exampleNoun} is.`;
+        },
       },
       entry: assign({
         answer: ({ context }) => context.wrongCharacters[0],
@@ -408,7 +413,7 @@ export const lessonMachine = setup({
               'persistEventData',
             ],
           },
-        ],
+        ] as const,
       },
     },
 
@@ -417,7 +422,7 @@ export const lessonMachine = setup({
       type: 'final',
       meta: {
         prompt:
-          'The student finished the lesson. If they got the last answer correct please congratulate them. If they got the last answer wrong say something like let us try another word.',
+          'The student finished the lesson. If they got the last answer correct please congratulate them. If they got the last answer wrong say something like let us try another word.' as string,
       },
       entry: assign({
         answer: () => undefined,
@@ -427,7 +432,20 @@ export const lessonMachine = setup({
 });
 
 export type LessonSnapshot = SnapshotFrom<typeof lessonMachine>;
-type LessonActor = ActorRefFrom<typeof lessonMachine>;
+export type LessonActor = ActorRefFrom<typeof lessonMachine>;
+export type LessonContext = {
+  word: string;
+  correctCharacters: string[];
+  wrongCharacters: string[];
+  wordErrors: number;
+  imageErrors: number;
+  letterImageErrors: number;
+  hint: string;
+  answer: string | undefined;
+  previousAnswerStatus: boolean | null;
+  previousCorrectAnswer: string | null;
+  previousStudentAnswer: string | null;
+};
 
 export const getWord = (actor: LessonActor) => actor.getSnapshot().context.word;
 
@@ -449,17 +467,26 @@ export const getCorrectAnswer = (actor: LessonActor) =>
 export const getStudentAnswer = (actor: LessonActor) =>
   actor.getSnapshot().context.previousStudentAnswer;
 
-export const getPrompt = (actor: LessonActor): string => {
+export const getPrompt = (actor: LessonActor, exampleNoun?: string): string => {
   const snap = actor.getSnapshot();
-  const meta = snap.getMeta() as Record<string, { prompt?: string }>;
+  const meta = snap.getMeta() as Record<string, { prompt?: string | ((ctx: typeof snap.context, exampleNoun?: string) => string) }>;
   const key = `lesson.${snap.value as string}`;
   const hint = snap.context.hint;
-  const previousAnswer = `${
+
+  const previousAnswer =
     snap.context.previousAnswerStatus === null
       ? ''
       : snap.context.previousAnswerStatus
         ? 'The student got the previous answer correct.'
-        : 'The student got the previous answer incorrect.'
-  }`;
-  return `${previousAnswer} ${meta[key]?.prompt ?? ''} ${hint}`;
+        : 'The student got the previous answer incorrect.';
+
+  let rawPrompt = meta[key]?.prompt ?? '';
+
+  // If prompt is a function, call it
+  const prompt =
+    typeof rawPrompt === 'function'
+      ? rawPrompt(snap.context, exampleNoun)
+      : rawPrompt;
+
+  return `${previousAnswer} ${prompt} ${hint}`;
 };
