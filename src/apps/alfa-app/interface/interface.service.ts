@@ -213,6 +213,9 @@ export class AlfaAppInterfaceService {
         'No latestUserEvent found. This should not have happened.',
       );
     }
+    if (!secondLatestUserEvent) {
+      await this.userPhonemeScoreService.assignInitialPhonemesWeights(userId);
+    }
 
     // If there is a valid lesson then use it's state otherwise create a new
     // lesson.

@@ -341,4 +341,43 @@ export class UserPhonemeScoreService {
       });
     }
   }
+
+  /**
+   * For every user, set matras (phoneme IDs 2031–2040) to value "2".
+   * Skips any phoneme IDs that do not exist.
+   * Updates existing rows or inserts if missing.
+   */
+  @LogMethod()
+  async assignInitialPhonemesWeights(userId: number): Promise<void> {
+    const localPhonemeWeights = [
+      { phonemeId: 33, value: 1 },
+      { phonemeId: 51, value: 1 },
+      { phonemeId: 70, value: 2 },
+      { phonemeId: 72, value: 3 },
+      { phonemeId: 78, value: 4 },
+      { phonemeId: 73, value: 4 },
+      { phonemeId: 76, value: 4 },
+      { phonemeId: 74, value: 4 },
+      { phonemeId: 79, value: 4 },
+      { phonemeId: 77, value: 4 },
+      { phonemeId: 71, value: 5 },
+    ];
+    const deployedPhonemeWeights = [
+      { phonemeId: 33, value: 1 },
+      { phonemeId: 52, value: 1 },
+      { phonemeId: 2031, value: 2 },
+      { phonemeId: 2033, value: 3 },
+      { phonemeId: 2039, value: 4 },
+      { phonemeId: 2034, value: 4 },
+      { phonemeId: 2037, value: 4 },
+      { phonemeId: 2035, value: 4 },
+      { phonemeId: 2040, value: 4 },
+      { phonemeId: 2038, value: 4 },
+      { phonemeId: 2032, value: 5 },
+    ];
+
+    (process.env.NODE_ENV || 'development') === 'development'
+      ? await this.createOrUpdateManyForUser(userId, localPhonemeWeights)
+      : await this.createOrUpdateManyForUser(userId, deployedPhonemeWeights);
+  }
 }
