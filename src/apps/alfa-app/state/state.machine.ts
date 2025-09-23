@@ -380,6 +380,9 @@ export const lessonMachine = setup({
     letterImage: {
       meta: {
         prompt: (ctx: LessonContext, _?: string, answerLetter?: string, exampleNoun?: string) => {
+          console.log('ctx.letterImageErrors: ', ctx.letterImageErrors);
+          console.log('exampleNoun: ', exampleNoun);
+          console.log('answerLetter: ', answerLetter);
           if (ctx.letterImageErrors === 0) {
             return `Please ask the student what the first sound of ${exampleNoun} is. `;
           }
@@ -437,7 +440,7 @@ export const lessonMachine = setup({
           },
           /* second incorrect → advance to next letter */
           {
-            guard: ({ context }) => context.letterImageErrors >= 1,
+            guard: ({ context }) => context.letterImageErrors >= 2,
             target: 'letter',
             actions: [
               'resetCorrectCharacters',
