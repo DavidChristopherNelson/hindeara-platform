@@ -12,6 +12,15 @@ import { identifyWrongCharacters } from './identify-wrong-characters.utils';
 
 type AnswerFn = (args: MarkArgs) => boolean;
 
+type PromptFn = (
+  ctx: LessonContext,
+  word?: string,
+  answerLetter?: string,
+  exampleNoun?: string
+) => string;
+
+type Hint = string | PromptFn;
+
 export const lessonMachine = setup({
   /*───────────────────────────*
    *           TYPES           *
@@ -24,7 +33,8 @@ export const lessonMachine = setup({
       wordErrors: number;
       imageErrors: number;
       letterImageErrors: number;
-      hint: string;
+      hint: Hint;
+      endMatraHintsGiven: number;
       answer: string | undefined;
       previousAnswerStatus: boolean | null;
       previousCorrectAnswer: string | null;
@@ -82,16 +92,16 @@ export const lessonMachine = setup({
     resetLetterImageErrors: assign({ letterImageErrors: () => 0 }),
     giveEndMatraHint: assign({
       hint: ({ context }) => {
-        const hintOne =
-          'Tell the student to try again, just join the letters a little faster. ';
-        const hintTwo =
-          "Give the student the example of an alliterating word. For instance, if the word is 'जम' say something like 'if ज and ब makes जब  then what does ज and म make?' ";
-        if (context.hint === hintOne) {
-          return hintTwo;
+        if (context.endMatraHintsGiven === 0) {
+          context.endMatraHintsGiven ++;
+          return 'Tell the student to try again, just join the letters a little faster. ';
+        } else {
+          context.endMatraHintsGiven ++;
+          return (_ctx, word) => `Give the student the example of an alliterating word. For instance, if the word is 'जम' say something like 'if ज, ब makes जब  then what does ज, म make?' Replace this example with ${word}, and an alliterating word to go with it. Keep a little gap between the phonemes. `;
         }
-        return hintOne;
       },
     }),
+
     giveMiddleMatraHint: assign({
       hint: ({ context }) => {
         const hintOne =
@@ -171,6 +181,7 @@ export const lessonMachine = setup({
     imageErrors: 0,
     letterImageErrors: 0,
     hint: '',
+    endMatraHintsGiven: 0,
     answer: (input as { word?: string } | undefined)?.word ?? 'शहद',
     previousAnswerStatus: null,
     previousCorrectAnswer: null,
@@ -183,10 +194,10 @@ export const lessonMachine = setup({
   states: {
     word: {
       meta: {
-        prompt: (ctx: LessonContext, _?: string) => {
+        prompt: (ctx: LessonContext, word?: string, answerLetter?: string, exampleNoun?: string) => {
           console.log('ctx.wordErrors: ', ctx.wordErrors);
           if (ctx.wordErrors === 2) {
-            return "Give the student the example of a rhyming word. For instance, if the word is 'जम' say something like 'if ह and म makes हम then what does ज and म  make? "
+            return `Give the student the example of a rhyming word. For instance, if the word is 'जम' say something like 'if ह and म makes हम then what does ज and म  make?'. Replace this example with ${word}, and a rhyming word to go with it. `
           }
           return 'Please ask the student to read the word that they can see on the screen. (Do not name or describe the word yourself.) No image is currently being shown.';
         },
@@ -312,9 +323,9 @@ export const lessonMachine = setup({
 
     image: {
       meta: {
-        prompt: (ctx: LessonContext, exampleNoun?: string) => {
+        prompt: (ctx: LessonContext, word?: string, answerLetter?: string, exampleNoun?: string) => {
           if (ctx.imageErrors === 0) {
-            return 'Please briefly encourage the student. The student can see an image on a screen. Please ask the student what the image is of. ';
+            return 'Please briefly encourage the student. The student can see an image on a screen. Please ask the student what the image is of. Use a hindi word like तस्वीर or चित्र rather than the English word image ';
           }
           return `Please tell the student that the answer we are looking for is ${exampleNoun}. Please ask the student to say the word ${exampleNoun}.`;
         },
@@ -358,11 +369,14 @@ export const lessonMachine = setup({
 
     letterImage: {
       meta: {
-        prompt: (ctx: LessonContext, exampleNoun?: string) => {
+        prompt: (ctx: LessonContext, _?: string, answerLetter?: string, exampleNoun?: string) => {
           if (ctx.letterImageErrors === 0) {
             return `Please ask the student what the first sound of ${exampleNoun} is. `;
           }
-          return `Please break the picture-word down for the student, ask something like 'what is the first sound in बतख? Is it ब or त or ख ?' (replace बतख with ${exampleNoun}) `;
+          if (ctx.letterImageErrors === 1) {
+            return `Please break the picture-word down for the student, ask something like 'what is the first sound in बतख? Is it ब, or त, or ख ?' (replace बतख with ${exampleNoun}, and make sure you break this word down into sounds rather than whole syllables). Have a little pause between the different sounds. `;
+          }
+          return `Please tell the student that the correct letter is ${answerLetter} and ask the student to say the letter ${answerLetter}. `;
         },
       },
       entry: assign({
@@ -439,7 +453,7 @@ export const lessonMachine = setup({
       type: 'final',
       meta: {
         prompt:
-          'The student finished the lesson. If they got the last answer correct please congratulate them. If they got the last answer wrong, say something like never mind, let us try another word.' as string,
+          'The student finished the lesson. Please tell them the correct answer was ${}. If they got the last answer correct please congratulate them. If they got the last answer wrong, say something like never mind, let us try another word. ' as string,
       },
       entry: assign({
         answer: () => undefined,
@@ -457,7 +471,8 @@ export type LessonContext = {
   wordErrors: number;
   imageErrors: number;
   letterImageErrors: number;
-  hint: string;
+  hint: Hint;
+  endMatraHintsGiven: number;
   answer: string | undefined;
   previousAnswerStatus: boolean | null;
   previousCorrectAnswer: string | null;
@@ -484,11 +499,10 @@ export const getCorrectAnswer = (actor: LessonActor) =>
 export const getStudentAnswer = (actor: LessonActor) =>
   actor.getSnapshot().context.previousStudentAnswer;
 
-export const getPrompt = (actor: LessonActor, exampleNoun?: string): string => {
+export const getPrompt = (actor: LessonActor, word?: string, answerLetter?: string, exampleNoun?: string): string => {
   const snap = actor.getSnapshot();
-  const meta = snap.getMeta() as Record<string, { prompt?: string | ((ctx: typeof snap.context, exampleNoun?: string) => string) }>;
+  const meta = snap.getMeta() as Record<string, { prompt?: string | ((ctx: typeof snap.context, word?: string, answerLetter?: string, exampleNoun?: string) => string) }>;
   const key = `lesson.${snap.value as string}`;
-  const hint = snap.context.hint;
 
   const previousAnswer =
     snap.context.previousAnswerStatus === null
@@ -497,13 +511,19 @@ export const getPrompt = (actor: LessonActor, exampleNoun?: string): string => {
         ? 'The student got the previous answer correct.'
         : 'The student got the previous answer incorrect.';
 
-  let rawPrompt = meta[key]?.prompt ?? '';
-
   // If prompt is a function, call it
+  let rawPrompt = meta[key]?.prompt ?? '';
   const prompt =
     typeof rawPrompt === 'function'
-      ? rawPrompt(snap.context, exampleNoun)
+      ? rawPrompt(snap.context, word, answerLetter, exampleNoun)
       : rawPrompt;
+
+
+  const rawHint = snap.context.hint;
+  const hint =
+    typeof rawHint === 'function'
+      ? rawHint(snap.context, word, answerLetter, exampleNoun)
+      : rawHint;
 
   return `${previousAnswer} ${prompt} ${hint}`;
 };
