@@ -85,7 +85,7 @@ export const lessonMachine = setup({
         const hintOne =
           'Tell the student to try again, just join the letters a little faster. ';
         const hintTwo =
-          "Give the student the example of a rhyming word. For instance, if the word is 'जम' say something like 'if ह and म makes हम then what does ज and म  make? ";
+          "Give the student the example of an alliterating word. For instance, if the word is 'जम' say something like 'if ज and ब makes जब  then what does ज and म make?' ";
         if (context.hint === hintOne) {
           return hintTwo;
         }
@@ -93,8 +93,16 @@ export const lessonMachine = setup({
       },
     }),
     giveMiddleMatraHint: assign({
-      hint: () =>
-        'Ask the student to join the first two letters together, then join the last two letters together and then finally join the whole word together. ',
+      hint: ({ context }) => {
+        const hintOne =
+          'Ask the student to join the first two letters together, then join the last two letters together and then finally join the whole word together. ';
+        const hintTwo =
+          "Ask the student to break it down into two smaller words and then join the whole word together. ";
+        if (context.hint === hintOne) {
+          return hintTwo;
+        }
+        return hintOne;
+      },
     }),
     previousAnswerCorrect: assign({
       previousAnswerStatus: () => true,
@@ -175,8 +183,13 @@ export const lessonMachine = setup({
   states: {
     word: {
       meta: {
-        prompt:
-          'Please ask the student to sound out the word that they can see on the screen. (Do not name or describe the word yourself.) No image is currently being shown.' as string,
+        prompt: (ctx: LessonContext, _?: string) => {
+          console.log('ctx.wordErrors: ', ctx.wordErrors);
+          if (ctx.wordErrors === 2) {
+            return "Give the student the example of a rhyming word. For instance, if the word is 'जम' say something like 'if ह and म makes हम then what does ज and म  make? "
+          }
+          return 'Please ask the student to read the word that they can see on the screen. (Do not name or describe the word yourself.) No image is currently being shown.';
+        },
       },
       entry: assign({
         answer: ({ context }) => context.word,
@@ -198,6 +211,7 @@ export const lessonMachine = setup({
             target: 'complete',
             actions: [
               'identifyCorrectCharacters',
+              'incrementWordErrors',
               'previousAnswerIncorrect',
               'persistEventData',
             ],
@@ -251,7 +265,7 @@ export const lessonMachine = setup({
     letter: {
       meta: {
         prompt:
-          'Please ask the student to sound out the letter that they can see on the screen. Do not say any letter in your response.' as string,
+          'Please ask the student to read the letter that they can see on the screen. Do not say any letter in your response.' as string,
       },
       entry: assign({
         answer: ({ context }) => context.wrongCharacters[0],
@@ -300,9 +314,9 @@ export const lessonMachine = setup({
       meta: {
         prompt: (ctx: LessonContext, exampleNoun?: string) => {
           if (ctx.imageErrors === 0) {
-            return 'Please briefly encourage the student. The student can see a image on a screen. Please ask the student what the image is of.';
+            return 'Please briefly encourage the student. The student can see an image on a screen. Please ask the student what the image is of. ';
           }
-          return `Please briefly encourage the student. Please tell the student that the answer we are looking for is ${exampleNoun}. Please ask the student to say the word ${exampleNoun}.`;
+          return `Please tell the student that the answer we are looking for is ${exampleNoun}. Please ask the student to say the word ${exampleNoun}.`;
         },
       },
       entry: assign({
@@ -320,7 +334,7 @@ export const lessonMachine = setup({
             ],
           },
           {
-            guard: ({ context }) => context.imageErrors >= 2,
+            guard: ({ context }) => context.imageErrors >= 1,
             target: 'letterImage',
             actions: [
               'resetCorrectCharacters',
@@ -345,7 +359,10 @@ export const lessonMachine = setup({
     letterImage: {
       meta: {
         prompt: (ctx: LessonContext, exampleNoun?: string) => {
-          return `Please ask the student what the first sound of ${exampleNoun} is.`;
+          if (ctx.letterImageErrors === 0) {
+            return `Please ask the student what the first sound of ${exampleNoun} is. `;
+          }
+          return `Please break the picture-word down for the student, ask something like 'what is the first sound in बतख? Is it ब or त or ख ?' (replace बतख with ${exampleNoun}) `;
         },
       },
       entry: assign({
@@ -380,9 +397,9 @@ export const lessonMachine = setup({
               'persistEventData',
             ],
           },
-          /* third incorrect & last letter → still advance to word */
+          /* second incorrect & last letter → still advance to word */
           {
-            guard: and(['isLastLetter', ({ context }) => context.letterImageErrors >= 2]),
+            guard: and(['isLastLetter', ({ context }) => context.letterImageErrors >= 1]),
             target: 'word',
             actions: [
               'resetCorrectCharacters',
@@ -392,9 +409,9 @@ export const lessonMachine = setup({
               'persistEventData',
             ],
           },
-          /* third incorrect → advance to next letter */
+          /* second incorrect → advance to next letter */
           {
-            guard: ({ context }) => context.letterImageErrors >= 2,
+            guard: ({ context }) => context.letterImageErrors >= 1,
             target: 'letter',
             actions: [
               'resetCorrectCharacters',
@@ -422,7 +439,7 @@ export const lessonMachine = setup({
       type: 'final',
       meta: {
         prompt:
-          'The student finished the lesson. If they got the last answer correct please congratulate them. If they got the last answer wrong say something like let us try another word.' as string,
+          'The student finished the lesson. If they got the last answer correct please congratulate them. If they got the last answer wrong, say something like never mind, let us try another word.' as string,
       },
       entry: assign({
         answer: () => undefined,

@@ -315,13 +315,15 @@ export class AlfaAppInterfaceService {
             allowedWordLength += -0.25;
             break;
           default:
-            allowedWordLength = Math.max(allowedWordLength - 0.5, 2);
+            allowedWordLength += -0.5;
             break;
         }
         lessonWord = lesson.word;
         counter = 1;
       }
     }
+    //Make sure allowedWordLength is never less than two
+    allowedWordLength = Math.max(allowedWordLength, 2)
     return allowedWordLength;
   }    
 }
