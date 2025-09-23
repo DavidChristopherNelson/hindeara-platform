@@ -9,6 +9,7 @@ import {
   detectIncorrectMiddleMatra,
 } from './evaluate-answer.utils';
 import { identifyWrongCharacters } from './identify-wrong-characters.utils';
+import { ContextCreator } from '@nestjs/core/helpers/context-creator';
 
 type AnswerFn = (args: MarkArgs) => boolean;
 
@@ -97,7 +98,7 @@ export const lessonMachine = setup({
           return 'Tell the student to try again, just join the letters a little faster. ';
         } else {
           context.endMatraHintsGiven ++;
-          return `Give the student the example of an alliterating word. For instance, if the word is 'जम' say something like 'if ज, ब makes जब  then what does ज, म make?' Replace this example with ${context.word}, and an alliterating word to go with it. Keep a little gap between the phonemes. `;
+          return `Give the student the example of a rhyming word. For instance, if the word is 'जम' say something like 'if ह;   म makes हम then what does ज;   म make? Replace this example with a word that rhymes with ${context.word}. Keep the rhyming word the same number of letters as ${context.word}, just replace the starting letter.Keep a little gap between the phonemes as you sound them out. `;
         }
       },
     }),
@@ -198,8 +199,8 @@ export const lessonMachine = setup({
     word: {
       meta: {
         prompt: (ctx: LessonContext, word?: string, answerLetter?: string, exampleNoun?: string) => {
-          if (ctx.wordErrors === 0) {
-            return 'Please ask the student to read the word that they can see on the screen. (Do not name or describe the word yourself.) No image is currently being shown.'
+          if (ctx.hint === '') {
+            return 'Please ask the student to read the word. (Do not name or describe the word yourself.) No image is currently being shown.'
           }
           return '';
         },
@@ -383,7 +384,9 @@ export const lessonMachine = setup({
             return `Please ask the student what the first sound of ${exampleNoun} is. `;
           }
           if (ctx.letterImageErrors === 1) {
-            return `Please break the picture-word down for the student, ask something like 'what is the first sound in बतख? Is it ब, or त, or ख ?' (replace बतख with ${exampleNoun}, and make sure you break this word down into sounds rather than whole syllables). Have a little pause between the different sounds. `;
+            return `Please break the picture-word down for the student, ask something like 'what is the first sound in ऊन? Is it ऊ.
+                  or न ?' (replace ऊन with ${exampleNoun}, and make sure you break this word down into sounds rather than whole syllables). 
+                  Have a significant pause between the different letters, so that it sounds more natural. `;
           }
           return `Please tell the student that the correct letter is ${answerLetter} and ask the student to say the letter ${answerLetter}. `;
         },
@@ -422,7 +425,7 @@ export const lessonMachine = setup({
           },
           /* second incorrect & last letter → still advance to word */
           {
-            guard: and(['isLastLetter', ({ context }) => context.letterImageErrors >= 1]),
+            guard: and(['isLastLetter', ({ context }) => context.letterImageErrors >= 2]),
             target: 'word',
             actions: [
               'resetCorrectCharacters',
@@ -509,11 +512,6 @@ export const getStudentAnswer = (actor: LessonActor) =>
   actor.getSnapshot().context.previousStudentAnswer;
 
 export const getPrompt = (actor: LessonActor, word?: string, answerLetter?: string, exampleNoun?: string): string => {
-  console.log('============================================================');
-  console.log('word: ', word);
-  console.log('answerLetter: ', answerLetter);
-  console.log('exampleNoun: ', exampleNoun);
-  console.log('============================================================');
   const snap = actor.getSnapshot();
   const meta = snap.getMeta() as Record<string, { prompt?: string | ((ctx: typeof snap.context, word?: string, answerLetter?: string, exampleNoun?: string) => string) }>;
   const key = `lesson.${snap.value as string}`;
@@ -525,7 +523,12 @@ export const getPrompt = (actor: LessonActor, word?: string, answerLetter?: stri
         ? 'The student got the previous answer correct.'
         : 'The student got the previous answer incorrect.';
 
-  // If prompt is a function, call it
+  
+  console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+  console.log('word: ', word);
+  console.log('answerLetter: ', answerLetter);
+  console.log('exampleNoun: ', exampleNoun);
+  console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
   let rawPrompt = meta[key]?.prompt ?? '';
   const prompt =
     typeof rawPrompt === 'function'

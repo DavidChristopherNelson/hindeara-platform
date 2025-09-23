@@ -104,11 +104,13 @@ export class AlfaAppInterfaceService {
     const recording = await this.chatgptService.sendMessage({
       userPrompt: `
         ${getPrompt(
-          ctx.lessonActor, 
+          ctx.lessonActor,
+          word,
+          answerLetter,
           exampleNoun
         )}
         Please generate a unique response.
-        Your response must only contain the actual words you want to communicate  to the student **and must not include any emojis or emoticons**.
+        Your response must only contain the actual words you want to communicate to the student **and must not include any emojis or emoticons**.
         Your response must be less than 20 words. 
       `,
       locale: ctx.locale,
