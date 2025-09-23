@@ -97,7 +97,7 @@ export const lessonMachine = setup({
           return 'Tell the student to try again, just join the letters a little faster. ';
         } else {
           context.endMatraHintsGiven ++;
-          return (_ctx, word) => `Give the student the example of an alliterating word. For instance, if the word is 'जम' say something like 'if ज, ब makes जब  then what does ज, म make?' Replace this example with ${word}, and an alliterating word to go with it. Keep a little gap between the phonemes. `;
+          return `Give the student the example of an alliterating word. For instance, if the word is 'जम' say something like 'if ज, ब makes जब  then what does ज, म make?' Replace this example with ${context.word}, and an alliterating word to go with it. Keep a little gap between the phonemes. `;
         }
       },
     }),
@@ -127,6 +127,9 @@ export const lessonMachine = setup({
       previousCorrectAnswer: ({ event }) => event.correctAnswer,
       previousStudentAnswer: ({ event }) => event.studentAnswer,
     }),
+    resetHint: assign({
+      hint: () => '',
+    })
   },
 
   /*───────────────────────────*
@@ -195,11 +198,10 @@ export const lessonMachine = setup({
     word: {
       meta: {
         prompt: (ctx: LessonContext, word?: string, answerLetter?: string, exampleNoun?: string) => {
-          console.log('ctx.wordErrors: ', ctx.wordErrors);
-          if (ctx.wordErrors === 2) {
-            return `Give the student the example of a rhyming word. For instance, if the word is 'जम' say something like 'if ह and म makes हम then what does ज and म  make?'. Replace this example with ${word}, and a rhyming word to go with it. `
+          if (ctx.wordErrors === 0) {
+            return 'Please ask the student to read the word that they can see on the screen. (Do not name or describe the word yourself.) No image is currently being shown.'
           }
-          return 'Please ask the student to read the word that they can see on the screen. (Do not name or describe the word yourself.) No image is currently being shown.';
+          return '';
         },
       },
       entry: assign({
@@ -212,15 +214,18 @@ export const lessonMachine = setup({
             guard: { type: 'checkAnswer', params: { fn: markWord } },
             target: 'complete',
             actions: [
+              'resetHint',
               'identifyCorrectCharacters',
               'previousAnswerCorrect',
               'persistEventData',
+              'resetHint',
             ],
           },
           {
             guard: ({ context }) => context.wordErrors >= 2,
             target: 'complete',
             actions: [
+              'resetHint',
               'identifyCorrectCharacters',
               'incrementWordErrors',
               'previousAnswerIncorrect',
@@ -231,6 +236,7 @@ export const lessonMachine = setup({
             guard: 'incorrectEndMatra',
             target: 'word',
             actions: [
+              'resetHint',
               'identifyCorrectCharacters',
               'giveEndMatraHint',
               'incrementWordErrors',
@@ -242,6 +248,7 @@ export const lessonMachine = setup({
             guard: 'incorrectMiddleMatra',
             target: 'word',
             actions: [
+              'resetHint',
               'identifyCorrectCharacters',
               'giveMiddleMatraHint',
               'incrementWordErrors',
@@ -253,6 +260,7 @@ export const lessonMachine = setup({
             guard: 'detectInsertion',
             target: 'word',
             actions: [
+              'resetHint',
               'identifyCorrectCharacters',
               'incrementWordErrors',
               'previousAnswerIncorrect',
@@ -262,6 +270,7 @@ export const lessonMachine = setup({
           {
             target: 'letter',
             actions: [
+              'resetHint',
               'identifyWrongCharacters',
               'identifyCorrectCharacters',
               'incrementWordErrors',
@@ -452,8 +461,8 @@ export const lessonMachine = setup({
     complete: {
       type: 'final',
       meta: {
-        prompt:
-          'The student finished the lesson. Please tell them the correct answer was ${}. If they got the last answer correct please congratulate them. If they got the last answer wrong, say something like never mind, let us try another word. ' as string,
+        prompt: (ctx: LessonContext) =>
+          `The student finished the lesson. Please tell them the correct answer was ${ctx.word}. If they got the last answer correct please congratulate them. If they got the last answer wrong, say something like never mind, let us try another word. `,
       },
       entry: assign({
         answer: () => undefined,
@@ -500,6 +509,11 @@ export const getStudentAnswer = (actor: LessonActor) =>
   actor.getSnapshot().context.previousStudentAnswer;
 
 export const getPrompt = (actor: LessonActor, word?: string, answerLetter?: string, exampleNoun?: string): string => {
+  console.log('============================================================');
+  console.log('word: ', word);
+  console.log('answerLetter: ', answerLetter);
+  console.log('exampleNoun: ', exampleNoun);
+  console.log('============================================================');
   const snap = actor.getSnapshot();
   const meta = snap.getMeta() as Record<string, { prompt?: string | ((ctx: typeof snap.context, word?: string, answerLetter?: string, exampleNoun?: string) => string) }>;
   const key = `lesson.${snap.value as string}`;
