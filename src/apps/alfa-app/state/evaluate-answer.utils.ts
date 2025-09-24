@@ -142,6 +142,14 @@ class EvaluateAnswer {
       if (correctAnswer === 'फट' && studentAnswer === 'फटाफट') return true;
       if (correctAnswer === 'भर' && studentAnswer === 'बराबर') return true;
       if (correctAnswer === 'हट' && studentAnswer === 'हताहत') return true;
+      if (correctAnswer === 'गुण' && studentAnswer === 'गुन') return true;
+      if (correctAnswer === 'गुण' && studentAnswer === 'गुड़') return true;
+      if (correctAnswer === 'गुण' && studentAnswer === 'गुर') return true;
+      if (correctAnswer === 'गुण' && studentAnswer === 'गुड') return true;
+      if (correctAnswer === 'नहीं' && studentAnswer === 'नई') return true;
+      if (correctAnswer === 'नई' && studentAnswer === 'नहीं') return true;
+      if (correctAnswer === 'बच' && studentAnswer === 'बच्च') return true;
+      if (correctAnswer === 'हाँ' && studentAnswer === 'हां') return true;
 
       // Schwa deletion: ignore trailing long ā (ा) in correctAnswer
       if (
