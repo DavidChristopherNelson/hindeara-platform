@@ -396,7 +396,7 @@ export const lessonMachine = setup({
           console.log('exampleNoun: ', exampleNoun);
           console.log('answerLetter: ', answerLetter);
           if (ctx.letterImageErrors === 0) {
-            return `Please ask the student what the first sound of ${exampleNoun} is. `;
+            return `Please ask the student what the first sound of ${exampleNoun} is. Use 'आवाज़', not शब्द, ध्वनि or अक्षर  `;
           }
           if (ctx.letterImageErrors === 1) {
             return `Please break the picture-word down for the student, ask something like 'what is the first sound in ऊन? Is it ऊ.
