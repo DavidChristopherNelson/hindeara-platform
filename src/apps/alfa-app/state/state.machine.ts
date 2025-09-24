@@ -34,6 +34,7 @@ export const lessonMachine = setup({
       wordErrors: number;
       imageErrors: number;
       letterImageErrors: number;
+      letterNoImageErrors: number;
       hint: Hint;
       endMatraHintsGiven: number;
       answer: string | undefined;
@@ -91,6 +92,7 @@ export const lessonMachine = setup({
       letterImageErrors: ({ context }) => context.letterImageErrors + 1,
     }),
     resetLetterImageErrors: assign({ letterImageErrors: () => 0 }),
+    resetLetterNoImageErrors: assign({ letterNoImageErrors: () => 0 }),
     giveEndMatraHint: assign({
       hint: ({ context }) => {
         if (context.endMatraHintsGiven === 0) {
@@ -191,6 +193,7 @@ export const lessonMachine = setup({
     wordErrors: 0,
     imageErrors: 0,
     letterImageErrors: 0,
+    letterNoImageErrors: 0,
     hint: '',
     endMatraHintsGiven: 0,
     answer: (input as { word?: string } | undefined)?.word ?? 'शहद',
@@ -462,6 +465,69 @@ export const lessonMachine = setup({
             actions: [
               'resetCorrectCharacters',
               'incrementLetterImageErrors',
+              'previousAnswerIncorrect',
+              'persistEventData',
+            ],
+          },
+        ] as const,
+      },
+    },
+
+    /* ───────── letterNoImage ──────── */
+    letterNoImage: {
+      meta: {
+        prompt:
+          'Please ask the student to read the letter that they can see on the screen. Do not say any letter in your response.' as string,
+      },
+      entry: assign({
+        answer: ({ context }) => context.wrongCharacters[0],
+      }),
+      on: {
+        ANSWER: [
+          {
+            guard: and([
+              'isLastLetter',
+              { type: 'checkAnswer', params: { fn: markLetter } },
+            ]),
+            target: 'word',
+            actions: [
+              'identifyCorrectCharacters',
+              'resetLetterNoImageErrors',
+              'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
+          {
+            guard: and([
+              'catchNoImageLetters',
+              { type: 'checkAnswer', params: { fn: markLetter } },
+            ]),
+            target: 'letterNoImage',
+            actions: [
+              'identifyCorrectCharacters',
+              'resetLetterNoImageErrors',
+              'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
+          {
+            guard: { type: 'checkAnswer', params: { fn: markLetter } },
+            target: 'letter',
+            reenter: true,
+            actions: [
+              'identifyCorrectCharacters',
+              'resetLetterImageErrors',
+              'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
+          {
+            target: 'image',
+            actions: [
+              'resetCorrectCharacters',
               'previousAnswerIncorrect',
               'persistEventData',
             ],
