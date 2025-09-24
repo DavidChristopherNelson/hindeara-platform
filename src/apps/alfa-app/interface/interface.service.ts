@@ -283,7 +283,9 @@ export class AlfaAppInterfaceService {
       return Math.random() - 0.5;
     });
     const targetWordLength = await this.targetWordLength(userId, locale);
+    console.log('recentUsed :', recentUsed);
     for (const word of wordScores) {
+      console.log(word);
       if (recentUsed.includes(word.word)) continue; // skip recently used words
       if (word.word.length <= Math.floor(targetWordLength)) return word.word;;
     }

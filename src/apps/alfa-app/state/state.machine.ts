@@ -34,6 +34,7 @@ export const lessonMachine = setup({
       wordErrors: number;
       imageErrors: number;
       letterImageErrors: number;
+      letterNoImageErrors: number;
       hint: Hint;
       endMatraHintsGiven: number;
       answer: string | undefined;
@@ -91,6 +92,10 @@ export const lessonMachine = setup({
       letterImageErrors: ({ context }) => context.letterImageErrors + 1,
     }),
     resetLetterImageErrors: assign({ letterImageErrors: () => 0 }),
+    incrementLetterNoImageErrors: assign({
+      letterNoImageErrors: ({ context }) => context.letterNoImageErrors + 1,
+    }),
+    resetLetterNoImageErrors: assign({ letterNoImageErrors: () => 0 }),
     giveEndMatraHint: assign({
       hint: ({ context }) => {
         if (context.endMatraHintsGiven === 0) {
@@ -102,7 +107,6 @@ export const lessonMachine = setup({
         }
       },
     }),
-
     giveMiddleMatraHint: assign({
       hint: ({ context }) => {
         const hintOne =
@@ -173,6 +177,44 @@ export const lessonMachine = setup({
       });
       return wrongChars.length === 0;
     },
+
+    catchNoImageLetters: ({ event, context}) => {
+      console.log('---------------------------------------------------');
+      console.log('Reached catchNoImageLetters guard');
+      console.log('context.wrongCharacters: ', context.wrongCharacters);
+      if (context.wrongCharacters.length === 0) {
+        const wrongCharacters = identifyWrongCharacters({
+          correctAnswer: event.correctAnswer,
+          studentAnswer: event.studentAnswer,
+        })
+        console.log('wrongCharacters: ', wrongCharacters);
+        const firstWrongCharacter = wrongCharacters[0];
+        console.log('firstWrongCharacter: ', firstWrongCharacter);
+        if (firstWrongCharacter === 'ञ' || firstWrongCharacter === 'ण') {
+          console.log('if statement returns true');
+          console.log('---------------------------------------------------');
+          return true;
+        }
+        console.log('if statement returns false');
+        console.log('---------------------------------------------------');
+        return false;
+      }
+      console.log('Skip first if statement');
+      console.log('context.wrongCharacters[0]: ', context.wrongCharacters[1]);
+      if (
+        context.wrongCharacters[0] === 'ञ' || 
+        context.wrongCharacters[0] === 'ण' ||
+        context.wrongCharacters[1] === 'ञ' || 
+        context.wrongCharacters[1] === 'ण'
+      ) {
+        console.log('if statement returns true');
+        console.log('---------------------------------------------------');
+        return true;
+      }
+      console.log('Skip second if statement');
+      console.log('---------------------------------------------------');
+      return false;
+    },
   },
 }).createMachine({
   id: 'lesson',
@@ -184,6 +226,7 @@ export const lessonMachine = setup({
     wordErrors: 0,
     imageErrors: 0,
     letterImageErrors: 0,
+    letterNoImageErrors: 0,
     hint: '',
     endMatraHintsGiven: 0,
     answer: (input as { word?: string } | undefined)?.word ?? 'शहद',
@@ -281,6 +324,18 @@ export const lessonMachine = setup({
             ],
           },
           {
+            guard: 'catchNoImageLetters',
+            target: 'letterNoImage',
+            actions: [
+              'resetHint',
+              'identifyWrongCharacters',
+              'identifyCorrectCharacters',
+              'incrementWordErrors',
+              'previousAnswerIncorrect',
+              'persistEventData',
+            ],
+          },
+          {
             target: 'letter',
             actions: [
               'resetHint',
@@ -313,7 +368,19 @@ export const lessonMachine = setup({
             target: 'word',
             actions: [
               'identifyCorrectCharacters',
-              'resetLetterImageErrors',
+              'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
+          {
+            guard: and([
+              'catchNoImageLetters',
+              { type: 'checkAnswer', params: { fn: markLetter } }
+            ]),
+            target: 'letterNoImage',
+            actions: [
+              'resetCorrectCharacters',
               'previousAnswerCorrect',
               'dropFirstWrongCharacter',
               'persistEventData',
@@ -325,7 +392,6 @@ export const lessonMachine = setup({
             reenter: true,
             actions: [
               'identifyCorrectCharacters',
-              'resetLetterImageErrors',
               'previousAnswerCorrect',
               'dropFirstWrongCharacter',
               'persistEventData',
@@ -392,9 +458,6 @@ export const lessonMachine = setup({
     letterImage: {
       meta: {
         prompt: (ctx: LessonContext, _?: string, answerLetter?: string, exampleNoun?: string) => {
-          console.log('ctx.letterImageErrors: ', ctx.letterImageErrors);
-          console.log('exampleNoun: ', exampleNoun);
-          console.log('answerLetter: ', answerLetter);
           if (ctx.letterImageErrors === 0) {
             return `Please ask the student what the first sound of ${exampleNoun} is. Use 'आवाज़', not शब्द, ध्वनि or अक्षर  `;
           }
@@ -426,7 +489,20 @@ export const lessonMachine = setup({
               'persistEventData',
             ],
           },
-          /* correct → next letter */
+          {
+            guard: and([
+              'catchNoImageLetters',
+              { type: 'checkAnswer', params: { fn: markLetter } }
+            ]),
+            target: 'letterNoImage',
+            actions: [
+              'resetCorrectCharacters',
+              'resetLetterImageErrors',
+              'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
           {
             guard: { type: 'checkAnswer', params: { fn: markLetter } },
             target: 'letter',
@@ -475,6 +551,121 @@ export const lessonMachine = setup({
       },
     },
 
+    /* ───────── letterNoImage ──────── */
+    letterNoImage: {
+      meta: {
+        prompt: (ctx: LessonContext, _?: string, answerLetter?: string, exampleNoun?: string) => {
+          console.log('Reached letterNoImage state');
+          if (ctx.letterNoImageErrors === 0) {
+            return 'Please ask the student to read the letter that they can see on the screen. Do not say any letter in your response. ';
+          }
+          return `Please tell the student that the correct letter is ${answerLetter} and ask the student to say the letter ${answerLetter}. `;
+        },
+      },
+      entry: assign({
+        answer: ({ context }) => context.wrongCharacters[0],
+      }),
+      on: {
+        ANSWER: [
+          {
+            guard: and([
+              'isLastLetter',
+              { type: 'checkAnswer', params: { fn: markLetter } },
+            ]),
+            target: 'word',
+            actions: [
+              'identifyCorrectCharacters',
+              'resetLetterNoImageErrors',
+              'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
+          {
+            guard: and([
+              'catchNoImageLetters',
+              { type: 'checkAnswer', params: { fn: markLetter } },
+            ]),
+            target: 'letterNoImage',
+            actions: [
+              'identifyCorrectCharacters',
+              'resetLetterNoImageErrors',
+              'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
+          {
+            guard: { type: 'checkAnswer', params: { fn: markLetter } },
+            target: 'letter',
+            reenter: true,
+            actions: [
+              'identifyCorrectCharacters',
+              'resetLetterNoImageErrors',
+              'previousAnswerCorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
+          {
+            guard: and(['isLastLetter', ({ context }) => context.letterNoImageErrors >= 2]),
+            target: 'word',
+            actions: [
+              'resetCorrectCharacters',
+              'resetLetterNoImageErrors',
+              'previousAnswerIncorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
+          {
+            guard: and([
+              'catchNoImageLetters',
+              ({ context }) => context.letterNoImageErrors >= 2,
+            ]),
+            target: 'letterNoImage',
+            actions: [
+              'resetCorrectCharacters',
+              'resetLetterNoImageErrors',
+              'previousAnswerIncorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
+          {
+            guard: ({ context }) => context.letterNoImageErrors >= 2,
+            target: 'letter',
+            actions: [
+              'resetCorrectCharacters',
+              'resetLetterNoImageErrors',
+              'previousAnswerIncorrect',
+              'dropFirstWrongCharacter',
+              'persistEventData',
+            ],
+          },
+          {
+            guard: 'catchNoImageLetters',
+            target: 'letterNoImage',
+            actions: [
+              'incrementLetterNoImageErrors',
+              'resetCorrectCharacters',
+              'previousAnswerIncorrect',
+              'persistEventData',
+            ],
+          },
+          {
+            target: 'letter',
+            actions: [
+              'incrementLetterNoImageErrors',
+              'resetCorrectCharacters',
+              'previousAnswerIncorrect',
+              'persistEventData',
+            ],
+          },
+        ] as const,
+      },
+    },
+
     /* ───────── COMPLETE ──────── */
     complete: {
       type: 'final',
@@ -498,6 +689,7 @@ export type LessonContext = {
   wordErrors: number;
   imageErrors: number;
   letterImageErrors: number;
+  letterNoImageErrors: number;
   hint: Hint;
   endMatraHintsGiven: number;
   answer: string | undefined;
@@ -538,12 +730,6 @@ export const getPrompt = (actor: LessonActor, word?: string, answerLetter?: stri
         ? 'The student got the previous answer correct.'
         : 'The student got the previous answer incorrect.';
 
-  
-  console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-  console.log('word: ', word);
-  console.log('answerLetter: ', answerLetter);
-  console.log('exampleNoun: ', exampleNoun);
-  console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
   let rawPrompt = meta[key]?.prompt ?? '';
   const prompt =
     typeof rawPrompt === 'function'
