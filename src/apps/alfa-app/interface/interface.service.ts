@@ -214,7 +214,7 @@ export class AlfaAppInterfaceService {
         'No latestUserEvent found. This should not have happened.',
       );
     }
-    if (!secondLatestUserEvent) {
+    if (!latestAppEvent) {
       await this.userPhonemeScoreService.assignInitialPhonemesWeights(userId);
     }
 
