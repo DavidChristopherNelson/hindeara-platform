@@ -110,6 +110,7 @@ export class AlfaAppInterfaceService {
           exampleNoun
         )}
         Please generate a unique response.
+        DO NOT use any disrespectful language like तू , तूने, तुझे, or तुझसे. Use आप or तुम and derivatives. 
         Your response must only contain the actual words you want to communicate to the student **and must not include any emojis or emoticons**.
         Your response must be less than 20 words. 
       `,
