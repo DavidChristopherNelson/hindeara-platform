@@ -173,6 +173,13 @@ export const lessonMachine = setup({
       });
       return wrongChars.length === 0;
     },
+
+    catchNoImageLetters: ({ event }) => {
+      if (event.correctAnswer === 'ञ' || event.correctAnswer === 'ण') {
+        return true;
+      }
+      return false;
+    },
   },
 }).createMachine({
   id: 'lesson',
