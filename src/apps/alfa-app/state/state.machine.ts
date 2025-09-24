@@ -268,6 +268,18 @@ export const lessonMachine = setup({
               'persistEventData',
             ],
           },
+          // Only go through the letter learning loop once. 
+          {
+            guard: ({ context }) => context.wordErrors >= 1,
+            target: 'word',
+            actions: [
+              'resetHint',
+              'identifyCorrectCharacters',
+              'incrementWordErrors',
+              'previousAnswerIncorrect',
+              'persistEventData',
+            ],
+          },
           {
             target: 'letter',
             actions: [
