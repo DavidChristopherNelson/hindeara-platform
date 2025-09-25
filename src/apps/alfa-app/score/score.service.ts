@@ -351,7 +351,7 @@ export class UserPhonemeScoreService {
   async assignInitialPhonemesWeights(userId: number): Promise<void> {
     const localPhonemeWeights = [
       { phonemeId: 33, value: 1 },
-      { phonemeId: 51, value: 1 },
+      { phonemeId: 51, value: -100 },
       { phonemeId: 70, value: 2 },
       { phonemeId: 72, value: 3 },
       { phonemeId: 78, value: 4 },

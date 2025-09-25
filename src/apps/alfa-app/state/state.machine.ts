@@ -179,9 +179,6 @@ export const lessonMachine = setup({
     },
 
     catchNoImageLetters: ({ event, context}) => {
-      console.log('---------------------------------------------------');
-      console.log('Reached catchNoImageLetters guard');
-      console.log('context.wrongCharacters: ', context.wrongCharacters);
       if (context.wrongCharacters.length === 0) {
         const wrongCharacters = identifyWrongCharacters({
           correctAnswer: event.correctAnswer,
@@ -191,12 +188,8 @@ export const lessonMachine = setup({
         const firstWrongCharacter = wrongCharacters[0];
         console.log('firstWrongCharacter: ', firstWrongCharacter);
         if (firstWrongCharacter === 'ञ' || firstWrongCharacter === 'ण') {
-          console.log('if statement returns true');
-          console.log('---------------------------------------------------');
           return true;
         }
-        console.log('if statement returns false');
-        console.log('---------------------------------------------------');
         return false;
       }
       console.log('Skip first if statement');
@@ -207,12 +200,8 @@ export const lessonMachine = setup({
         context.wrongCharacters[1] === 'ञ' || 
         context.wrongCharacters[1] === 'ण'
       ) {
-        console.log('if statement returns true');
-        console.log('---------------------------------------------------');
         return true;
       }
-      console.log('Skip second if statement');
-      console.log('---------------------------------------------------');
       return false;
     },
   },
@@ -242,6 +231,12 @@ export const lessonMachine = setup({
     word: {
       meta: {
         prompt: (ctx: LessonContext, word?: string, answerLetter?: string, exampleNoun?: string) => {
+          if (ctx.wordErrors === 2) {
+            return ` Give the student the example of a word that rhymes with ${ctx.word}. Keep the 
+               rhyming word the same number of letters as ${ctx.word}, just replace the starting letter. 
+                For instance, if the word was 'जम' say something like 'if ह,  म makes हम then what does ज,  म make? 
+               Keep semicolons between the phonemes as you sound them out. `;
+          }
           if (ctx.hint === '') {
             return 'Please ask the student to read the word. (Do not name or describe the word yourself.) No image is currently being shown.'
           }
