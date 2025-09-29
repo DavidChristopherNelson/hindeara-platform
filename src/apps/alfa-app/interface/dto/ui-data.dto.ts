@@ -20,6 +20,9 @@ export class UiDataDto {
   @ApiProperty({ example: ['त', 'ू'] })
   wrongCharacters: string[];
 
+  @ApiProperty({ example: 10 })
+  numUniqueWords?: number;
+
   @ApiProperty({ example: ['त', 'ू'] })
   deployCheck: string;
 

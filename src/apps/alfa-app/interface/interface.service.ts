@@ -87,6 +87,8 @@ export class AlfaAppInterfaceService {
     const exampleNoun = answerPhoneme && typeof answerPhoneme === 'object' ? 
       answerPhoneme.example_noun : 
       '';
+    const uniqueWords = await this.miniLessonsService.findAllWordsByUserIdAndLocale(ctx.userId, ctx.locale);
+    const numUniqueWords = state === 'complete' ? uniqueWords.length + 1 : uniqueWords.length;
 
     const uiData: UiDataDto = {
       word,
@@ -97,6 +99,7 @@ export class AlfaAppInterfaceService {
       state,
       transcript: '',
       wrongCharacters,
+      numUniqueWords,
       deployCheck,
       userScore,
     };
