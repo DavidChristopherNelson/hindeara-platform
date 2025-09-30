@@ -88,7 +88,10 @@ export class AlfaAppInterfaceService {
       answerPhoneme.example_noun : 
       '';
     const uniqueWords = await this.miniLessonsService.findAllWordsByUserIdAndLocale(ctx.userId, ctx.locale);
-    const numUniqueWords = state === 'complete' ? uniqueWords.length + 1 : uniqueWords.length;
+    let numUniqueWords = uniqueWords.length;
+    if (state === 'complete' || ctx.latestAppEvent?.isComplete === true) {
+      numUniqueWords ++;
+    }
 
     const uiData: UiDataDto = {
       word,
