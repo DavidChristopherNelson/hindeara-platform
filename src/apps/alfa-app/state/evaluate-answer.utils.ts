@@ -150,7 +150,9 @@ class EvaluateAnswer {
       if (correctAnswer === 'नई' && studentAnswer === 'नहीं') return true;
       if (correctAnswer === 'बच' && studentAnswer === 'बच्च') return true;
       if (correctAnswer === 'हाँ' && studentAnswer === 'हां') return true;
-
+      if (correctAnswer === 'भय' && studentAnswer === 'भाई') return true;
+      if (correctAnswer === 'ऊन' && studentAnswer === 'उन') return true;
+      if (correctAnswer === 'उन' && studentAnswer === 'ऊन') return true;
       // Schwa deletion: ignore trailing long ā (ा) in correctAnswer
       if (
         cleanedCorrectAnswer.endsWith(LONG_A) &&
@@ -276,6 +278,21 @@ class EvaluateAnswer {
         return true;
       }
       if (cleanedCorrectAnswer === 'ष' && cleaned === 'शाह') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ा' && cleaned === 'बड़ा') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ी' && cleaned === 'बड़ी') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ए' && cleaned === 'ऐसे') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ब' && cleaned === 'वाह') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ख' && cleaned === 'हाँ ') {
         return true;
       }
 
