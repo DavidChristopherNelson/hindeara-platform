@@ -162,9 +162,13 @@ class EvaluateAnswer {
       }
 
       // Match words that have characters in the same family in the same position.
-      if (cleanedW.length == cleanedCorrectAnswer.length) {
-        for (let i = 0; i < cleanedW.length; i++) {
-          if (!isEquivalent(cleanedW[i], cleanedCorrectAnswer[i])) return false;
+      // Also allow for the student to prepend some characters to the student answer.
+      if (cleanedW.length >= cleanedCorrectAnswer.length) {
+        const offset = cleanedW.length - cleanedCorrectAnswer.length;
+        for (let i = 0; i < cleanedCorrectAnswer.length; i++) {
+          if (!isEquivalent(cleanedW[i + offset], cleanedCorrectAnswer[i])) {
+            return false;
+          }
         }
         return true;
       }

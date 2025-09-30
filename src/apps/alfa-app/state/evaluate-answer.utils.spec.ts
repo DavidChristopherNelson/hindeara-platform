@@ -43,6 +43,39 @@ describe('clean (indirect via markWord)', () => {
   });
 });
 
+describe('markWord - prepended characters support', () => {
+  const correct = 'घर';
+
+  it('accepts student answer with exactly one extra character prepended', () => {
+    expect(markWord({ correctAnswer: correct, studentAnswer: 'अघर' })).toBe(
+      true,
+    );
+  });
+
+  it('accepts student answer with multiple extra characters prepended', () => {
+    expect(markWord({ correctAnswer: correct, studentAnswer: 'घरघर' })).toBe(
+      true,
+    );
+  });
+
+  it('still rejects student answer with extra characters appended', () => {
+    expect(markWord({ correctAnswer: correct, studentAnswer: 'घरअ' })).toBe(
+      false,
+    );
+  });
+
+  it('still rejects completely different word', () => {
+    expect(markWord({ correctAnswer: correct, studentAnswer: 'दर' })).toBe(
+      false,
+    );
+  });
+
+  it('prepended + same-family consonant still passes', () => {
+    // correct = घर, student = अगर (ग़ is in same family as ग/घ)
+    expect(markWord({ correctAnswer: 'घर', studentAnswer: 'अगर' })).toBe(true);
+  });
+});
+
 /* ------------------------------------------------------------------ */
 /*  markWord  &  markImage (alias)                                    */
 /* ------------------------------------------------------------------ */
