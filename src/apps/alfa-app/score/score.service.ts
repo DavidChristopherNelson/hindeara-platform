@@ -6,6 +6,7 @@ import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import { UserPhonemeScore } from './score.entity';
 import { Phoneme } from 'src/apps/alfa-app/phonemes/entities/phoneme.entity';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
+import { PhonemesService } from 'src/apps/alfa-app/phonemes/phonemes.service';
 
 @Injectable()
 export class UserPhonemeScoreService {
@@ -17,6 +18,7 @@ export class UserPhonemeScoreService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     private readonly ds: DataSource,
+    private readonly phonemesService: PhonemesService,
   ) {}
       
   /**
@@ -197,49 +199,33 @@ async findAllForUser(
    */
   @LogMethod()
   async assignInitialPhonemesWeights(
-    userId: number, 
+    userId: number,
     manager?: EntityManager,
   ): Promise<void> {
-    const localPhonemeWeights = [
-      { phonemeId: 33, value: 1 },
-      { phonemeId: 51, value: 1 },
-      { phonemeId: 70, value: 2 },
-      { phonemeId: 72, value: 3 },
-      { phonemeId: 78, value: 4 },
-      { phonemeId: 73, value: 4 },
-      { phonemeId: 76, value: 4 },
-      { phonemeId: 74, value: 4 },
-      { phonemeId: 79, value: 4 },
-      { phonemeId: 77, value: 4 },
-      { phonemeId: 71, value: 5 },
+    const initialPhonemeLetters = [
+      { letter: "ऋ", value: 1 },
+      { letter: "ण", value: 1 },
+      { letter: "ा", value: 2 },
+      { letter: "ी", value: 3 },
+      { letter: "ो", value: 4 },
+      { letter: "ु", value: 4 },
+      { letter: "े", value: 4 },
+      { letter: "ू", value: 4 },
+      { letter: "ौ", value: 4 },
+      { letter: "ै", value: 4 },
+      { letter: "ि", value: 5 },
     ];
-    const deployedPhonemeWeights = [
-      { phonemeId: 33, value: 1 },
-      { phonemeId: 52, value: 1 },
-      { phonemeId: 2031, value: 2 },
-      { phonemeId: 2033, value: 3 },
-      { phonemeId: 2039, value: 4 },
-      { phonemeId: 2034, value: 4 },
-      { phonemeId: 2037, value: 4 },
-      { phonemeId: 2035, value: 4 },
-      { phonemeId: 2040, value: 4 },
-      { phonemeId: 2038, value: 4 },
-      { phonemeId: 2032, value: 5 },
-    ];
-    
-      // If process.env.NODE_ENV is test, development or falsey then assume a deployed environment
-      const nodeEnv = process.env.NODE_ENV;
-      let weights: Array<{ phonemeId: number; value: number }> = []
-      if (nodeEnv === 'development') {
-        weights = localPhonemeWeights;
-      } else if (nodeEnv === 'test') {
-        weights = localPhonemeWeights;
-      } else if (!nodeEnv) {
-        weights = localPhonemeWeights;
-      } else { // Assume a deployed environment
-        weights = deployedPhonemeWeights;
+  
+    const weights: Array<{ phonemeId: number; value: number | string }> = [];
+  
+    for (const { letter, value } of initialPhonemeLetters) {
+      const phoneme = await this.phonemesService.findByLetter(letter);
+      if (!phoneme) {
+        throw new Error(`Phoneme not found for letter: ${letter}`);
       }
-
-      await this.createManyForUser(userId, weights, manager);
+      weights.push({ phonemeId: phoneme.id, value });
+    }
+  
+    await this.createManyForUser(userId, weights, manager);
   }
 }
