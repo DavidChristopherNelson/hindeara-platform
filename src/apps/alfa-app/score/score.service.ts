@@ -375,9 +375,17 @@ export class UserPhonemeScoreService {
       { phonemeId: 2038, value: 4 },
       { phonemeId: 2032, value: 5 },
     ];
-
-    (process.env.NODE_ENV || 'development') === 'development'
-      ? await this.createOrUpdateManyForUser(userId, localPhonemeWeights)
-      : await this.createOrUpdateManyForUser(userId, deployedPhonemeWeights);
+    
+      // If process.env.NODE_ENV is test, development or falsey then assume a deployed environment
+      const nodeEnv = process.env.NODE_ENV;
+      if (nodeEnv === 'development') {
+        await this.createOrUpdateManyForUser(userId, localPhonemeWeights);
+      } else if (nodeEnv === 'test') {
+        await this.createOrUpdateManyForUser(userId, localPhonemeWeights);
+      } else if (!nodeEnv) {
+        await this.createOrUpdateManyForUser(userId, localPhonemeWeights);
+      } else { // Assume a deployed environment
+        await this.createOrUpdateManyForUser(userId, deployedPhonemeWeights);
+      }
   }
 }
