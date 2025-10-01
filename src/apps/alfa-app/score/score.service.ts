@@ -52,45 +52,63 @@ export class UserPhonemeScoreService {
     }
   }
 
+  /**
+   * Return all phonemes with the user's *latest* score.
+   * Uses two lightweight queries (phonemes + scores) and merges in memory.
+   */
+  @LogMethod()
+  async findLatestForUser(
+    userId: number,
+  ): Promise<Array<{ phonemeId: number; letter: string; value: string }>> {
+    // Get active phonemes
+    const phonemes = await this.phonemeRepo.find({
+      select: ['id', 'letter'],
+      where: { is_active: true },
+      order: { id: 'ASC' },
+    });
 
-/**
- * Return all phonemes with the user's *latest* score.
- * Uses two lightweight queries (phonemes + scores) and merges in memory.
- */
-@LogMethod()
-async findAllForUser(
-  userId: number,
-): Promise<Array<{ phonemeId: number; letter: string; value: string }>> {
-  // Get active phonemes
-  const phonemes = await this.phonemeRepo.find({
-    select: ['id', 'letter'],
-    where: { is_active: true },
-    order: { id: 'ASC' },
-  });
+    // Get all scores for this user, sorted newest first
+    const scores = await this.repo.find({
+      where: { userId },
+      select: ['phonemeId', 'value', 'createdAt'],
+      order: { phonemeId: 'ASC', createdAt: 'DESC' },
+    });
 
-  // Get all scores for this user, sorted newest first
-  const scores = await this.repo.find({
-    where: { userId },
-    select: ['phonemeId', 'value', 'createdAt'],
-    order: { phonemeId: 'ASC', createdAt: 'DESC' },
-  });
-
-  // Keep only the latest score per phonemeId
-  const latestScores = new Map<number, string>();
-  for (const s of scores) {
-    if (!latestScores.has(s.phonemeId)) {
-      latestScores.set(s.phonemeId, s.value);
+    // Keep only the latest score per phonemeId
+    const latestScores = new Map<number, string>();
+    for (const s of scores) {
+      if (!latestScores.has(s.phonemeId)) {
+        latestScores.set(s.phonemeId, s.value);
+      }
     }
+
+    // Merge phoneme list with score values
+    return phonemes.map((p) => ({
+      phonemeId: p.id,
+      letter: p.letter,
+      value: latestScores.get(p.id) ?? '0', // fallback default
+    }));
   }
 
-  // Merge phoneme list with score values
-  return phonemes.map((p) => ({
-    phonemeId: p.id,
-    letter: p.letter,
-    value: latestScores.get(p.id) ?? '0', // fallback default
-  }));
-}
+  @LogMethod()
+  async findAllUser(
+    userId: number
+  ): Promise<Array<{ phonemeId: number; letter: string; value: string | null; createdAt: Date }>> {
+    const raw = await this.repo
+      .createQueryBuilder('score')
+      .leftJoinAndSelect('score.phoneme', 'phoneme')
+      .select(['score.phonemeId', 'phoneme.letter', 'score.value', 'score.createdAt'])
+      .where('score.userId = :userId', { userId })
+      .orderBy('score.createdAt', 'DESC')
+      .getRawMany();
 
+    return raw.map((r) => ({
+      phonemeId: r.score_phonemeId,
+      letter: r.phoneme_letter,
+      value: r.score_value,
+      createdAt: r.score_createdAt,
+    }));
+  }
 
   @LogMethod()
   async findScoreForUserAndPhoneme(userId: number, phonemeId: number): Promise<UserPhonemeScore | null> {

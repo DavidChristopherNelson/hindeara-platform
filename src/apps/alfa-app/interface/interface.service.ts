@@ -75,7 +75,7 @@ export class AlfaAppInterfaceService {
     const phonemeId = wrongCharacters[0]
       ? (await this.phonemesService.findByLetter(wrongCharacters[0]))?.id
       : undefined;
-    const rawUserScore = await this.userPhonemeScoreService.findAllForUser(ctx.userId);
+    const rawUserScore = await this.userPhonemeScoreService.findLatestForUser(ctx.userId);
     const userScore = rawUserScore
       .filter((item) => /[^\u0000-\u007F]/.test(item.letter))
       .map(({ letter, value }) => ({ letter, value: parseFloat(value) }))
@@ -264,7 +264,7 @@ export class AlfaAppInterfaceService {
       locale,
     )).slice(-5);
 
-    const scores = await this.userPhonemeScoreService.findAllForUser(userId);
+    const scores = await this.userPhonemeScoreService.findLatestForUser(userId);
     const scoreByPhonemeId = new Map<number, number>();
     for (const score of scores) {
       const value = score.value === null ? 1 : parseFloat(score.value);

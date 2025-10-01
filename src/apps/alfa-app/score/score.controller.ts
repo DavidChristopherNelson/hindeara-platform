@@ -25,14 +25,35 @@ export class UserPhonemeScoreController {
   @ApiResponse({
     status: 200,
     description:
-      "Returns all phonemes with the user's score (null if missing).",
+      "Returns entire user score history for all phonemes (null if missing).",
   })
   @LogMethod()
-  async findAllForUser(
+  async findAllUser(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<
+    Array<{ phonemeId: number; letter: string; value: string | null; createdAt: Date }>
+  > {
+    return this.scoreService.findAllUser(userId);
+  }
+
+  @Get('/:userId/latest')
+  @ApiParam({
+    name: 'userId',
+    type: Number,
+    required: true,
+    description: 'User ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      "Returns all phonemes with the user's latest score (null if missing).",
+  })
+  @LogMethod()
+  async findLatestForUser(
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<
     Array<{ phonemeId: number; letter: string; value: string | null }>
   > {
-    return this.scoreService.findAllForUser(userId);
+    return this.scoreService.findLatestForUser(userId);
   }
 }

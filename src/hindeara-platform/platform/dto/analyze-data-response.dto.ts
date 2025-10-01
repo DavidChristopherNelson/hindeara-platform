@@ -45,4 +45,7 @@ export class AnalyzeDataResponseDto {
 
   @ApiProperty({ type: Array<{ phonemeId: number; letter: string; value: string | null }> })
   userScore: Array<{ letter: string; value: string | null }>;
+
+  @ApiProperty({ type: Array<{ phonemeId: number; letter: string; value: string | null; createdAt: Date }> })
+  scoreHistory: Array<{ phonemeId: number; letter: string; value: string | null; createdAt: Date }>;
 }

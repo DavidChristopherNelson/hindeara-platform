@@ -262,14 +262,20 @@ export class PlatformService {
     let userScore = [];
     if (phoneNumber) {
       const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
-      userScore = await this.userPhonemeScoreService.findAllForUser(user.id);
+      userScore = await this.userPhonemeScoreService.findLatestForUser(user.id);
       userScore = userScore
         .filter((item) => /[^\u0000-\u007F]/.test(item.letter))
         .map(({ letter, value }) => ({ letter, value: parseFloat(value) }))
         .sort((a, b) => a.value - b.value);
     }
 
-    return { items, missedDays, userScore };
+    let scoreHistory = [];
+    if (phoneNumber) {
+      const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
+      scoreHistory = await this.userPhonemeScoreService.findAllUser(user.id);
+    }
+
+    return { items, missedDays, userScore, scoreHistory };
   }
 
   private daysWithNoUserEvents(userEvents: UserEvent[], timeInDays: number): number {
