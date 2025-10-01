@@ -1,7 +1,7 @@
 // src/apps/alfa-app/score/score.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, In, Repository, QueryFailedError } from 'typeorm';
+import { DataSource, In, Repository, QueryFailedError, EntityManager } from 'typeorm';
 import { LogMethod } from 'src/common/decorators/log-method.decorator';
 import { UserPhonemeScore } from './score.entity';
 import { Phoneme } from 'src/apps/alfa-app/phonemes/entities/phoneme.entity';
@@ -18,135 +18,84 @@ export class UserPhonemeScoreService {
     private readonly userRepo: Repository<User>,
     private readonly ds: DataSource,
   ) {}
-
+      
   /**
-   * Canonical TypeORM style: find -> save
-   * Concurrency-safe via retry on unique violation (PG code 23505).
+   * Batch insert new phoneme scores for one user.
+   * Always creates new rows (append-only, never overwrites).
+   * Can participate in an existing transaction if manager is provided.
    */
   @LogMethod()
-  async createOrUpdate(
-    userId: number,
-    phonemeId: number,
-    value: number | string,
-  ): Promise<void> {
-    const v = String(value);
-
-    const existing = await this.repo.findOne({ where: { userId, phonemeId } });
-    if (existing) {
-      if (existing.value !== v) {
-        existing.value = v;
-        await this.repo.save(existing);
-      }
-      return;
-    }
-
-    try {
-      const created = this.repo.create({ userId, phonemeId, value: v });
-      await this.repo.save(created);
-    } catch (err: unknown) {
-      if (err instanceof QueryFailedError) {
-        const driverErr = err.driverError as { code?: string } | undefined;
-        if (driverErr?.code === '23505') {
-          const afterRace = await this.repo.findOne({
-            where: { userId, phonemeId },
-          });
-          if (afterRace) {
-            if (afterRace.value !== v) {
-              afterRace.value = v;
-              await this.repo.save(afterRace);
-            }
-            return;
-          }
-        }
-      }
-      throw err;
-    }
-  }
-
-  /**
-   * Batch create/update for one user.
-   * One read, then save() updates and insert() new rows inside a txn.
-   */
-  @LogMethod()
-  async createOrUpdateManyForUser(
+  async createManyForUser(
     userId: number,
     items: Array<{ phonemeId: number; value: number | string }>,
+    manager?: EntityManager,
   ): Promise<void> {
     if (!items.length) return;
 
-    await this.ds.transaction(async (manager) => {
-      const ids = Array.from(new Set(items.map((i) => i.phonemeId)));
-      const existing = await manager.find(UserPhonemeScore, {
-        where: { userId, phonemeId: In(ids) },
-        select: ['id', 'phonemeId', 'value'],
-      });
-
-      const byPid = new Map<number, UserPhonemeScore>();
-      for (const row of existing) byPid.set(row.phonemeId, row);
-
-      const toUpdate: UserPhonemeScore[] = [];
-      const toInsert: Array<
-        Pick<UserPhonemeScore, 'userId' | 'phonemeId' | 'value'>
-      > = [];
-
-      for (const { phonemeId, value } of items) {
-        const v = String(value);
-        const found = byPid.get(phonemeId);
-        if (found) {
-          if (found.value !== v) {
-            found.value = v;
-            toUpdate.push(found);
-          }
-        } else {
-          toInsert.push({ userId, phonemeId, value: v });
-        }
-      }
-
-      if (toUpdate.length) {
-        await manager.save(UserPhonemeScore, toUpdate);
-      }
-      if (toInsert.length) {
-        // Ignore occasional races; if you want strictness, wrap in try/catch as in createOrUpdate
-        await manager.insert(UserPhonemeScore, toInsert);
-      }
-    });
-  }
-
-  /**
-   * Return all phonemes with the user's score WITHOUT raw SQL.
-   * Strategy: two lightweight queries then merge in memory.
-   */
-  @LogMethod()
-  async findAllForUser(
-    userId: number,
-  ): Promise<
-    Array<{ phonemeId: number; letter: string; value: string }>
-  > {
-    const [phonemes, scores] = await Promise.all([
-      this.phonemeRepo.find({
-        select: ['id', 'letter'],
-        where: { is_active: true },
-        order: { id: 'ASC' },
-      }),
-      this.repo.find({
-        where: { userId },
-        select: ['phonemeId', 'value'],
-      }),
-    ]);
-
-    const scoreByPid = new Map<number, string>();
-    for (const s of scores) scoreByPid.set(s.phonemeId, s.value);
-
-    return phonemes.map((p) => ({
-      phonemeId: p.id,
-      letter: p.letter,
-      value: scoreByPid.get(p.id) ?? '0.1',
+    // Normalize items and stringify values to match entity column type
+    const toInsert = items.map(({ phonemeId, value }) => ({
+      userId,
+      phonemeId,
+      value: String(value),
     }));
+
+    if (manager) {
+      // Use provided transaction manager
+      await manager.insert(UserPhonemeScore, toInsert);
+    } else {
+      // Otherwise run a standalone transaction
+      await this.ds.transaction(async (txnManager) => {
+        await txnManager.insert(UserPhonemeScore, toInsert);
+      });
+    }
   }
+
+
+/**
+ * Return all phonemes with the user's *latest* score.
+ * Uses two lightweight queries (phonemes + scores) and merges in memory.
+ */
+@LogMethod()
+async findAllForUser(
+  userId: number,
+): Promise<Array<{ phonemeId: number; letter: string; value: string }>> {
+  // Get active phonemes
+  const phonemes = await this.phonemeRepo.find({
+    select: ['id', 'letter'],
+    where: { is_active: true },
+    order: { id: 'ASC' },
+  });
+
+  // Get all scores for this user, sorted newest first
+  const scores = await this.repo.find({
+    where: { userId },
+    select: ['phonemeId', 'value', 'createdAt'],
+    order: { phonemeId: 'ASC', createdAt: 'DESC' },
+  });
+
+  // Keep only the latest score per phonemeId
+  const latestScores = new Map<number, string>();
+  for (const s of scores) {
+    if (!latestScores.has(s.phonemeId)) {
+      latestScores.set(s.phonemeId, s.value);
+    }
+  }
+
+  // Merge phoneme list with score values
+  return phonemes.map((p) => ({
+    phonemeId: p.id,
+    letter: p.letter,
+    value: latestScores.get(p.id) ?? '0', // fallback default
+  }));
+}
+
 
   @LogMethod()
   async findScoreForUserAndPhoneme(userId: number, phonemeId: number): Promise<UserPhonemeScore | null> {
-    return this.repo.findOne({ where: { userId, phonemeId } });
+    return this.repo.findOne({
+      where: { userId, phonemeId },
+      order: { createdAt: 'DESC' },
+    });
   }
 
   /**
@@ -171,62 +120,6 @@ export class UserPhonemeScoreService {
   }
 
   /**
-   * Initialize all (user × phoneme) pairs to 0—TypeORM-only.
-   * NOTE: If your user/phoneme tables are very large, consider doing this in batches.
-   */
-  @LogMethod()
-  async initializeAllPairsZero(): Promise<void> {
-    const [users, phonemes, existing] = await Promise.all([
-      this.userRepo.find({ select: ['id'] }),
-      this.phonemeRepo.find({ select: ['id'] }),
-      this.repo.find({ select: ['userId', 'phonemeId'] }),
-    ]);
-
-    const existingKeys = new Set(
-      existing.map((e) => `${e.userId}:${e.phonemeId}`),
-    );
-    const toInsert: Array<
-      Pick<UserPhonemeScore, 'userId' | 'phonemeId' | 'value'>
-    > = [];
-
-    for (const u of users) {
-      for (const p of phonemes) {
-        const k = `${u.id}:${p.id}`;
-        if (!existingKeys.has(k)) {
-          toInsert.push({ userId: u.id, phonemeId: p.id, value: '0' });
-        }
-      }
-    }
-
-    if (!toInsert.length) return;
-
-    // Chunk to avoid large single statements
-    const CHUNK = 1000;
-    for (let i = 0; i < toInsert.length; i += CHUNK) {
-      const slice = toInsert.slice(i, i + CHUNK);
-      await this.repo.insert(slice);
-    }
-  }
-
-  @LogMethod()
-  async removeForUser(userId: number, phonemeId: number): Promise<void> {
-    await this.repo.delete({ userId, phonemeId });
-  }
-
-  @LogMethod()
-  async removeAllForUser(userId: number): Promise<void> {
-    await this.repo.delete({ userId });
-  }
-
-  /**
-   * Reset all phoneme scores for a user to zero.
-   */
-  @LogMethod()
-  async resetAllForUser(userId: number): Promise<void> {
-    await this.repo.update({ userId }, { value: '0' });
-  }
-
-  /**
    * Update a user's score for a phoneme based on answer correctness.
    * Accepts either IDs or entity objects for user and phoneme.
    */
@@ -243,6 +136,7 @@ export class UserPhonemeScoreService {
     let currentScore = await this.repo.findOne({
       where: { userId, phonemeId },
       select: ['value'],
+      order: { createdAt: 'DESC' },
     });
 
     const scoreDifference = parseFloat(currentScore?.value || '0') - averageScore;
@@ -264,82 +158,36 @@ export class UserPhonemeScoreService {
     }
 
     const newValue = (parseFloat(currentScore?.value || '0') + increment).toFixed(3);
-    await this.createOrUpdate(userId, phonemeId, newValue);
+    await this.repo.insert({
+      userId,
+      phonemeId,
+      value: newValue,
+    });
   }
 
   @LogMethod()
   async calculateAverageScore(userId: number): Promise<number> {
-    const scores = await this.repo.find({ where: { userId }, select: ['value'] });
-  
-    // Convert to number
-    const nonIntegerScores = scores
-      .map(score => parseFloat(score.value))
-      .filter(value => !Number.isInteger(value));
-  
-    if (nonIntegerScores.length === 0) {
-      return 0;
-    }
-  
-    const averageScore =
-      nonIntegerScores.reduce((sum, value) => sum + value, 0) /
-      nonIntegerScores.length;
-  
-    return averageScore;
-  }
-
-  /**
-   * For every user, set matras (phoneme IDs 2031–2040) to value "2".
-   * Skips any phoneme IDs that do not exist.
-   * Updates existing rows or inserts if missing.
-   */
-  @LogMethod()
-  async assignSpecialPhonemesToAllUsers(): Promise<void> {
-    const targetIds = [71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040];
-
-    // Check which phoneme IDs actually exist
-    const existingPhonemes = await this.phonemeRepo.find({
-      where: { id: In(targetIds) },
-      select: ['id'],
+    const scores = await this.repo.find({
+      where: { userId },
+      order: { updatedAt: 'DESC' },
+      select: ['phonemeId', 'value', 'updatedAt'],
     });
-    const validIds = existingPhonemes.map((p) => p.id);
-    if (!validIds.length) return;
-
-    const users = await this.userRepo.find({ select: ['id'] });
-
-    for (const u of users) {
-      await this.ds.transaction(async (manager) => {
-        const existing = await manager.find(UserPhonemeScore, {
-          where: { userId: u.id, phonemeId: In(validIds) },
-          select: ['id', 'phonemeId', 'value'],
-        });
-
-        const byPid = new Map(existing.map((row) => [row.phonemeId, row]));
-
-        const toUpdate: UserPhonemeScore[] = [];
-        const toInsert: Array<
-          Pick<UserPhonemeScore, 'userId' | 'phonemeId' | 'value'>
-        > = [];
-
-        for (const pid of validIds) {
-          const found = byPid.get(pid);
-          if (found) {
-            if (found.value !== '4') {
-              found.value = '4';
-              toUpdate.push(found);
-            }
-          } else {
-            toInsert.push({ userId: u.id, phonemeId: pid, value: '4' });
-          }
-        }
-
-        if (toUpdate.length) {
-          await manager.save(UserPhonemeScore, toUpdate);
-        }
-        if (toInsert.length) {
-          await manager.insert(UserPhonemeScore, toInsert);
-        }
-      });
+    
+    const latestByPhoneme = new Map<number, number>();
+    for (const s of scores) {
+      if (!latestByPhoneme.has(s.phonemeId)) {
+        latestByPhoneme.set(s.phonemeId, parseFloat(s.value));
+      }
     }
+    
+    const nonIntegerScores = Array.from(latestByPhoneme.values())
+      .filter(value => !Number.isInteger(value));
+    
+    if (nonIntegerScores.length === 0) return 0;
+    
+    return (
+      nonIntegerScores.reduce((sum, v) => sum + v, 0) / nonIntegerScores.length
+    );
   }
 
   /**
@@ -348,7 +196,10 @@ export class UserPhonemeScoreService {
    * Updates existing rows or inserts if missing.
    */
   @LogMethod()
-  async assignInitialPhonemesWeights(userId: number): Promise<void> {
+  async assignInitialPhonemesWeights(
+    userId: number, 
+    manager?: EntityManager,
+  ): Promise<void> {
     const localPhonemeWeights = [
       { phonemeId: 33, value: 1 },
       { phonemeId: 51, value: 1 },
@@ -378,14 +229,17 @@ export class UserPhonemeScoreService {
     
       // If process.env.NODE_ENV is test, development or falsey then assume a deployed environment
       const nodeEnv = process.env.NODE_ENV;
+      let weights: Array<{ phonemeId: number; value: number }> = []
       if (nodeEnv === 'development') {
-        await this.createOrUpdateManyForUser(userId, localPhonemeWeights);
+        weights = localPhonemeWeights;
       } else if (nodeEnv === 'test') {
-        await this.createOrUpdateManyForUser(userId, localPhonemeWeights);
+        weights = localPhonemeWeights;
       } else if (!nodeEnv) {
-        await this.createOrUpdateManyForUser(userId, localPhonemeWeights);
+        weights = localPhonemeWeights;
       } else { // Assume a deployed environment
-        await this.createOrUpdateManyForUser(userId, deployedPhonemeWeights);
+        weights = deployedPhonemeWeights;
       }
+
+      await this.createManyForUser(userId, weights, manager);
   }
 }

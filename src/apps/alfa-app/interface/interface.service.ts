@@ -154,7 +154,7 @@ export class AlfaAppInterfaceService {
     // Snapshot after
     const snapAfter = ctx.lessonActor.getSnapshot();
 
-    // Update's phoneme's score
+    // Update the phoneme's score
     const averageScore = await this.userPhonemeScoreService.calculateAverageScore(ctx.userId);
 
     // Mark correct letters as correct

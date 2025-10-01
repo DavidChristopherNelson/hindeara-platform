@@ -35,32 +35,4 @@ export class UserPhonemeScoreController {
   > {
     return this.scoreService.findAllForUser(userId);
   }
-
-  @Post('reset/:userId')
-  @ApiParam({
-    name: 'userId',
-    type: Number,
-    required: true,
-    description: 'User ID',
-  })
-  @ApiResponse({ status: 204, description: 'All phoneme scores reset to 0.' })
-  @HttpCode(204)
-  @LogMethod()
-  async resetScoresForUser(
-    @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<void> {
-    await this.scoreService.resetAllForUser(userId);
-  }
-
-  @Post('assign-special')
-  @ApiResponse({
-    status: 204,
-    description:
-      'Sets phoneme IDs 2031–2040 to value 2 for all users (skips missing phonemes).',
-  })
-  @HttpCode(204)
-  @LogMethod()
-  async assignSpecialPhonemesToAllUsers(): Promise<void> {
-    await this.scoreService.assignSpecialPhonemesToAllUsers();
-  }
 }

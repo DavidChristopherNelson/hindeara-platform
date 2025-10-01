@@ -16,7 +16,7 @@ export class ProcessUserInputDto {
   @IsString()
   @IsNotEmpty()
   @IsPhoneNumber('IN', {
-    message: 'Please enter a valid Indian E.164 phone number',
+    message: 'Please make sure the phone number is a valid Indian E.164',
   })
   phoneNumber: string;
 

@@ -15,7 +15,6 @@ import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import { Phoneme } from 'src/apps/alfa-app/phonemes/entities/phoneme.entity';
 
 @Entity({ name: 'user_phoneme_score' })
-@Unique('uq_user_phoneme', ['userId', 'phonemeId'])
 export class UserPhonemeScore {
   @PrimaryGeneratedColumn()
   id!: number;

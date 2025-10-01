@@ -11,7 +11,7 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @IsPhoneNumber('IN', {
-    message: 'Please enter a valid Indian E.164 phone number',
+    message: 'Please enter a valid Indian E.164 phone number.',
   })
   phoneNumber!: string;
 
