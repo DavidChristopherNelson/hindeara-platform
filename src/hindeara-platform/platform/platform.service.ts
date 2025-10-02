@@ -220,7 +220,7 @@ export class PlatformService {
       scoreHistory = await this.userPhonemeScoreService.findAllUser(user.id);
     }
 
-    return { items, missedDays, userScore, scoreHistory };
+    return { items: items.reverse(), missedDays, userScore, scoreHistory };
   }
 
   private async getEvents(phoneNumber: string | undefined, since: Date) {
@@ -249,23 +249,12 @@ export class PlatformService {
   private calculateLatencies(userEvent: any, followingAppEvent?: any, nextUserEvent?: any) {
     if (!followingAppEvent) return { frontendToBackendLatency: 0, sttLatency: 0, tttLatency: 0, backendToFrontendLatency: 0 };
 
-    const sentMs = this.toMs(userEvent.event_requestSentFromFrontendAt ?? userEvent.requestSentFromFrontendAt);
-    const recvMs = this.toMs(userEvent.event_requestReceivedByBackendAt ?? userEvent.requestReceivedByBackendAt);
-    const userCreatedMs = this.toMs(userEvent.event_createdAt ?? userEvent.createdAt);
-    const appCreatedMs = this.toMs(followingAppEvent.event_createdAt ?? followingAppEvent.createdAt);
-    const nextPrevRecvMs = this.toMs(nextUserEvent?.event_previousRequestReceivedByFrontendAt ?? nextUserEvent?.previousRequestReceivedByFrontendAt);
-
-    const frontendToBackendLatency =
-      sentMs != null && recvMs != null ? recvMs - sentMs : 0;
-
-    const sttLatency =
-      recvMs != null && userCreatedMs != null ? userCreatedMs - recvMs : 0;
-
-    const tttLatency =
-      userCreatedMs != null && appCreatedMs != null ? appCreatedMs - userCreatedMs : 0;
-
-    const backendToFrontendLatency =
-      nextPrevRecvMs != null && appCreatedMs != null ? nextPrevRecvMs - appCreatedMs : 0;
+    const frontendToBackendLatency = userEvent.event_requestReceivedByBackendAt - userEvent.event_requestSentFromFrontendAt;
+    const sttLatency = userEvent.event_createdAt - userEvent.event_requestReceivedByBackendAt ;
+    const tttLatency = followingAppEvent.event_createdAt - userEvent.event_createdAt;
+    const backendToFrontendLatency = nextUserEvent?.event_previousRequestReceivedByFrontendAt 
+      ? nextUserEvent.event_previousRequestReceivedByFrontendAt - followingAppEvent.event_createdAt 
+      : 0;
 
     return { frontendToBackendLatency, sttLatency, tttLatency, backendToFrontendLatency };
   }
