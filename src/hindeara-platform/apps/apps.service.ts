@@ -41,7 +41,7 @@ export class AppsService {
 
   @LogMethod()
   async chooseNewApp(): Promise<App> {
-    const alfaApp = await this.findOne(1);
+    const alfaApp = await this.appRepository.findOne({ where: { http_path: 'alfa-app' } });
     if (!alfaApp) {
       return this.create({
         http_path: 'alfa-app',
