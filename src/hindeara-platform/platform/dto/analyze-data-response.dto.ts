@@ -33,7 +33,16 @@ export class AnalyzeDataItemDto {
   userEventCreatedAt!: Date;
 
   @ApiProperty()
-  latency!: number;
+  frontendToBackendLatency: number;
+
+  @ApiProperty()
+  sttLatency: number;
+
+  @ApiProperty()
+  tttLatency: number;
+
+  @ApiProperty()
+  backendToFrontendLatency: number;
 }
 
 export class AnalyzeDataResponseDto {

@@ -56,6 +56,9 @@ export class PlatformService {
     recordingBase64: string,
     locale: string,
     textInput?: string,
+    previousRequestReceivedAt?: Date,
+    requestSentAt?: Date,
+    requestReceivedByBackendAt?: Date,
   ): Promise<AppEvent> {
     const [user, transcription] = await this.dataProcessing(
       phoneNumber,
@@ -68,6 +71,9 @@ export class PlatformService {
       recording: recordingBase64,
       locale,
       transcription,
+      previousRequestReceivedByFrontendAt: previousRequestReceivedAt,
+      requestSentFromFrontendAt: requestSentAt,
+      requestReceivedByBackendAt: requestReceivedByBackendAt,
     };
     await this.userEventsService.create(createUserEventDto, user);
 
@@ -152,140 +158,186 @@ export class PlatformService {
   async analyzeData(phoneNumber?: string, timeWindow?: number): Promise<AnalyzeDataResponseDto> {
     const timeInDays = timeWindow ?? 1;
     const since = new Date(new Date().setHours(0, 0, 0, 0) - timeInDays * 24 * 60 * 60 * 1000);
-    let recentUserEvents = [];
-    if (!phoneNumber) {
-      // No phone number provided, get all recent user events
-      recentUserEvents = await this.userEventsService.findAll({ since });
-    } else {
-      // Phone number provided, get user and their events
-      const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
-      if (!user) {
-        throw new NotFoundException(`No user found with phone number: ${phoneNumber}`);
-      }
-      recentUserEvents = await this.userEventsService.findAll({ since, userId: user.id });
-    }
 
-    const items: AnalyzeDataItemDto[] = [];
+    // 1. Load events
+    const { recentUserEvents, recentAppEvents } = await this.getEvents(phoneNumber, since);
+
+    // 2. Sort chronologically (use the actual timestamp properties present on your projections)
+    recentUserEvents.sort((a, b) => new Date(a.event_createdAt ?? a.createdAt).getTime() - new Date(b.event_createdAt ?? b.createdAt).getTime());
+    recentAppEvents.sort((a, b) => new Date(a.event_createdAt ?? a.createdAt).getTime() - new Date(b.event_createdAt ?? b.createdAt).getTime());
+
+    // 3. Cache for user info
     const userNameCache = new Map<number, string>();
     const phoneNumberCache = new Map<number, string>();
 
-    const isRecord = (v: unknown): v is Record<string, unknown> =>
-      typeof v === 'object' && v !== null;
-    const hasContext = (v: unknown): v is { context: unknown } =>
-      isRecord(v) && 'context' in v;
-    const getNullableBoolean = (v: unknown): boolean | null =>
-      typeof v === 'boolean' ? v : null;
-    const getNullableString = (v: unknown): string | null =>
-      typeof v === 'string' ? v : null;
+    // 4. Build items
+    const items: AnalyzeDataItemDto[] = [];
+    for (let i = 0; i < recentUserEvents.length; i++) {
+      const userEvent = recentUserEvents[i];
+      const nextUserEvent = recentUserEvents[i + 1];
 
-    for (const userEvent of recentUserEvents) {
-      const userId = userEvent.userId;
-      const userEventCreatedAt = userEvent.event_createdAt;
+      const userId = userEvent.userId ?? userEvent.event_userId;
 
-      // TODO: Bad Code! Write a mini-lesson serice method instead of exposing the mini-lesson repository directly.
-      const miniLesson = await this.miniLessonRepository.findOne({
-        where: {
-          userId,
-          createdAt: MoreThan(userEventCreatedAt),
-        },
-        order: { createdAt: 'ASC' },
-      });
+      // preceding app event (latest app event BEFORE the user event)
+      const precedingAppEvent = [...recentAppEvents]
+        .filter(app => (app.userId ?? app.event_userId) === userId && new Date(app.event_createdAt ?? app.createdAt) < new Date(userEvent.event_createdAt ?? userEvent.createdAt))
+        .pop();
 
-      // TODO: Bad Code! Write a appEvent serice method instead of exposing the appEvent repository directly.
-      const preceedingAppEvent = await this.appEventRepository.findOne({
-        where: {
-          user: { id: userId },
-          createdAt: LessThan(userEventCreatedAt),
-        },
-        order: { createdAt: 'DESC' },
-        select: { id: true, createdAt: true, recording: true },
-      });
-      const followingAppEvent = await this.appEventRepository.findOne({
-        where: {
-          user: { id: userId },
-          createdAt: MoreThan(userEventCreatedAt),
-        },
-        order: { createdAt: 'ASC' },
-        select: { id: true, createdAt: true },
-      });
-      const latency =
-        followingAppEvent?.createdAt && userEventCreatedAt
-          ? followingAppEvent.createdAt.getTime() - userEventCreatedAt.getTime()
-          : 0;
+      // following app event (earliest app event AFTER the user event)
+      const followingAppEvent = recentAppEvents.find(
+        app =>
+          (app.userId ?? app.event_userId) === userId &&
+          new Date(app.event_createdAt ?? app.createdAt) > new Date(userEvent.event_createdAt ?? userEvent.createdAt),
+      );
 
-      const snapshotUnknown: unknown = (miniLesson?.state ?? null) as unknown;
-      const contextUnknown: unknown = hasContext(snapshotUnknown)
-        ? (snapshotUnknown as Snapshot<unknown>).context
-        : null;
+      const { frontendToBackendLatency, sttLatency, tttLatency, backendToFrontendLatency } =
+        this.calculateLatencies(userEvent, followingAppEvent, nextUserEvent);
 
-      // get user name with simple cache
-      let name = userNameCache.get(userId);
-      if (!name) {
-        const user = await this.usersService.findOne(userId);
-        name = user?.name ?? '';
-        userNameCache.set(userId, name);
-      }
+      const { name, phone } = await this.resolveUserInfo(userId, userNameCache, phoneNumberCache);
 
-      // get user phone number with simple cache
-      let phoneNumber = phoneNumberCache.get(userId);
-      if (!phoneNumber) {
-        const user = await this.usersService.findOne(userId);
-        phoneNumber = user?.phoneNumber ?? '';
-        phoneNumberCache.set(userId, phoneNumber);
-      }
-
-      items.push({
-        appTranscript: preceedingAppEvent?.recording ?? '',
-        audioBase64: Buffer.isBuffer(userEvent.event_recording)
-          ? userEvent.event_recording.toString('base64')
-          : '',
-        transcript: userEvent.event_transcription ?? null,
-        answerStatus: isRecord(contextUnknown)
-          ? getNullableBoolean(contextUnknown['previousAnswerStatus'])
-          : null,
-        correctAnswer: isRecord(contextUnknown)
-          ? getNullableString(contextUnknown['previousCorrectAnswer'])
-          : null,
-        studentAnswer: isRecord(contextUnknown)
-          ? getNullableString(contextUnknown['previousStudentAnswer'])
-          : null,
-        userId,
-        name,
-        phoneNumber,
-        userEventCreatedAt,
-        latency,
-      });
+      items.push(await this.mapToAnalyzeItem(userEvent, precedingAppEvent, name, phone, {
+        frontendToBackendLatency,
+        sttLatency,
+        tttLatency,
+        backendToFrontendLatency,
+      }));
     }
 
+    // 5. Days with no events
     const missedDays = this.daysWithNoUserEvents(recentUserEvents, timeInDays);
 
+    // 6. User phoneme scores
     let userScore = [];
+    let scoreHistory = [];
     if (phoneNumber) {
       const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
       userScore = await this.userPhonemeScoreService.findLatestForUser(user.id);
       userScore = userScore
-        .filter((item) => /[^\u0000-\u007F]/.test(item.letter))
+        .filter(item => /[^\u0000-\u007F]/.test(item.letter))
         .map(({ letter, value }) => ({ letter, value: parseFloat(value) }))
         .sort((a, b) => a.value - b.value);
-    }
 
-    let scoreHistory = [];
-    if (phoneNumber) {
-      const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
       scoreHistory = await this.userPhonemeScoreService.findAllUser(user.id);
     }
 
     return { items, missedDays, userScore, scoreHistory };
   }
 
-  private daysWithNoUserEvents(userEvents: UserEvent[], timeInDays: number): number {
+  private async getEvents(phoneNumber: string | undefined, since: Date) {
+    if (!phoneNumber) {
+      return {
+        recentUserEvents: await this.userEventsService.findAll({ since }),
+        recentAppEvents: await this.appEventsService.findAll({ since }),
+      };
+    }
+
+    const user = await this.usersService.findOneByPhoneNumber(phoneNumber);
+    if (!user) throw new NotFoundException(`No user found with phone number: ${phoneNumber}`);
+
+    return {
+      recentUserEvents: await this.userEventsService.findAll({ since, userId: user.id }),
+      recentAppEvents: await this.appEventsService.findAll({ since, userId: user.id }),
+    };
+  }
+
+  private toMs(d?: Date | string | number): number | undefined {
+    if (!d) return undefined;
+    const t = new Date(d).getTime();
+    return isNaN(t) ? undefined : t;
+  }
+
+  private calculateLatencies(userEvent: any, followingAppEvent?: any, nextUserEvent?: any) {
+    if (!followingAppEvent) return { frontendToBackendLatency: 0, sttLatency: 0, tttLatency: 0, backendToFrontendLatency: 0 };
+
+    const sentMs = this.toMs(userEvent.event_requestSentFromFrontendAt ?? userEvent.requestSentFromFrontendAt);
+    const recvMs = this.toMs(userEvent.event_requestReceivedByBackendAt ?? userEvent.requestReceivedByBackendAt);
+    const userCreatedMs = this.toMs(userEvent.event_createdAt ?? userEvent.createdAt);
+    const appCreatedMs = this.toMs(followingAppEvent.event_createdAt ?? followingAppEvent.createdAt);
+    const nextPrevRecvMs = this.toMs(nextUserEvent?.event_previousRequestReceivedByFrontendAt ?? nextUserEvent?.previousRequestReceivedByFrontendAt);
+
+    const frontendToBackendLatency =
+      sentMs != null && recvMs != null ? recvMs - sentMs : 0;
+
+    const sttLatency =
+      recvMs != null && userCreatedMs != null ? userCreatedMs - recvMs : 0;
+
+    const tttLatency =
+      userCreatedMs != null && appCreatedMs != null ? appCreatedMs - userCreatedMs : 0;
+
+    const backendToFrontendLatency =
+      nextPrevRecvMs != null && appCreatedMs != null ? nextPrevRecvMs - appCreatedMs : 0;
+
+    return { frontendToBackendLatency, sttLatency, tttLatency, backendToFrontendLatency };
+  }
+
+  private async resolveUserInfo(
+    userId: number,
+    nameCache: Map<number, string>,
+    phoneCache: Map<number, string>,
+  ) {
+    let name = nameCache.get(userId);
+    let phone = phoneCache.get(userId);
+
+    if (!name || !phone) {
+      const user = await this.usersService.findOne(userId);
+      name = user?.name ?? '';
+      phone = user?.phoneNumber ?? '';
+      nameCache.set(userId, name);
+      phoneCache.set(userId, phone);
+    }
+
+    return { name, phone };
+  }
+
+  private async mapToAnalyzeItem(
+    userEvent: any,
+    preceedingAppEvent: any | undefined,
+    name: string,
+    phoneNumber: string,
+    latencies: { frontendToBackendLatency: number; sttLatency: number; tttLatency: number; backendToFrontendLatency: number },
+  ): Promise<AnalyzeDataItemDto> {
+    const userId = userEvent.userId ?? userEvent.event_userId;
+    const userEventCreatedAt = userEvent.event_createdAt ?? userEvent.createdAt;
+
+    const snapshotUnknown: unknown = (await this.miniLessonRepository.findOne({
+      where: { userId, createdAt: MoreThan(userEventCreatedAt) },
+      order: { createdAt: 'ASC' },
+    }))?.state ?? null;
+
+    const contextUnknown =
+      typeof snapshotUnknown === 'object' && snapshotUnknown && 'context' in snapshotUnknown
+        ? (snapshotUnknown as Snapshot<unknown>).context
+        : null;
+
+    const getNullable = <T>(v: unknown, type: 'string' | 'boolean'): T | null =>
+      typeof v === type ? (v as T) : null;
+
+    return {
+      appTranscript: preceedingAppEvent?.recording ?? '',
+      audioBase64: Buffer.isBuffer(userEvent.event_recording)
+        ? userEvent.event_recording.toString('base64')
+        : '',
+      transcript: userEvent.event_transcription ?? null,
+      answerStatus: getNullable<boolean>(contextUnknown?.['previousAnswerStatus'], 'boolean'),
+      correctAnswer: getNullable<string>(contextUnknown?.['previousCorrectAnswer'], 'string'),
+      studentAnswer: getNullable<string>(contextUnknown?.['previousStudentAnswer'], 'string'),
+      userId,
+      name,
+      phoneNumber,
+      userEventCreatedAt,
+      ...latencies,
+    };
+  }
+
+  private daysWithNoUserEvents(userEvents: any[], timeInDays: number): number {
     let midnight: Date = new Date(new Date().setHours(0, 0, 0, 0));
-    let previousMidnight: Date = new Date(midnight - 24 * 60 * 60 * 1000);
+    let previousMidnight: Date = new Date(midnight.getTime() - 24 * 60 * 60 * 1000);
     let missedDays = 0;
     for (let i = 0; i < timeInDays; i++) {
       let activeDay = false;
       for (const userEvent of userEvents) {
-        if (userEvent.event_createdAt > previousMidnight && userEvent.event_createdAt <= midnight) {
+        const createdAt = new Date(userEvent.event_createdAt ?? userEvent.createdAt);
+        if (createdAt > previousMidnight && createdAt <= midnight) {
           activeDay = true;
           break;
         }
@@ -294,7 +346,7 @@ export class PlatformService {
         missedDays++;
       }
       midnight = previousMidnight;
-      previousMidnight = new Date(previousMidnight - 24 * 60 * 60 * 1000);
+      previousMidnight = new Date(previousMidnight.getTime() - 24 * 60 * 60 * 1000);
     }
     return missedDays;
   }

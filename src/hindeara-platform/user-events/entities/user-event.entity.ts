@@ -23,6 +23,15 @@ export class UserEvent {
   transcription?: string;
 
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  previousRequestReceivedByFrontendAt?: Date;
+
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  requestSentFromFrontendAt?: Date;
+
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  requestReceivedByBackendAt?: Date;
+
+  @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
   @ManyToOne(() => User, (user) => user.userEvents, {

@@ -1,6 +1,7 @@
 // src/hindeara-platform/platform/dto/process-user-input.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsISO8601,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
@@ -24,4 +25,14 @@ export class ProcessUserInputDto {
   @IsString()
   @IsOptional()
   textInput?: string;
+
+  @ApiProperty()
+  @IsISO8601()
+  @IsOptional()
+  previousRequestReceivedAt?: Date;
+
+  @ApiProperty()
+  @IsISO8601()
+  @IsOptional()
+  requestSentAt?: Date;
 }

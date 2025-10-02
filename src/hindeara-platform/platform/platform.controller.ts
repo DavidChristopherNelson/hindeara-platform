@@ -25,12 +25,16 @@ export class PlatformController {
     @Headers('accept-language') locale: string,
     @Body() dto: ProcessUserInputDto,
   ): Promise<ProcessUserInputResponseDto> {
+    const requestReceivedByBackendAt = new Date();
     return ProcessUserInputResponseDto.fromAppEvent(
       await this.platformService.processUserInput(
         dto.phoneNumber,
         dto.recording,
         locale,
         dto.textInput,
+        dto.previousRequestReceivedAt ? new Date(dto.previousRequestReceivedAt) : undefined,
+        dto.requestSentAt ? new Date(dto.requestSentAt) : undefined,
+        requestReceivedByBackendAt,
       ),
     );
   }

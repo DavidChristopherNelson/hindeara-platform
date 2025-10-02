@@ -27,4 +27,16 @@ export class UserEventDto {
   @ApiProperty({ required: false })
   @Expose()
   transcription?: string;
+
+  @ApiProperty({ required: false, description: 'Time when the previous request was received by the frontend' })
+  @Expose()
+  previousRequestReceivedByFrontendAt?: Date;
+
+  @ApiProperty({ required: false, description: 'Time when the request was sent from the frontend' })
+  @Expose()
+  requestSentFromFrontendAt?: Date;
+
+  @ApiProperty({ required: false, description: 'Time when the backend received the request' })
+  @Expose()
+  requestReceivedByBackendAt?: Date;
 }
