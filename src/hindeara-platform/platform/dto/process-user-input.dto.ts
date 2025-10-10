@@ -11,10 +11,6 @@ import {
 export class ProcessUserInputDto {
   @ApiProperty()
   @IsString()
-  recording: string;
-
-  @ApiProperty()
-  @IsString()
   @IsNotEmpty()
   @IsPhoneNumber('IN', {
     message: 'Please make sure the phone number is a valid Indian E.164',
@@ -26,13 +22,13 @@ export class ProcessUserInputDto {
   @IsOptional()
   textInput?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false, format: 'date-time', type: String })
   @IsISO8601()
   @IsOptional()
-  previousRequestReceivedAt?: Date;
+  previousRequestReceivedAt?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false, format: 'date-time', type: String })
   @IsISO8601()
   @IsOptional()
-  requestSentAt?: Date;
+  requestSentAt?: string;
 }

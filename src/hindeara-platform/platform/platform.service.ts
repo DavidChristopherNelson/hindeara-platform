@@ -248,14 +248,16 @@ export class PlatformService {
 
   private calculateLatencies(userEvent: any, followingAppEvent?: any, nextUserEvent?: any) {
     if (!followingAppEvent) return { frontendToBackendLatency: 0, sttLatency: 0, tttLatency: 0, backendToFrontendLatency: 0 };
-
-    const frontendToBackendLatency = userEvent.event_requestReceivedByBackendAt - userEvent.event_requestSentFromFrontendAt;
-    const sttLatency = userEvent.event_createdAt - userEvent.event_requestReceivedByBackendAt ;
-    const tttLatency = followingAppEvent.event_createdAt - userEvent.event_createdAt;
-    const backendToFrontendLatency = nextUserEvent?.event_previousRequestReceivedByFrontendAt 
-      ? nextUserEvent.event_previousRequestReceivedByFrontendAt - followingAppEvent.event_createdAt 
-      : 0;
-
+    const toMs = (d: any) => (d ? new Date(d).getTime() : undefined);
+    const sentFromFrontend    = toMs(userEvent?.event_requestSentFromFrontendAt);
+    const receivedByBackend   = toMs(userEvent?.event_requestReceivedByBackendAt);
+    const userEventCreated    = toMs(userEvent?.event_createdAt);
+    const followingAppCreated = toMs(followingAppEvent?.event_createdAt);
+    const nextPrevReceived    = toMs(nextUserEvent?.event_previousRequestReceivedByFrontendAt);
+    const frontendToBackendLatency = (receivedByBackend && sentFromFrontend) ? (receivedByBackend - sentFromFrontend) : 0;
+    const sttLatency               = (userEventCreated && receivedByBackend) ? (userEventCreated - receivedByBackend) : 0;
+    const tttLatency               = (followingAppCreated && userEventCreated) ? (followingAppCreated - userEventCreated) : 0;
+    const backendToFrontendLatency = (nextPrevReceived && followingAppCreated) ? (nextPrevReceived - followingAppCreated) : 0;
     return { frontendToBackendLatency, sttLatency, tttLatency, backendToFrontendLatency };
   }
 

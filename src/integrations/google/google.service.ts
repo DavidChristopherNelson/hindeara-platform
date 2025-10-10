@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { SpeechClient } from '@google-cloud/speech';
 import * as fs from 'fs';
 
+type GcpEncoding = 'WEBM_OPUS' | 'OGG_OPUS' | 'ENCODING_UNSPECIFIED';
+
 @Injectable()
 export class GoogleService {
   private readonly logger = new Logger(GoogleService.name);
@@ -14,7 +16,6 @@ export class GoogleService {
   constructor(private readonly configService: ConfigService) {
     this.projectId = this.configService.get<string>('GOOGLE_CLOUD_PROJECT_ID');
 
-    // Get the timeout
     const raw = this.configService.get<string>('GOOGLE_CLOUD_TIMEOUT');
     const parsed = Number(raw);
     this.timeoutMs = Number.isFinite(parsed) && parsed > 0 ? parsed : 2000;
@@ -25,42 +26,34 @@ export class GoogleService {
 
     this.logger.log('Google Cloud configuration:');
     this.logger.log(
-      `- Project ID: ${this.projectId || 'NOT SET (will use ADC value if present)'}`,
+      `- Project ID: ${this.projectId || 'NOT SET (will use ADC value if present)'}`
     );
     this.logger.log(
-      `- GOOGLE_APPLICATION_CREDENTIALS: ${keyPathFromEnv || 'NOT SET'}`,
+      `- GOOGLE_APPLICATION_CREDENTIALS: ${keyPathFromEnv || 'NOT SET'}`
     );
 
-    // Initialize speech client as null initially
     this.speechClient = null;
 
     try {
       if (!keyPathFromEnv) {
         this.logger.warn(
-          'GOOGLE_APPLICATION_CREDENTIALS not set; relying on default ADC resolution',
+          'GOOGLE_APPLICATION_CREDENTIALS not set; relying on default ADC resolution'
         );
-      } else {
-        if (!fs.existsSync(keyPathFromEnv)) {
-          this.logger.error(
-            `GOOGLE_APPLICATION_CREDENTIALS file not found: ${keyPathFromEnv}`,
-          );
-          return;
-        }
+      } else if (!fs.existsSync(keyPathFromEnv)) {
+        this.logger.error(
+          `GOOGLE_APPLICATION_CREDENTIALS file not found: ${keyPathFromEnv}`
+        );
+        return;
       }
 
-      // Initialize Google Cloud Speech client. If projectId is provided, pass it; otherwise
-      // allow the client to derive it from the credentials file.
       this.speechClient = new SpeechClient(
-        this.projectId ? { projectId: this.projectId } : {},
+        this.projectId ? { projectId: this.projectId } : {}
       );
       this.logger.log('Google Cloud Speech client initialized successfully');
     } catch (error) {
+      this.logger.error('Failed to initialize Google Cloud Speech client:', error);
       this.logger.error(
-        'Failed to initialize Google Cloud Speech client:',
-        error,
-      );
-      this.logger.error(
-        'Google service will be disabled due to initialization failure',
+        'Google service will be disabled due to initialization failure'
       );
       this.speechClient = null;
     }
@@ -68,79 +61,80 @@ export class GoogleService {
 
   async transcribeAudio(audioBuffer: Buffer, locale: string): Promise<string> {
     this.logger.log(
-      `Starting Google Speech-to-Text transcription for locale: ${locale}`,
+      `Starting Google Speech-to-Text transcription for locale: ${locale}`
     );
     this.logger.log(`Audio buffer size: ${audioBuffer.length} bytes`);
 
     if (!this.speechClient) {
       this.logger.warn(
-        'Google Cloud Speech client not initialized - returning empty transcript',
+        'Google Cloud Speech client not initialized - returning empty transcript'
       );
       return '';
     }
 
     try {
-      const mappedLanguage = this.mapLocaleToLanguage(locale);
-      this.logger.log(
-        `Mapped locale '${locale}' to language '${mappedLanguage}'`,
-      );
+      const languageCode = this.mapLocaleToLanguage(locale);
 
-      // Configure the request for enhanced model with lowest latency
+      // NEW: detect input container & map to GCP encoding
+      const container = this.detectContainer(audioBuffer); // 'webm' | 'ogg' | 'mp4'
+      const { encoding, sampleRateHertz } = this.mapContainerToGcpEncoding(container);
+
+      const audioContentB64 = audioBuffer.toString('base64');
+
+      // Build config dynamically (omit sampleRate for MP4 so GCP can infer)
+      const config: any = {
+        encoding,                   // WEBM_OPUS | OGG_OPUS | ENCODING_UNSPECIFIED
+        languageCode,               // e.g. 'hi-IN'
+        model: 'latest_long',       // enhanced model
+        useEnhanced: true,
+        enableAutomaticPunctuation: true,
+        enableWordTimeOffsets: false,
+        enableWordConfidence: false,
+        enableSeparateRecognitionPerChannel: false,
+        maxAlternatives: 1,
+        profanityFilter: false,
+        speechContexts: [],
+      };
+      if (typeof sampleRateHertz === 'number') {
+        config.sampleRateHertz = sampleRateHertz; // keep 48k for opus-in-webm/ogg
+      }
+
       const request = {
-        audio: {
-          content: audioBuffer.toString('base64'),
-        },
-        config: {
-          encoding: 'WEBM_OPUS' as const, // Most common for browser recordings
-          sampleRateHertz: 48000, // Standard for WebM
-          languageCode: mappedLanguage,
-          model: 'latest_long' as const, // Enhanced model for better accuracy
-          useEnhanced: true, // Use enhanced model
-          enableAutomaticPunctuation: true,
-          enableWordTimeOffsets: false, // Disable for lower latency
-          enableWordConfidence: false, // Disable for lower latency
-          enableSeparateRecognitionPerChannel: false,
-          maxAlternatives: 1, // Only return the best result
-          profanityFilter: false,
-          speechContexts: [],
-        },
+        audio: { content: audioContentB64 },
+        config,
       };
 
       this.logger.log(
         'Google Speech-to-Text config:',
-        JSON.stringify(request.config, null, 2),
+        JSON.stringify(request.config, null, 2)
       );
 
-      // Perform the transcription
       this.logger.log('Sending request to Google Speech-to-Text...');
       this.logger.log(
-        `Request audio content length: ${request.audio.content.length} characters`,
+        `Request audio content length: ${request.audio.content.length} characters`
       );
 
-      const [response] = await this.speechClient.recognize(request, { timeout: this.timeoutMs });
+      const [response] = await this.speechClient.recognize(request, {
+        timeout: this.timeoutMs,
+      });
 
       this.logger.log('Received response from Google Speech-to-Text');
       this.logger.log(
-        `Response results count: ${response.results?.length || 0}`,
+        `Response results count: ${response.results?.length || 0}`
       );
 
       if (!response.results || response.results.length === 0) {
-        this.logger.warn(
-          'No transcription results received from Google Speech-to-Text',
-        );
+        this.logger.warn('No transcription results received from Google STT');
         return '';
       }
 
-      // Extract the transcript from the results
       const transcript = response.results
-        .map((result) => result.alternatives?.[0]?.transcript || '')
+        .map((r) => r.alternatives?.[0]?.transcript || '')
         .filter(Boolean)
         .join(' ');
 
       this.logger.log(`Final transcription: "${transcript}"`);
-      this.logger.log(
-        'Google Speech-to-Text transcription completed successfully',
-      );
+      this.logger.log('Google Speech-to-Text transcription completed successfully');
 
       return transcript;
     } catch (error) {
@@ -153,7 +147,7 @@ export class GoogleService {
       throw new Error(
         `Google Speech-to-Text transcription failed: ${
           error instanceof Error ? error.message : String(error)
-        }`,
+        }`
       );
     }
   }
@@ -198,5 +192,48 @@ export class GoogleService {
     const mappedLanguage = localeMap[locale] || 'en-US';
     this.logger.log(`Mapped '${locale}' to '${mappedLanguage}'`);
     return mappedLanguage;
+  }
+
+  /**
+   * Minimal header sniffing to detect container.
+   * - WebM: EBML header 0x1A45DFA3 at start
+   * - MP4 : 'ftyp' at offset 4
+   * - Ogg : 'OggS' at start
+   */
+  private detectContainer(buf: Buffer): 'webm' | 'mp4' | 'ogg' {
+    if (buf.length >= 4) {
+      // WebM (EBML)
+      const ebml = Buffer.from([0x1a, 0x45, 0xdf, 0xa3]);
+      if (buf.subarray(0, 4).equals(ebml)) return 'webm';
+
+      // Ogg 'OggS'
+      if (buf.subarray(0, 4).toString('ascii') === 'OggS') return 'ogg';
+    }
+    if (buf.length >= 8) {
+      // MP4 'ftyp' at offset 4
+      if (buf.subarray(4, 8).toString('ascii') === 'ftyp') return 'mp4';
+    }
+    // Default to webm as it’s the most common browser recording format
+    return 'webm';
+  }
+
+  /**
+   * Map container → Google STT encoding + (optional) sample rate.
+   * For MP4 we let Google infer (AAC may be 44100/48000), so omit sampleRateHertz.
+   */
+  private mapContainerToGcpEncoding(container: 'webm' | 'ogg' | 'mp4'): {
+    encoding: GcpEncoding;
+    sampleRateHertz?: number;
+  } {
+    switch (container) {
+      case 'webm':
+        return { encoding: 'WEBM_OPUS', sampleRateHertz: 48000 };
+      case 'ogg':
+        return { encoding: 'OGG_OPUS', sampleRateHertz: 48000 };
+      case 'mp4':
+        return { encoding: 'ENCODING_UNSPECIFIED' }; // let GCP infer from container
+      default:
+        return { encoding: 'WEBM_OPUS', sampleRateHertz: 48000 };
+    }
   }
 }
