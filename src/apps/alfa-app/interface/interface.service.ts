@@ -78,8 +78,8 @@ export class AlfaAppInterfaceService {
     const rawUserScore = await this.userPhonemeScoreService.findLatestForUser(ctx.userId);
     const userScore = rawUserScore
       .filter((item) => /[^\u0000-\u007F]/.test(item.letter))
-      .map(({ letter, value }) => ({ letter, value: parseFloat(value) }))
-      .sort((a, b) => a.value - b.value);
+      .map(({ letter, value, cardReveal }) => ({ letter, value: parseFloat(value), cardReveal }))
+      .sort((a, b) => a.letter.localeCompare(b.letter));
     const answerLetter = ctx.lessonActor.getSnapshot().context.answer?.charAt(0);
     const answerPhoneme = answerLetter ? 
       await this.phonemesService.findByLetter(answerLetter) :

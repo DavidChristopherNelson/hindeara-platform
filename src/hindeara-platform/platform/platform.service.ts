@@ -23,7 +23,7 @@ import {
   AnalyzeDataResponseDto,
 } from './dto/analyze-data-response.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThan, LessThan } from 'typeorm';
+import { Repository, MoreThan } from 'typeorm';
 import { MiniLesson } from 'src/apps/alfa-app/mini-lessons/entities/mini-lesson.entity';
 import { Snapshot } from 'xstate';
 import { UserPhonemeScoreService } from 'src/apps/alfa-app/score/score.service';

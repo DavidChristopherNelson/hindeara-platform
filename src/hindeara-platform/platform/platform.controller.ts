@@ -61,8 +61,8 @@ export class PlatformController {
       throw new BadRequestException('No recording uploaded or file is empty.');
     }
     // Fast-fail on unexpected MIME types
-    const allowed = new Set(['audio/webm', 'audio/ogg', 'audio/mp4']);
-    if (file.mimetype && !allowed.has(file.mimetype)) {
+    const allowedPrefixes = ['audio/webm', 'audio/ogg', 'audio/mp4'];
+    if (file.mimetype && !allowedPrefixes.some(p => file.mimetype.startsWith(p))) {
       throw new BadRequestException(`Unsupported content type: ${file.mimetype}`);
     }
     const recordingBase64 = file?.buffer?.toString('base64') ?? '';

@@ -7,6 +7,7 @@ import { UserPhonemeScore } from './score.entity';
 import { Phoneme } from 'src/apps/alfa-app/phonemes/entities/phoneme.entity';
 import { User } from 'src/hindeara-platform/users/entities/user.entity';
 import { PhonemesService } from 'src/apps/alfa-app/phonemes/phonemes.service';
+import { INITIAL_SCORES } from './data/initial-scores';
 
 @Injectable()
 export class UserPhonemeScoreService {
@@ -53,13 +54,13 @@ export class UserPhonemeScoreService {
   }
 
   /**
-   * Return all phonemes with the user's *latest* score.
+   * Return all phonemes for a user with the status and latest score for that phoneme.
    * Uses two lightweight queries (phonemes + scores) and merges in memory.
    */
   @LogMethod()
   async findLatestForUser(
     userId: number,
-  ): Promise<Array<{ phonemeId: number; letter: string; value: string }>> {
+  ): Promise<Array<{ phonemeId: number; letter: string; value: string; cardReveal: boolean }>> {
     // Get active phonemes
     const phonemes = await this.phonemeRepo.find({
       select: ['id', 'letter'],
@@ -86,8 +87,21 @@ export class UserPhonemeScoreService {
     return phonemes.map((p) => ({
       phonemeId: p.id,
       letter: p.letter,
-      value: latestScores.get(p.id) ?? '0', // fallback default
+      value: latestScores.get(p.id) ?? '0',
+      cardReveal: this.calculateStatus(p.letter, latestScores.get(p.id)),
     }));
+  }
+
+  @LogMethod()
+  private calculateStatus(phonemeLetter: string, currentScore: string | undefined): boolean {
+    if (!currentScore) return false;
+    const parsedCurrentScore = parseFloat(currentScore);
+    for (const s of INITIAL_SCORES) {
+      if (phonemeLetter === s.letter) {
+        return parsedCurrentScore >= (s.value + 2);
+      }
+    }
+    return parsedCurrentScore >= 2;
   }
 
   @LogMethod()
@@ -220,20 +234,7 @@ export class UserPhonemeScoreService {
     userId: number,
     manager?: EntityManager,
   ): Promise<void> {
-    const initialPhonemeLetters = [
-      { letter: "ऋ", value: 1 },
-      { letter: "ण", value: 1 },
-      { letter: "ा", value: 2 },
-      { letter: "ी", value: 3 },
-      { letter: "ो", value: 4 },
-      { letter: "ु", value: 4 },
-      { letter: "े", value: 4 },
-      { letter: "ू", value: 4 },
-      { letter: "ौ", value: 4 },
-      { letter: "ै", value: 4 },
-      { letter: "ि", value: 5 },
-    ];
-  
+    const initialPhonemeLetters = INITIAL_SCORES;
     const weights: Array<{ phonemeId: number; value: number | string }> = [];
   
     for (const { letter, value } of initialPhonemeLetters) {
