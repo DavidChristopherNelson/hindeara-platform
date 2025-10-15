@@ -4,9 +4,9 @@ import { Logger } from '@nestjs/common';
 type AnyFunc = (...args: unknown[]) => unknown;
 
 /** Per-value limit for very large strings (e.g. base-64 blobs). */
-const VALUE_LIMIT = 1000;
+const VALUE_LIMIT = 200;
 /** After JSON-stringify, stop printing at this length as an absolute cap. */
-const LINE_LIMIT = 3000;
+const LINE_LIMIT = 400;
 
 /** Replacer that truncates *string* values but leaves keys intact. */
 function truncatingReplacer(_: string, value: unknown): unknown {

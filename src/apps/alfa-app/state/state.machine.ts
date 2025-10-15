@@ -83,7 +83,8 @@ export const lessonMachine = setup({
     incrementWordErrors: assign({
       wordErrors: ({ context }) => context.wordErrors + 1,
     }),
-    resetWordErrors: assign({ wordErrors: () => 0 }),
+    // Commented out because I wasn't using it. 
+    //resetWordErrors: assign({ wordErrors: () => 0 }),
     incrementImageErrors: assign({
       imageErrors: ({ context }) => context.imageErrors + 1,
     }),
@@ -254,6 +255,7 @@ export const lessonMachine = setup({
             target: 'complete',
             actions: [
               'resetHint',
+              'identifyWrongCharacters',
               'identifyCorrectCharacters',
               'previousAnswerCorrect',
               'persistEventData',
@@ -265,6 +267,7 @@ export const lessonMachine = setup({
             target: 'complete',
             actions: [
               'resetHint',
+              'identifyWrongCharacters',
               'identifyCorrectCharacters',
               'incrementWordErrors',
               'previousAnswerIncorrect',
@@ -276,6 +279,7 @@ export const lessonMachine = setup({
             target: 'word',
             actions: [
               'resetHint',
+              'identifyWrongCharacters',
               'identifyCorrectCharacters',
               'giveEndMatraHint',
               'incrementWordErrors',
@@ -288,6 +292,7 @@ export const lessonMachine = setup({
             target: 'word',
             actions: [
               'resetHint',
+              'identifyWrongCharacters',
               'identifyCorrectCharacters',
               'giveMiddleMatraHint',
               'incrementWordErrors',
@@ -300,6 +305,7 @@ export const lessonMachine = setup({
             target: 'word',
             actions: [
               'resetHint',
+              'identifyWrongCharacters',
               'identifyCorrectCharacters',
               'incrementWordErrors',
               'previousAnswerIncorrect',
@@ -312,6 +318,7 @@ export const lessonMachine = setup({
             target: 'word',
             actions: [
               'resetHint',
+              'identifyWrongCharacters',
               'identifyCorrectCharacters',
               'incrementWordErrors',
               'previousAnswerIncorrect',
@@ -694,6 +701,9 @@ export type LessonContext = {
 };
 
 export const getWord = (actor: LessonActor) => actor.getSnapshot().context.word;
+
+export const getWordErrorNumber = (actor: LessonActor) =>
+  actor.getSnapshot().context.wordErrors;
 
 export const getCorrectLetters = (actor: LessonActor) =>
   actor.getSnapshot().context.correctCharacters;

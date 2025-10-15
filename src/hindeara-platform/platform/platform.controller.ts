@@ -1,3 +1,5 @@
+// src/hindeara-platform/platform/platform.controller.ts
+
 import {
   Body,
   Controller,

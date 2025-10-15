@@ -162,10 +162,10 @@ export class UserPhonemeScoreService {
     user: number | User,
     phoneme: number | Phoneme,
     answerStatus: boolean,
-    averageScore: number,
   ): Promise<void> {
     const userId = typeof user === 'number' ? user : user.id;
     const phonemeId = typeof phoneme === 'number' ? phoneme : phoneme.id;
+    const averageScore = await this.calculateAverageScore(userId);
 
     let currentScore = await this.repo.findOne({
       where: { userId, phonemeId },
@@ -180,14 +180,14 @@ export class UserPhonemeScoreService {
       if (answerStatus === true) {
         increment = -0.5 * scoreDifference + 1 + randomPerturbation;
       } else {
-        increment = -Math.exp(0.5 * scoreDifference) + randomPerturbation;
+        increment = 2 * -Math.exp(0.5 * scoreDifference) + randomPerturbation;
       }
     }
     if (scoreDifference >= 0) {
       if (answerStatus === true) {
         increment = Math.exp(-0.5 * scoreDifference) + randomPerturbation;
       } else {
-        increment = -0.5 * scoreDifference - 1 + randomPerturbation;
+        increment = 2 * -0.5 * scoreDifference - 1 + randomPerturbation;
       }
     }
 

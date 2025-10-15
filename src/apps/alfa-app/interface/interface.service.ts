@@ -11,6 +11,7 @@ import {
   getWrongCharacters,
   getAnswer as getRawAnswer,
   lessonMachine,
+  getWordErrorNumber,
 } from '../state/state.machine';
 import { UserEvent } from 'src/hindeara-platform/user-events/entities/user-event.entity';
 import { UserEventsService } from 'src/hindeara-platform/user-events/user-events.service';
@@ -142,49 +143,41 @@ export class AlfaAppInterfaceService {
   @LogMethod()
   private async calculateNewState(ctx: LessonContext): Promise<void> {
     const correctAnswer = await this.getAnswer(ctx);
-
     const studentAnswer = ctx.latestUserEvent.transcription ?? '';
     const previousState = ctx.lessonActor.getSnapshot().value;
 
-    // Snapshot before
-    const snapBefore = ctx.lessonActor.getSnapshot();
-    
     ctx.lessonActor.send({ type: 'ANSWER', correctAnswer, studentAnswer });
 
-    // Snapshot after
-    const snapAfter = ctx.lessonActor.getSnapshot();
+    const wordErrorNumber = getWordErrorNumber(ctx.lessonActor);
+    const correctLetters = getCorrectLetters(ctx.lessonActor);
+    const wrongLetters = getWrongCharacters(ctx.lessonActor);
 
-    // Update the phoneme's score
-    const averageScore = await this.userPhonemeScoreService.calculateAverageScore(ctx.userId);
-
-    // Mark correct letters as correct
-    const correctLetters = getCorrectLetters(ctx.lessonActor) ?? [];
-    for (const correctLetter of correctLetters) {
-      const phoneme = await this.phonemesService.findByLetter(correctLetter);
-      if (!phoneme) continue;
-
-      await this.userPhonemeScoreService.updateScore(
-        ctx.userId,
-        phoneme.id,
-        true,
-        averageScore,
-      );
-    }
-    // Mark incorrect letters as incorrect
-    if (previousState === 'image') {
-      const wrongLetter = getWrongCharacters(ctx.lessonActor)[0];
-      if (!wrongLetter) return;
-      const phoneme = await this.phonemesService.findByLetter(wrongLetter);
-      if (!phoneme) return;
-      const score = await this.userPhonemeScoreService.findScoreForUserAndPhoneme(ctx.userId, phoneme.id);
-      if (score && Number(score.value) > -5) {
-        await this.userPhonemeScoreService.updateScore(
-          ctx.userId,
-          phoneme.id,
-          false,
-          averageScore,
-        );
+    if (previousState === 'word' && wordErrorNumber === 0) {
+      for (const correctLetter of correctLetters) {
+        const phoneme = await this.phonemesService.findByLetter(correctLetter);
+        if (!phoneme) continue;
+        await this.userPhonemeScoreService.updateScore(ctx.userId, phoneme.id, true);
       }
+      return;
+    }
+    if (previousState === 'word' && wordErrorNumber === 1 && correctLetters.length > 0) {
+      for (const correctLetter of correctLetters) {
+        const phoneme = await this.phonemesService.findByLetter(correctLetter);
+        if (!phoneme) continue;
+        await this.userPhonemeScoreService.updateScore(ctx.userId, phoneme.id, true);
+      }
+      return;
+    }
+    if (previousState === 'letter' && correctLetters.length === 1) {
+      const phoneme = await this.phonemesService.findByLetter(correctLetters[0]);
+      if (!phoneme) return;
+      await this.userPhonemeScoreService.updateScore(ctx.userId, phoneme.id, true);
+
+    }
+    if (previousState === 'letter' && correctLetters.length === 0) {
+      const phoneme = await this.phonemesService.findByLetter(wrongLetters[0]);
+      if (!phoneme) return;
+      await this.userPhonemeScoreService.updateScore(ctx.userId, phoneme.id, false);
     }
   }
 
