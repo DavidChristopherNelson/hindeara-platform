@@ -153,6 +153,9 @@ class EvaluateAnswer {
       if (correctAnswer === 'भय' && studentAnswer === 'भाई') return true;
       if (correctAnswer === 'ऊन' && studentAnswer === 'उन') return true;
       if (correctAnswer === 'उन' && studentAnswer === 'ऊन') return true;
+      if (correctAnswer === 'वह' && studentAnswer === 'वे') return true;
+      if (correctAnswer === 'वे' && studentAnswer === 'वह') return true;
+      if (correctAnswer === 'इडली' && studentAnswer === 'इटली') return true;
       // Schwa deletion: ignore trailing long ā (ा) in correctAnswer
       if (
         cleanedCorrectAnswer.endsWith(LONG_A) &&
@@ -296,7 +299,28 @@ class EvaluateAnswer {
       if (cleanedCorrectAnswer === 'ब' && cleaned === 'वाह') {
         return true;
       }
-      if (cleanedCorrectAnswer === 'ख' && cleaned === 'हाँ ') {
+      if (cleanedCorrectAnswer === 'ख' && cleaned === 'हाँ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ऐ' && cleaned === 'है') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ऐ' && cleaned === 'हाय') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'छ' && cleaned === 'अच्छा') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ि' && cleaned === 'ई') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ी' && cleaned === 'इ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ु' && cleaned === 'ऊ') {
+        return true;
+      }
+      if (cleanedCorrectAnswer === 'ू' && cleaned === 'उ') {
         return true;
       }
 
