@@ -133,7 +133,7 @@ export class GoogleService {
         .filter(Boolean)
         .join(' ');
 
-      this.logger.log(`Final transcription: "${transcript}"`);
+      this.logger.log(`######## Google Final transcription: "${transcript}"`);
       this.logger.log('Google Speech-to-Text transcription completed successfully');
 
       return transcript;

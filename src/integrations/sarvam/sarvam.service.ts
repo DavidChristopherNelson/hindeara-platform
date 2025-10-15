@@ -76,10 +76,17 @@ export class SarvamService {
 
       const transcript = (transcriptSource ?? '').trim();
 
-      this.logger.log(`Sarvam transcript: "${transcript}"`);
+      this.logger.log(`######## Sarvam transcript: "${transcript}"`);
       return transcript;
-    } catch (error) {
-      this.logger.error('Sarvam service error:', error);
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        this.logger.error(
+          `Sarvam service error: ${error.message}, status=${error.response?.status}, data=${JSON.stringify(error.response?.data)}`
+        );
+      } else {
+        this.logger.error(`Sarvam service error: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    
       throw new Error(
         `Sarvam transcription failed: ${
           error instanceof Error ? error.message : String(error)

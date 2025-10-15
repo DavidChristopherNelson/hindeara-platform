@@ -84,7 +84,7 @@ export class ReverieService {
 
       const transcript = (transcriptSource ?? '').trim();
 
-      this.logger.log(`Reverie transcript: "${transcript}"`);
+      this.logger.log(`######## Reverie Final transcription: "${transcript}"`);
       return transcript;
     } catch (error) {
       // Provide actionable error details without leaking secrets

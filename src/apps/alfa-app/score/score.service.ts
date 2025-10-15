@@ -92,7 +92,7 @@ export class UserPhonemeScoreService {
     }));
   }
 
-  @LogMethod()
+  //@LogMethod()
   private calculateStatus(phonemeLetter: string, currentScore: string | undefined): boolean {
     if (!currentScore) return false;
     const parsedCurrentScore = parseFloat(currentScore);

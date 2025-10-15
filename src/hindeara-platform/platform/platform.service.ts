@@ -138,12 +138,15 @@ export class PlatformService {
 
   @LogMethod()
   private async runSTTEngines(audio: Buffer, locale: string): Promise<string> {
+    console.log('==============================================================');
+    console.log('Running STT engines for locale: ', locale);
     const settled = await Promise.allSettled([
       this.google.transcribeAudio(audio, locale),
-      //this.sarvam.transcribeAudio(audio, locale),
+      this.sarvam.transcribeAudio(audio, locale),
       this.reverie.transcribeAudio(audio, locale),
       //this.azure.transcribeAudio(audio, locale),
     ]);
+    console.log('==============================================================');
 
     const transcripts: string[] = [];
     for (const r of settled) {
