@@ -44,6 +44,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'https://www.deep-connect.app',
       'https://deep-connect.app',
+      'http://192.168.1.34:3000',
     ],
   });
   const config = new DocumentBuilder()
